@@ -1,0 +1,12 @@
+
+http://www.sencha.com/products/extjs/
+
+[09:36:00] yicetoworld: http://j-ui.com/
+
+[09:37:07] yicetoworld: http://www.ligerui.com/
+
+[09:39:37] yicetoworld: javascript template + jason
+
+[09:41:03] yicetoworld: http://api.jquery.com/jQuery.template/
+
+[09:41:23] yicetoworld: http://weblogs.asp.net/stevewellens/archive/2011/12/01/goodby-jquery-templates-hello-jsrender.aspx

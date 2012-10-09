@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Clinical Portal Demo</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="Stylesheet" type="text/css" href="Resources/inforControlsCombined-1.3.css" media="all" />
+    <script type="text/javascript" src="Resources/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="Resources/jquery-ui-1.8.14.custom.min.js"></script>
+    <script type="text/javascript" src="Resources/inforControlsCombined-1.3.js"></script>
+    <script type="text/javascript" src="Resources/inforTree.js"></script>
+    <script type="text/javascript" src="Resources/sampleData.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#menu").inforTree({ "json_data": getMenuJson() });
+        });
+    </script>
+</head>
+<body>
+    <div id="header" class="inforModuleHeader">
+        <a id="logo" class="inforSplashScreen" href="http://www.infor.com/" target="_blank">
+            <img class="inforLogo" alt="infor logo" src="Resources/Images/topbanner_infor_120x28.png" />
+        </a>
+        <div id="userInfo" class="inforModuleHeaderRight inforBannerText">
+            <span>welcome: </span>
+            <a id="userName" style="color:White" href="#">xxx</a>
+        </div>
+    </div>
+    <div id="body" style="margin-top:10px">
+        <div id="menu" class="inforTree"></div>
+    </div>
+</body>
+</html>
