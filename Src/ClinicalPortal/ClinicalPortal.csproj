@@ -12,7 +12,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ClinicalPortal</RootNamespace>
     <AssemblyName>ClinicalPortal</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,92 +35,94 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Web.Mobile" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Default.aspx" />
     <Content Include="Default.html" />
-    <Content Include="Resources\images\about_600x400_blank.png" />
-    <Content Include="Resources\images\ajax-loader-inforAppNav.gif" />
-    <Content Include="Resources\images\arrow-menu_appNav_scrollbgrnd_1x19.png" />
-    <Content Include="Resources\images\arrow-menu_appNav_scrollbgrnd_over_1x19.png" />
-    <Content Include="Resources\images\arrow-menu_appNav_scrolldown.png" />
-    <Content Include="Resources\images\arrow-menu_appNav_scrolldown_disabled.png" />
-    <Content Include="Resources\images\arrow-menu_appNav_scrolldown_over.png" />
-    <Content Include="Resources\images\arrow-menu_appNav_scrollup.png" />
-    <Content Include="Resources\images\arrow-menu_appNav_scrollup_disabled.png" />
-    <Content Include="Resources\images\arrow-menu_appNav_scrollup_over.png" />
-    <Content Include="Resources\images\bg_appNav_ctr_over_1x28.png" />
-    <Content Include="Resources\images\btn_datepicker_sprite.png" />
-    <Content Include="Resources\images\btn_dropdownlist_sprite.png" />
-    <Content Include="Resources\images\btn_tabChevron_sprite.png" />
-    <Content Include="Resources\images\btn_tabClose_sprite.png" />
-    <Content Include="Resources\images\btn_tabScroll_sprite.png" />
-    <Content Include="Resources\images\datagrid_bgrnd.png" />
-    <Content Include="Resources\images\datagrid_filtericons_sprite.png" />
-    <Content Include="Resources\images\default-profile-picture-small.png" />
-    <Content Include="Resources\images\default-profile-picture.png" />
-    <Content Include="Resources\images\divider_appNav_1x18.png" />
-    <Content Include="Resources\images\drilldown_sprite.png" />
-    <Content Include="Resources\images\field_regular-center-focus.png" />
-    <Content Include="Resources\images\field_regular-center.png" />
-    <Content Include="Resources\images\field_regular-left-focus.png" />
-    <Content Include="Resources\images\field_regular-left.png" />
-    <Content Include="Resources\images\field_regular-right-focus.png" />
-    <Content Include="Resources\images\field_regular-right.png" />
-    <Content Include="Resources\images\filter-gradient-bg.png" />
-    <Content Include="Resources\images\icn_checkbox_sprite.png" />
-    <Content Include="Resources\images\icn_error-field.png" />
-    <Content Include="Resources\images\iconButton_icons_sprite.png" />
-    <Content Include="Resources\images\indicator_indefinate.gif" />
-    <Content Include="Resources\images\indicator_repeats_sprite.png" />
-    <Content Include="Resources\images\infor-logo.png" />
-    <Content Include="Resources\images\inforFormButton_repeats.png" />
-    <Content Include="Resources\images\inforFormButton_sides.png" />
-    <Content Include="Resources\images\inforSplitButton_icons.png" />
-    <Content Include="Resources\images\inforSplitButton_repeats.png" />
-    <Content Include="Resources\images\inforSplitButton_sides.png" />
-    <Content Include="Resources\images\inforSplitter_sprite.png" />
-    <Content Include="Resources\images\infortextbox_top_bgrnd.png" />
-    <Content Include="Resources\images\infor_ajax-loader_16x16.gif" />
-    <Content Include="Resources\images\infor_ajax-loader_32x32.gif" />
-    <Content Include="Resources\images\infor_ajax-loader_393939_16x16.gif" />
-    <Content Include="Resources\images\infor_ajax-loader_lite_24x24.gif" />
-    <Content Include="Resources\images\infor_ajax-loader_white_16x16.gif" />
-    <Content Include="Resources\images\logo-signIn_Infor_126x54.png" />
-    <Content Include="Resources\images\message_dialog_icons_sprite.png" />
-    <Content Include="Resources\images\module_header_center_1x27.png" />
-    <Content Include="Resources\images\module_header_icons.png" />
-    <Content Include="Resources\images\shadow_listbox_ctr_btm_1x5.png" />
-    <Content Include="Resources\images\shadow_listbox_lft_5x1.png" />
-    <Content Include="Resources\images\shadow_listbox_lft_btm_corner_5x5.png" />
-    <Content Include="Resources\images\shadow_listbox_rt_5x1.png" />
-    <Content Include="Resources\images\shadow_listbox_rt_btm_corner_5x5.png" />
-    <Content Include="Resources\images\signin_blank_withShadow.png" />
-    <Content Include="Resources\images\sort_indicators_sprite.png" />
-    <Content Include="Resources\images\splash_blank_shadow_noLogo.png" />
-    <Content Include="Resources\images\splitter_bar_6x6_enabled.png" />
-    <Content Include="Resources\images\splitter_bar_6x6_horiz_enabled.png" />
-    <Content Include="Resources\images\splitter_bar_6x6_horiz_over.png" />
-    <Content Include="Resources\images\splitter_bar_6x6_over.png" />
-    <Content Include="Resources\images\sprite_arrow_down_appNav_7x4.png" />
-    <Content Include="Resources\images\sprite_btn_gridMenuOptions.png" />
-    <Content Include="Resources\images\sprite_overflowAppNav_24x28.png" />
-    <Content Include="Resources\images\sprite_scrollAppNav_24x28.png" />
-    <Content Include="Resources\images\status-icons_sprite.png" />
-    <Content Include="Resources\images\topbanner_approva_120x28.png" />
-    <Content Include="Resources\images\topbanner_infor_120x28.png" />
-    <Content Include="Resources\images\topbanner_lawson_120x28.png" />
-    <Content Include="Resources\images\topbanner_left_pixel_1x28.png" />
-    <Content Include="Resources\images\topbanner_right_pixel_1x28.png" />
-    <Content Include="Resources\images\topbanner_softbrands_120x28.png" />
-    <Content Include="Resources\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Resources\Images\about_600x400_blank.png" />
+    <Content Include="Resources\Images\ajax-loader-inforAppNav.gif" />
+    <Content Include="Resources\Images\arrow-menu_appNav_scrollbgrnd_1x19.png" />
+    <Content Include="Resources\Images\arrow-menu_appNav_scrollbgrnd_over_1x19.png" />
+    <Content Include="Resources\Images\arrow-menu_appNav_scrolldown.png" />
+    <Content Include="Resources\Images\arrow-menu_appNav_scrolldown_disabled.png" />
+    <Content Include="Resources\Images\arrow-menu_appNav_scrolldown_over.png" />
+    <Content Include="Resources\Images\arrow-menu_appNav_scrollup.png" />
+    <Content Include="Resources\Images\arrow-menu_appNav_scrollup_disabled.png" />
+    <Content Include="Resources\Images\arrow-menu_appNav_scrollup_over.png" />
+    <Content Include="Resources\Images\bg_appNav_ctr_over_1x28.png" />
+    <Content Include="Resources\Images\btn_datepicker_sprite.png" />
+    <Content Include="Resources\Images\btn_dropdownlist_sprite.png" />
+    <Content Include="Resources\Images\btn_tabChevron_sprite.png" />
+    <Content Include="Resources\Images\btn_tabClose_sprite.png" />
+    <Content Include="Resources\Images\btn_tabScroll_sprite.png" />
+    <Content Include="Resources\Images\datagrid_bgrnd.png" />
+    <Content Include="Resources\Images\datagrid_filtericons_sprite.png" />
+    <Content Include="Resources\Images\default-profile-picture-small.png" />
+    <Content Include="Resources\Images\default-profile-picture.png" />
+    <Content Include="Resources\Images\divider_appNav_1x18.png" />
+    <Content Include="Resources\Images\drilldown_sprite.png" />
+    <Content Include="Resources\Images\field_regular-center-focus.png" />
+    <Content Include="Resources\Images\field_regular-center.png" />
+    <Content Include="Resources\Images\field_regular-left-focus.png" />
+    <Content Include="Resources\Images\field_regular-left.png" />
+    <Content Include="Resources\Images\field_regular-right-focus.png" />
+    <Content Include="Resources\Images\field_regular-right.png" />
+    <Content Include="Resources\Images\filter-gradient-bg.png" />
+    <Content Include="Resources\Images\icn_checkbox_sprite.png" />
+    <Content Include="Resources\Images\icn_error-field.png" />
+    <Content Include="Resources\Images\iconButton_icons_sprite.png" />
+    <Content Include="Resources\Images\indicator_indefinate.gif" />
+    <Content Include="Resources\Images\indicator_repeats_sprite.png" />
+    <Content Include="Resources\Images\infor-logo.png" />
+    <Content Include="Resources\Images\inforFormButton_repeats.png" />
+    <Content Include="Resources\Images\inforFormButton_sides.png" />
+    <Content Include="Resources\Images\inforSplitButton_icons.png" />
+    <Content Include="Resources\Images\inforSplitButton_repeats.png" />
+    <Content Include="Resources\Images\inforSplitButton_sides.png" />
+    <Content Include="Resources\Images\inforSplitter_sprite.png" />
+    <Content Include="Resources\Images\infortextbox_top_bgrnd.png" />
+    <Content Include="Resources\Images\infor_ajax-loader_16x16.gif" />
+    <Content Include="Resources\Images\infor_ajax-loader_32x32.gif" />
+    <Content Include="Resources\Images\infor_ajax-loader_393939_16x16.gif" />
+    <Content Include="Resources\Images\infor_ajax-loader_lite_24x24.gif" />
+    <Content Include="Resources\Images\infor_ajax-loader_white_16x16.gif" />
+    <Content Include="Resources\Images\logo-signIn_Infor_126x54.png" />
+    <Content Include="Resources\Images\message_dialog_icons_sprite.png" />
+    <Content Include="Resources\Images\module_header_center_1x27.png" />
+    <Content Include="Resources\Images\module_header_icons.png" />
+    <Content Include="Resources\Images\shadow_listbox_ctr_btm_1x5.png" />
+    <Content Include="Resources\Images\shadow_listbox_lft_5x1.png" />
+    <Content Include="Resources\Images\shadow_listbox_lft_btm_corner_5x5.png" />
+    <Content Include="Resources\Images\shadow_listbox_rt_5x1.png" />
+    <Content Include="Resources\Images\shadow_listbox_rt_btm_corner_5x5.png" />
+    <Content Include="Resources\Images\signin_blank_withShadow.png" />
+    <Content Include="Resources\Images\sort_indicators_sprite.png" />
+    <Content Include="Resources\Images\splash_blank_shadow_noLogo.png" />
+    <Content Include="Resources\Images\splitter_bar_6x6_enabled.png" />
+    <Content Include="Resources\Images\splitter_bar_6x6_horiz_enabled.png" />
+    <Content Include="Resources\Images\splitter_bar_6x6_horiz_over.png" />
+    <Content Include="Resources\Images\splitter_bar_6x6_over.png" />
+    <Content Include="Resources\Images\sprite_arrow_down_appNav_7x4.png" />
+    <Content Include="Resources\Images\sprite_btn_gridMenuOptions.png" />
+    <Content Include="Resources\Images\sprite_overflowAppNav_24x28.png" />
+    <Content Include="Resources\Images\sprite_scrollAppNav_24x28.png" />
+    <Content Include="Resources\Images\status-icons_sprite.png" />
+    <Content Include="Resources\Images\topbanner_approva_120x28.png" />
+    <Content Include="Resources\Images\topbanner_infor_120x28.png" />
+    <Content Include="Resources\Images\topbanner_lawson_120x28.png" />
+    <Content Include="Resources\Images\topbanner_left_pixel_1x28.png" />
+    <Content Include="Resources\Images\topbanner_right_pixel_1x28.png" />
+    <Content Include="Resources\Images\topbanner_softbrands_120x28.png" />
+    <Content Include="Resources\Images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Resources\sampleData.js" />
     <Content Include="Resources\inforControlsCombined-1.3.css" />
     <Content Include="Resources\inforControlsCombined-1.3.js" />
@@ -129,6 +132,7 @@
     <Content Include="Resources\inforWebPartControlsCombined-1.3.css" />
     <Content Include="Resources\jquery-1.7.1.min.js" />
     <Content Include="Resources\jquery-ui-1.8.14.custom.min.js" />
+    <Content Include="Service\Service1.asmx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -138,14 +142,11 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Default.aspx.cs">
-      <SubType>ASPXCodeBehind</SubType>
-      <DependentUpon>Default.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Default.aspx.designer.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\Service1.asmx.cs">
+      <DependentUpon>Service1.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

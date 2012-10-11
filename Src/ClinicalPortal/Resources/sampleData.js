@@ -1,39 +1,40 @@
 ﻿function getMenuJson() {
     return {
         "data": [
-                    {"data":
+                    { "data":
                         {
                             "title": "Home Page",
                             "attr": { "id": "homePage" },
                             "icon": "leaf"
-                        }
+                        },
+                       "metadata": {"href": "www.infor.com"}
                     },
-                    {"data":
+                    { "data":
                         {
                             "title": "Message Center",
                             "attr": { "id": "messageCenter" },
                             "icon": "leaf"
                         }
                     },
-                    {"data":
+                    { "data":
                         {
                             "title": "Patient Data",
                             "attr": { "id": "patientData" },
                             "icon": "folder"
                         },
-                     "children":
+                        "children":
                         [
                             { "data": { "title": "Patient Search", "icon": "leaf"} },
                             { "data": { "title": "Patient Summary", "icon": "leaf"} }
                         ]
                     },
-                    {"data":
+                    { "data":
                         {
                             "title": "Tools",
-                            "attr": {"id": "tools"},
+                            "attr": { "id": "tools" },
                             "icon": "folder"
                         },
-                     "children": []
+                        "children": []
                     }
                 ]
     };

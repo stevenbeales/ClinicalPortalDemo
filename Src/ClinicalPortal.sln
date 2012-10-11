@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicalPortal", "ClinicalPortal\ClinicalPortal.csproj", "{B11E64F6-509D-45D0-B85D-ECA2FC4482DD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicalPortalService", "ClinicalPortalService\ClinicalPortalService.csproj", "{260DC1D5-D183-4F60-858F-C61388FC8DF2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{B11E64F6-509D-45D0-B85D-ECA2FC4482DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B11E64F6-509D-45D0-B85D-ECA2FC4482DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B11E64F6-509D-45D0-B85D-ECA2FC4482DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{260DC1D5-D183-4F60-858F-C61388FC8DF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{260DC1D5-D183-4F60-858F-C61388FC8DF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{260DC1D5-D183-4F60-858F-C61388FC8DF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{260DC1D5-D183-4F60-858F-C61388FC8DF2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
