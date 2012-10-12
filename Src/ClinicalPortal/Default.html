@@ -12,21 +12,30 @@
     <script type="text/javascript" src="Resources/sampleData.js"></script>
     <script type="text/javascript">
 
-        function openLink(url) {
-            window.open(url);
-        }
-
         $(function () {
             $(".inforSplitter").inforSplitter();
             $(".inforSplitBarVertical").remove();
 
             $("#menu").inforTree({ "json_data": getMenuJson() })
                       .bind("select_node.jstree", function (e, data) {
-                          var nav = $.data(data.rslt.obj[0], "href");
-                          //openLink(nav);
-                          CallHelloWorld();
+                          var pageUrl = $.data(data.rslt.obj[0], "href");
+                          loadPageAsyn(pageUrl);
                       });
         });
+
+        function loadPage(url) {
+            $("#content").load(url);
+        }
+
+        function loadPageAsyn(url) {
+            $.ajax(
+                { "type": "GET",
+                    "url": url,
+                    "success": function (msg) {
+                        $("#content").html(msg);
+                    }
+                })
+        }
 
         function CallHelloWorld() {
             $.ajax({

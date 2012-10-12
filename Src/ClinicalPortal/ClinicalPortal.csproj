@@ -48,6 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Default.html" />
+    <Content Include="HomePage.html" />
+    <Content Include="Resources\clinicalPortalMenu.js" />
     <Content Include="Resources\Images\about_600x400_blank.png" />
     <Content Include="Resources\Images\ajax-loader-inforAppNav.gif" />
     <Content Include="Resources\Images\arrow-menu_appNav_scrollbgrnd_1x19.png" />

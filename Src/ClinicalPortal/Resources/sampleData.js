@@ -7,14 +7,15 @@
                             "attr": { "id": "homePage" },
                             "icon": "leaf"
                         },
-                       "metadata": {"href": "www.infor.com"}
+                        "metadata": { "href": "HomePage.html" }
                     },
                     { "data":
                         {
                             "title": "Message Center",
                             "attr": { "id": "messageCenter" },
                             "icon": "leaf"
-                        }
+                        },
+                        "metadata": {"href": "#"}
                     },
                     { "data":
                         {
