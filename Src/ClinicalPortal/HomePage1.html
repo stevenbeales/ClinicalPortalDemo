@@ -1,0 +1,671 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ 
+<!--
+/**************************************************************************************************************************************
+* LAWSON CONFIDENTIAL AND PROPRIETARY
+*  
+* THIS MATERIAL IS UNPUBLISHED, CONFIDENTIAL AND PROPRIETARY TO LAWSON SOFTWARE INC.  
+* IT IS NOT TO BE USED, REPRODUCED, OR DISCLOSED EXCEPT IN ACCORDANCE WITH SOFTWARE CONTRACT PROVISIONS OR UPON WRITTEN
+* AUTHORIZATION BY LAWSON 
+* 
+* COPYRIGHT (C) 1999-2010 LAWSON SOFTWARE, INC.
+* 
+* ALL RIGHTS RESERVED
+**************************************************************************************************************************************/
+-->
+ 
+ 
+<HTML>
+<HEAD>
+ 
+<SCRIPT language=javascript>
+    var js_thisQueryString = "";
+
+    function fGoTo(which, prio) {
+        top.goto('SHMC', '', 'ID=' + which);
+    }
+
+    var page = 1;
+
+    function pageMe(dir) {
+        window.location.href = "HV-SHMC-altComboCritMsgTypePaging.asp?Page=" + (1 + parseInt(dir));
+    }
+
+    function reloadMe() {
+
+    }
+
+    //function cancelOOOEvent() {
+    //    if (js_thisQueryString.length > 0) {
+    //         window.location.href= "HV-SHMC-altComboCritMsgTypePaging.asp?" + js_thisQueryString + "&cancelOOOEvent=YES";
+    //    } else {
+    //         window.location.href= "HV-SHMC-altComboCritMsgTypePaging.asp?cancelOOOEvent=YES";
+    //    }
+    //}
+ 
+</SCRIPT>
+ 
+</HEAD>
+ 
+<BODY ONLOAD="javascript:reloadMe();" TOPMARGIN='0' MARGINHEIGHT='0' BGCOLOR='#FFFFFF' TEXT='#000000' TEXT='#000000' LINK='#0000FF' ALINK='#0000FF' VLINK='#0000FF' >
+<A name=top></A>
+<TABLE height='100%' width='100%' cellpadding=2 border=0 cellspacing=0 >
+<TR><TD width='100%' valign='top'>
+	<TABLE width='100%' valign='top' cellpadding=0 cellspacing=0 border=0>
+ 
+ 
+<script language=javascript>
+    var oPopup = window.createPopup();
+    var oPopBody = oPopup.document.body;
+    oPopBody.style.fontFamily = "verdana,arial,sans-serif";
+    oPopBody.style.backgroundColor = "#ECF8FF";
+    oPopBody.style.border = "#0000FF solid 1px";
+
+    function goto(me) {
+        window.location.href = me.nav;
+    }
+
+    function popup(me) {
+        oPopBody.innerHTML =
+		"<table width=100%><tr valign=top>" +
+		"<td><img id=goto style='cursor:hand' border=0 align=left src='/common/images/" + me.gif + "'></td>" +
+		"<td style='line-height:100%;font-size:xx-small'>" +
+		me.msg + "</td></tr></table>";
+        oPopup.document.all.goto.onclick = function () { window.location.href = me.nav; }
+        oPopup.show(-150, 26, 150, 55, document.all.where);
+    }
+</script>
+ 
+<table cellpadding=0 cellspacing=0 width=100%><tr height=24px>
+	<td class=size1 width=100%>&nbsp;</td>
+	<td style='border:#0000FF solid 1px' bgcolor='#ECF8FF' class=size1 width=1% nowrap align=right>
+	<table cellpadding=0 cellspacing=0><tr class=size1>
+	<td nowrap>&nbsp;
+<img align=middle msg="You have 2 new clinical documents to review." nav="/RxNET/DotNetDispatcher.asp?Nav=CCRUserSummary" id="CCR" gif="32ccr.gif" style='cursor:hand' onClick="goto(this);" onMouseOver="popup(this);" src='/common/images/16ccr.gif' border=0>&nbsp;
+ 
+<img align=middle msg="You have 5 dictations to sign." nav="/ResView/trsgnPendListFrame.asp" id="TRSGN" gif="32unsigned_dictations.gif" style='cursor:hand' onClick="goto(this);" onMouseOver="popup(this);" src='/common/images/16unsigned_dictations.gif' border=0>&nbsp;
+ 
+<img align=middle msg="You have 86 unmatched dictations to assign." nav="/ResView/trsgnRouteListFrame.asp?GO=HOME" id="TRXXX" gif="32unmatched_dictations.gif" style='cursor:hand' onClick="goto(this);" onMouseOver="popup(this);" src='/common/images/16unmatched_dictations.gif' border=0>&nbsp;
+</td>
+	<td nowrap><b><font color='#FF0000'>&nbsp;93 New Items&nbsp;</font></b>
+	</tr></table>
+	</td>
+	<td id=where class=size1 width=1px></td>
+</tr></table>
+ 
+<TR>
+	<TD width="100%" height=5 bgcolor='#FFFFFF'><img border=0 src="/Common/images/pixel.gif"></TD>
+</TR>
+ 
+ 
+	<TR><TD valign='top' width=100%>
+		<TABLE width=100% cellpadding=2 border=0 cellspacing=2 name='tblList' id='tblList'>
+		<TR><TD width='100%' align='left' class='size1' bgcolor='#99ccff'>
+			<FONT color='#000099'>
+			<STRONG class='size2'>Secure&nbsp;Messages&nbsp;(124&nbsp;new):</STRONG>
+			</FONT>
+			</TD>
+		</TR>
+		</TABLE>
+		</TD>
+	</TR>
+ 
+ 
+	<!-- NUMBER OF ENTRIES = 11 -->
+	<TR>
+		<TD valign='top' width=100%>
+			<TABLE width='95%' cellpadding='2' border='0' cellspacing='2' name='tblList' id='tblList' columns='4' rows='2'>
+	<TR><TD width='25%' class=size1 nowrap>&nbsp;<A class='size1' href='javascript:top.goto("SHMC","","TYPE=Text");'><B>Text&nbsp;Messages</B></A>&nbsp;<B>(59)</B></TD>
+<TD width='25%' class=size1 nowrap>&nbsp;<A class='size1' href='javascript:top.goto("SHMC","","TYPE=Transcriptions");'>Transcriptions</A>&nbsp;(1)</TD>
+<TD width='25%' class=size1 nowrap>&nbsp;<A class='size1' href='javascript:top.goto("SHMC","","TYPE=Tasks");'><B>Office&nbsp;Tasks</B></A>&nbsp;<B>(36)</B></TD>
+<TD width='25%' class=size1 nowrap>&nbsp;<A class='size1' href='javascript:top.goto("SHMC","","TYPE=Refills");'>Prescription&nbsp;Renewals</A>&nbsp;(17)</TD>
+</TR><TR><TD width='25%' class=size1 nowrap>&nbsp;<A class='size1' href='javascript:top.goto("SHMC","","TYPE=Appointments");'>Appointment&nbsp;Requests</A>&nbsp;(24)</TD>
+<TD width='25%' class=size1 nowrap>&nbsp;<A class='size1' href='javascript:top.goto("SHMC","","TYPE=Ask%20the%20Office");'><B>Ask&nbsp;The&nbsp;Office</B></A>&nbsp;<B>(11)</B></TD>
+<TD width='25%' class=size1 nowrap>&nbsp;<A class='size1' href='javascript:top.goto("SHMC","","TYPE=Ask%20the%20Nurse");'><B>Ask&nbsp;The&nbsp;Nurse</B></A>&nbsp;<B>(29)</B></TD>
+<TD width='25%' class=size1 nowrap>&nbsp;<A class='size1' href='javascript:top.goto("SHMC","","TYPE=eConsult");'>e-Consultations</A>&nbsp;(20)</TD>
+</TR><TR><TD width='25%' class=size1 nowrap>&nbsp;<A class='size1' href='javascript:top.goto("SHMC","","TYPE=Ask%20the%20Doctor");'><B>Ask&nbsp;The&nbsp;Doctor</B></A>&nbsp;<B>(33)</B></TD>
+<TD width='25%' class=size1 nowrap>&nbsp;<A class='size1' href='javascript:top.goto("SHMC","","TYPE=Ask%20Dietitian");'><B>Ask&nbsp;The&nbsp;Dietitian</B></A>&nbsp;<B>(16)</B></TD>
+<TD width='25%' class=size1 nowrap>&nbsp;<A class='size1' href='javascript:top.goto("SHMC","","TYPE=Notify");'><B>Notifications</B></A>&nbsp;<B>(41)</B></TD>
+<TD width='25%' class=size1 nowrap>&nbsp;</TD>
+</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	
+<TR>
+	<TD width="100%" height=5 bgcolor='#FFFFFF'><img border=0 src="/Common/images/pixel.gif"></TD>
+</TR>
+ 
+	<TR>
+		<TD width='100%'>
+			<TABLE width=100% cellpadding=2 border=0 cellspacing=2>
+				<TR bgcolor='#99ccff'>
+					
+					<TD width='100%' colspan='4'>
+					
+						<FONT color='#000099'>
+						<STRONG class='size2'>Critical&nbsp;Secure&nbsp;Messages&nbsp;(29):</STRONG>
+						</FONT>
+					</TD>
+				</TR>
+				
+				<TR bgcolor='#99ccff'>
+					<TD align=center class='size1'>
+						<FONT color='#000099'>
+						<STRONG class='size1'>Sent</STRONG>
+						</FONT>
+					</TD>
+					<TD align=center class='size1'>
+						<FONT color='#000099'>
+						<STRONG class='size1'>From</STRONG>
+						</FONT>
+					</TD>
+					
+					<TD align=center class='size1'>
+						<FONT color='#000099'>
+						<STRONG class='size1'>Patient</STRONG>
+						</FONT>
+					</TD>
+					
+					<TD align=center class='size1'>
+						<FONT color='#000099'>
+						<STRONG class='size1'>Topic</STRONG>
+						</FONT>
+					</TD>
+				</TR>
+ 
+<TR>
+<TD align=left nowrap class='size1' ><img border=0 src='../images/icon-msg-read.gif' width='12' height='12'>&nbsp;<A HREF='' class='guilink' title='Click to open the message' onclick="fGoTo('606292','CRITICAL'); return false;">07/11/11 08:45AM</A></TD>
+<TD align=left nowrap class='size1'>&nbsp;<A HREF='' class='guilink' title='Click to open the message' onclick="fGoTo('606292','CRITICAL'); return false;">Shan, Jeff_RP</A></TD>
+<TD align=left nowrap class='size1'>&nbsp;<A HREF='' class='guilink' title='Click to open the message' onclick="fGoTo('606292','CRITICAL'); return false;"></A></TD>
+<TD align=left  class='size1'><A class='guilink' HREF='' title = 'RE: text test' onclick="fGoTo('606292','CRITICAL'); return false;">&nbsp;RE: text test</A></TD>
+</TR>
+<TR>
+<TD align=left nowrap class='size1' ><img border=0 src='../images/icon-msg-read.gif' width='12' height='12'>&nbsp;<A HREF='' class='guilink' title='Click to open the message' onclick="fGoTo('606291','CRITICAL'); return false;">07/11/11 08:45AM</A></TD>
+<TD align=left nowrap class='size1'>&nbsp;<A HREF='' class='guilink' title='Click to open the message' onclick="fGoTo('606291','CRITICAL'); return false;">Shan, Jeff_RP</A></TD>
+<TD align=left nowrap class='size1'>&nbsp;<A HREF='' class='guilink' title='Click to open the message' onclick="fGoTo('606291','CRITICAL'); return false;"></A></TD>
+<TD align=left  class='size1'><A class='guilink' HREF='' title = 'RE: text test' onclick="fGoTo('606291','CRITICAL'); return false;">&nbsp;RE: text test</A></TD>
+</TR>
+<TR>
+<TD align=left nowrap class='size1' ><img border=0 src='../images/icon-msg-unread.gif' width='12' height='12'>&nbsp;<A HREF='' class='guilink' title='Click to open the message' onclick="fGoTo('606290','CRITICAL'); return false;"><STRONG class='size1'>07/11/11 08:44AM</STRONG></A></TD>
+<TD align=left nowrap class='size1'>&nbsp;<A HREF='' class='guilink' title='Click to open the message' onclick="fGoTo('606290','CRITICAL'); return false;"><STRONG class='size1'>Shan, Jeff_RP</STRONG></A></TD>
+<TD align=left nowrap class='size1'>&nbsp;<A HREF='' class='guilink' title='Click to open the message' onclick="fGoTo('606290','CRITICAL'); return false;"><STRONG class='size1'></STRONG></A></TD>
+<TD align=left  class='size1'><A class='guilink' HREF='' title = 'RE: text test' onclick="fGoTo('606290','CRITICAL'); return false;">&nbsp;<STRONG class='size1'>RE: text test</STRONG></A></TD>
+</TR>
+<TR>
+<TD align=left nowrap class='size1' ><img border=0 src='../images/icon-msg-unread.gif' width='12' height='12'>&nbsp;<A HREF='' class='guilink' title='Click to open the message' onclick="fGoTo('606289','CRITICAL'); return false;"><STRONG class='size1'>07/11/11 08:44AM</STRONG></A></TD>
+<TD align=left nowrap class='size1'>&nbsp;<A HREF='' class='guilink' title='Click to open the message' onclick="fGoTo('606289','CRITICAL'); return false;"><STRONG class='size1'>Shan, Jeff_RP</STRONG></A></TD>
+<TD align=left nowrap class='size1'>&nbsp;<A HREF='' class='guilink' title='Click to open the message' onclick="fGoTo('606289','CRITICAL'); return false;"><STRONG class='size1'></STRONG></A></TD>
+<TD align=left  class='size1'><A class='guilink' HREF='' title = 'RE: text test' onclick="fGoTo('606289','CRITICAL'); return false;">&nbsp;<STRONG class='size1'>RE: text test</STRONG></A></TD>
+</TR>
+<TR>
+<TD align=left nowrap class='size1' ><img border=0 src='../images/icon-msg-read.gif' width='12' height='12'>&nbsp;<A HREF='' class='guilink' title='Click to open the message' onclick="fGoTo('606288','CRITICAL'); return false;">07/11/11 08:44AM</A></TD>
+<TD align=left nowrap class='size1'>&nbsp;<A HREF='' class='guilink' title='Click to open the message' onclick="fGoTo('606288','CRITICAL'); return false;">Shan, Jeff_RP</A></TD>
+<TD align=left nowrap class='size1'>&nbsp;<A HREF='' class='guilink' title='Click to open the message' onclick="fGoTo('606288','CRITICAL'); return false;"></A></TD>
+<TD align=left  class='size1'><A class='guilink' HREF='' title = 'RE: text test' onclick="fGoTo('606288','CRITICAL'); return false;">&nbsp;RE: text test</A></TD>
+</TR>
+ 
+			</TABLE>
+		</TD>
+	</TR>
+ 
+ 
+	<TR>
+		<TD>
+			<TABLE width="100%" cellpadding=2 cellspacing=2 border=0>
+				<TR>
+					<TD>
+						<TABLE width="100%" cellpadding=0 cellspacing=0 border=0>
+							<TR>
+								<TD class='size1' width="50%" align="left" bgcolor="#99ccff" NOWRAP>
+									<P CLASS="size1"><FONT color='#000099'><B class="size1">&nbsp;Total Messages 29&nbsp;</B></FONT></P>
+								</TD>
+								<TD class='size1' width="50%" align="right" bgcolor="#99ccff" NOWRAP>
+									<P CLASS="size1">&nbsp;								
+									<font color="#000099"><b class="size1">&nbsp;Pages&nbsp;</b></font>
+									
+		<b>1</b>
+		
+		<a HREF="#" onclick="pageMe('1'); return false;">2</a>
+		
+		<a HREF="#" onclick="pageMe('2'); return false;">3</a>
+		
+		<a HREF="#" onclick="pageMe('3'); return false;">4</a>
+		
+		<a HREF="#" onclick="pageMe('4'); return false;">5</a>
+		
+		 <a HREF="#" onclick="pageMe('5');return false;">>></a>
+		
+									</P>
+								</TD>
+							</TR>
+						</TABLE>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+ 
+ 
+<TR>
+	<TD width="100%" height=5 bgcolor='#FFFFFF'><img border=0 src="/Common/images/pixel.gif"></TD>
+</TR>
+ 
+	<TR>
+	    <TD valign='top'>
+<div class=Section1>
+<div align=left>
+                <table border=0 cellspacing=0 cellpadding=0 width="100%" >
+                  <tr valign="top">
+  <td valign="top" width="47%" style="PADDING-RIGHT: 3.75pt; PADDING-LEFT: 3.75pt;  WIDTH: 47.18%; PADDING-TOP: 1.75pt">
+  <div id="minisearch">
+  
+  <?xml version="1.0"?><style> 
+span.container {
+  float: left;
+  text-align: left;
+  width: 100%;
+  font-size: xx-small; 
+  }
+ 
+div.container {
+  text-align: left;
+  width: 100%;
+  font-size: xx-small; 
+  padding-left: 5 px;
+  padding-bottom: 3 px;
+  padding-top: 3 px;
+  }
+  
+</style><script language="javascript"><!--
+            function trim(s) {
+                s = s.replace(/^\s*|\s*$/g, "");
+                return (s);
+            }
+
+            function submitSearch() {
+                var sURL = unescape(window.location.pathname);
+                var srch = trim(document.getElementById('srch').value);
+                // determine if this is a string search or an id search
+
+
+                var reg = new RegExp("[0-9]");
+                if (reg.test(srch)) {
+                    //alert(srch + " has digits!");
+                    //var tmp = sURL + "?listtype=none&type=id&srch=" + document.getElementById('srch').value;
+                    //alert(tmp);
+                    if (invalidCharactersID(srch)) {
+                        location.href = sURL + "?listtype=none&type=id&srch=" + trim(document.getElementById('srch').value);
+                    }
+                }
+                else {
+                    //alert(srch + " has no digits!");
+                    //alert(srch);
+                    if ((invalidCharacters(srch)) && (validString(srch))) {
+                        location.href = sURL + "?listtype=none&type=str&srch=" + trim(document.getElementById('srch').value);
+                    }
+                }
+            }
+
+            function validString(srch) {
+                var theStr;
+                var Msg;
+                var retOK;
+                retOK = true;
+                Msg = "";
+                theStr = new String(srch);
+
+                if ((theStr.length == 0) || (theStr.length == 1)) {
+                    retOK = false;
+                    Msg = "Please enter a search string that \nis at least two characters long.";
+                    alert(Msg);
+                    resetSearch();
+                }
+                return (retOK);
+            }
+
+            function resetSearch() {
+                var sURL = unescape(window.location.pathname);
+                window.location.href = sURL;
+            }
+
+            function PopWin(theURL, Name, popW, popH, scroll) {
+                var winleft = (screen.width - popW) / 2;
+                var winUp = (screen.height - popH) / 2;
+                var winProp = 'width=' + popW + ',height=' + popH + ',left=' + winleft + ',top=' + winUp + ',scrollbars=' + scroll + ',resizable,alwaysRaised=yes';
+                popUp = window.open(location.protocol + location.host + theURL, Name, winProp);
+                popUp.window.focus();
+            }
+
+            function invalidCharacters(entry) {
+                var retOK = true;
+                var invalidChar = '*&%$#@!';
+                var strlen = entry.length;
+
+                for (var i = 0; i < strlen; i++) {
+                    if (invalidChar.indexOf(entry.charAt(i)) > -1) {
+                        retOK = false;
+                        Msg = "Invalid character ' " + entry.charAt(i) + " '.\nPlease correct and try again.";
+                        alert(Msg);
+                        resetSearch();
+                    }
+                } // end scanning loop
+                return (retOK);
+            }
+
+            //function added for search by number - TD631 and Clarify78773-1 10/07/2004.
+            function invalidCharactersID(entry) {
+                var retOK = true;
+                var invalidChar = "&%#";
+                var strlen = entry.length;
+
+                for (var i = 0; i < strlen; i++) {
+                    if (invalidChar.indexOf(entry.charAt(i)) > -1) {
+                        retOK = false;
+                        Msg = "Invalid character ' " + entry.charAt(i) + " '.\nPlease correct and try again.";
+                        alert(Msg);
+                        resetSearch();
+                    }
+                } // end scanning loop
+                return (retOK);
+            }
+		
+	--></script><div class="container"><span class="container"><form id="frmSearch" action="javascript: submitSearch();" style="margin-bottom:0;">Search for Patient: 
+	<input type="text" name="srch" class="size1" size="15" title="Possible search parameters:&#xA;Last name&#xA;Last name, First name&#xA;ID#" /> 
+	<input class="size1" type="button" value="Go" onclick="return submitSearch();">		
+		 
+	</input><a href="#" title="Advanced Search" onclick="PopWin('/Patient/PatientSearchPopUp.asp', 'Search', '760','550','no');return false;">
+		Advanced
+	</a></form></span></div>
+  
+	</div>
+  <div id="minilist" style="margin-TOP: 5px">
+	<?xml version="1.0"?><style> 
+span.container {
+  float: left;
+  text-align: left;
+  width: 100%;
+  font-size: xx-small; 
+  }
+ 
+div.container {
+  text-align: left;
+  width: 100%;
+  font-size: xx-small; 
+  padding-left: 5 px;
+  padding-bottom: 3 px;
+  padding-top: 3 px;
+  }
+  
+</style><script language="javascript">
+
+            function SelectList(ddl) {
+                var oid = ddl[ddl.selectedIndex].value;
+                //var sDivContents = document.getElementById('minilist').innerHTML;
+                //alert(sDivContents);
+                if (oid) location.href = location.pathname + "?selStr=selected&" + oid;
+            }
+
+
+            function PopWin(theURL, Name, popW, popH, scroll) {
+                var winleft = (screen.width - popW) / 2;
+                var winUp = (screen.height - popH) / 2;
+                winProp = 'width=' + popW + ',height=' + popH + ',left=' + winleft + ',top=' + winUp + ',scrollbars=' + scroll + ',resizable,alwaysRaised=yes';
+                popUp = window.open(theURL, Name, winProp);
+                popUp.window.focus();
+            }
+
+            function setSelectedPersID(pers_id) {
+                //debugger;
+                popUp.close();
+                window.parent.homeMSG.setSelectedPersID(pers_id);
+            }
+ 
+	 </script><div class="container"><span class="container"><select class="size1" id="ListControl" onChange="return SelectList(this);"><option value="listtype=none&other_id=287715">Select a List...</option><option value="listtype=recent&other_id=287715" selected="">Recent Patients</option><option value="listtype=personal&other_id=287715">My Personal List</option><option value="listtype=my&other_id=287715">My Inpatient Census</option><option value="listtype=other1&other_id=287715">Inpatient Census - JEFF_PHYSICAN SHAN</option><option value="listtype=group3&other_id=631">Inpatient Census - JSM / MAIN</option></select></span></div><div class="container"><span class="container"><table border="0" cellpadding="2" cellspacing="0"><tr align="left"><th class="size1">Name</th><th class="size1">Age</th><th class="size1">Gender</th><th class="size1">DOB</th></tr><tr><td class="size1"><a href="" onClick="top.setPatientAction(&quot;289140&quot;); return false ;" target="banner" title="EPI: eg3873-1   ">3873, 3873 </a> </td><td class="size1"> </td><td class="size1"> </td><td class="size1"> </td></tr><tr><td class="size1"><a href="" onClick="top.setPatientAction(&quot;285811&quot;); return false ;" target="banner" title="MRN: Dora-Active   &#xA;ALT: Dora-ALT   &#xA;ALT: Dora-ALT-1   &#xA;EPI: EPI-06-28-2009-a  (merged)&#xA;EPI: EPI-06-28-2009-b  (merged)&#xA;EPI: EPI-06-28-2009-c  (merged)&#xA;EPI: EPI-06-28-2009-d  (merged)&#xA;EPI: EPI-06-28-2009-e   &#xA;EPI: EPI-07-10-2009-a  (merged)&#xA;EPI: EPI-07-10-2009-b  (merged)&#xA;EPI: EPI-07-10-2009-c  (merged)&#xA;EPI: EPI-07-10-2009-d  (merged)&#xA;EPI: EPI-07152009a  (merged)">DORA, ACTIVE </a> </td><td class="size1"> </td><td class="size1">FeMaLe </td><td class="size1"> </td></tr><tr><td class="size1"><a href="" onClick="top.setPatientAction(&quot;289133&quot;); return false ;" target="banner" title="EPI: EPI.3822.P01   &#xA;MRN: MRN.3822.P01   ">PATIENT, 3822.P01 3822</a> </td><td class="size1">6y </td><td class="size1">MaLe </td><td class="size1">03/06/2006 </td></tr><tr><td class="size1"><a href="" onClick="top.setPatientAction(&quot;289134&quot;); return false ;" target="banner" title="EPI: EPI.3802.P02   ">PATIENT, P01 3802</a> </td><td class="size1"> </td><td class="size1"> </td><td class="size1"> </td></tr><tr><td class="size1"><a href="" onClick="top.setPatientAction(&quot;289145&quot;); return false ;" target="banner" title="EPI: eg3921   ">SHAN, EG3921 </a> </td><td class="size1"> </td><td class="size1"> </td><td class="size1"> </td></tr><tr><td class="size1"><a href="" onClick="top.setPatientAction(&quot;289146&quot;); return false ;" target="banner" title="EPI: eg3921-1   ">SHAN, EG3921-1 </a> </td><td class="size1"> </td><td class="size1"> </td><td class="size1"> </td></tr><tr><td class="size1"><a href="" onClick="top.setPatientAction(&quot;289147&quot;); return false ;" target="banner" title="EPI: eg3921-2   ">SHAN, EG3921-2 </a> </td><td class="size1"> </td><td class="size1"> </td><td class="size1"> </td></tr><tr><td class="size1"><a href="" onClick="top.setPatientAction(&quot;289148&quot;); return false ;" target="banner" title="EPI: eg3921-3   ">SHAN, EG3921-3 </a> </td><td class="size1"> </td><td class="size1"> </td><td class="size1"> </td></tr><tr><td class="size1"><a href="" onClick="top.setPatientAction(&quot;289149&quot;); return false ;" target="banner" title="EPI: eg3921-4   ">SHAN, EG3921-4 </a> </td><td class="size1"> </td><td class="size1"> </td><td class="size1"> </td></tr><tr><td class="size1"><a href="" onClick="top.setPatientAction(&quot;289153&quot;); return false ;" target="banner" title="EPI: eg3921-5   ">SHAN, EG3921-5 </a> </td><td class="size1"> </td><td class="size1"> </td><td class="size1"> </td></tr></table></span></div>	 
+  </div>
+<br><br>
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+                              <tr> 
+                                <td width="200" bordercolor="#999999" bgcolor="99ccff"><strong><font size="2" face="Verdana, Arial, Helvetica, sans-serif">&nbsp;Breaking 
+                                  News </font></strong></td>
+                                <td width="205">&nbsp;</td>
+                              </tr>
+                              <tr bgcolor="#999999"> 
+                                <td colspan="2" align="left" valign="top"> <TABLE width="100%" height="99%" border=0 cellPadding=0 cellSpacing=0 bgcolor="#FFFFFF">
+                  <TBODY>
+                                      <TR align="left" valign="middle"> 
+                                        <TD height="51" colspan="2"> 
+                                          <p><img src="/content/DEMO75063002/home/newsbrand.jpg" alt="News Headlines" width="50" height="50" align="left"><font size="2" face="Verdana, Arial, Helvetica, sans-serif"><strong>Today's 
+                                            Health Headlines</strong></font><br>
+                                            <font size="2" face="Verdana, Arial, Helvetica, sans-serif">Daily 
+                                            news articles and feature stories.</font></p></TD>
+                                      </TR>
+                                      <TR> 
+                                        <TD width=10 align="center" valign="top"> 
+                                          <DIV align=right> 
+                                            <P>&nbsp;•&nbsp;</P>
+                                          </DIV></TD>
+                                        <TD align="left" valign="top" class=HnewsHeadline> 
+                                          <p><font size="2" face="Verdana, Arial, Helvetica, sans-serif"><a href="/HVPrint/Print20/test1.asp" >
+                                          Print Engine Test1 page</a></font></P></TD>
+                                      </TR>
+                                      <TR> 
+                                        <TD width=10 align="center" valign="top"> 
+                                          <DIV align=right> 
+                                            <P>&nbsp;•&nbsp;</P>
+                                          </DIV></TD>
+                                        <TD align="left" valign="top" class=HnewsHeadline> 
+                                          <P><font size="2" face="Verdana, Arial, Helvetica, sans-serif"><a href="/HVPrint/Print20/test2.asp" >Print Engine Test2 page</A</font></P></TD>
+                                      </TR>
+                                      <TR> 
+                                        <TD width=10 align="center" valign="top"> 
+                                          <DIV align=right> 
+                                            <P>&nbsp;•&nbsp;</P>
+                                          </DIV></TD>
+                                        <TD align="left" valign="top" class=HnewsHeadline> 
+                                          <p><font size="2" face="Verdana, Arial, Helvetica, sans-serif"><a href="http://consumer.healthvision.com/HealthNews/Reuters/20031210elin015.htm" target="_blank" target="_blank">Skin cancer survival no 
+better with interferon</A></font></P></TD>
+                                      </TR>
+                                      <TR> 
+                                        <TD width=10 align="center" valign="top"> 
+                                          <DIV align=right> 
+                                            <P>&nbsp;•&nbsp;</P>
+                                          </DIV></TD>
+                                        <TD align="left" valign="top" class=HnewsHeadline> 
+                                          <p><font size="2" face="Verdana, Arial, Helvetica, sans-serif"><a href="http://consumer.healthvision.com/HealthNews/Reuters/20031210elin001.htm">Moms-to-be at risk for 
+falls</A</font></P></TD>
+                                      </TR>
+                                      <TR> 
+                                        <TD width=10 align="center" valign="top"> 
+                                          <DIV align=right> 
+                                            <P>&nbsp;•&nbsp;</P>
+                                          </DIV></TD>
+                                        <TD align="left" valign="top" class=HnewsHeadline> 
+                                          <p><font size="2" face="Verdana, Arial, Helvetica, sans-serif">
+                                          <a target="_blank" href="http://consumer.healthvision.com/HealthNews/Reuters/20031210elin014.htm">Athletic youth at higher 
+risk of sudden death</a></font></P></TD>
+                                      </TR>
+                                      <TR> 
+                                        <TD width=10 align="center" valign="top"> 
+                                          <DIV align=right> 
+                                            <P>&nbsp;</P>
+                                          </DIV></TD>
+                                        <TD align="left" valign="top" class=HnewsEndline> 
+                                          <font size="2" face="Verdana, Arial, Helvetica, sans-serif"><B>
+                                          <a target="_blank" href="http://consumer.healthvision.com/HealthNews/reuters/">More 
+                                          of Today's Headlines</a></B> </font></TD>
+                                      </TR>
+                                    </TBODY>
+                                  </TABLE></td>
+                              </tr>
+                            </table>
+                          </td>
+<td valign="top" width="47%" style="PADDING-RIGHT: 3.75pt; PADDING-LEFT: 3.75pt; PADDING-BOTTOM: 3.75pt; WIDTH: 47.18%; PADDING-TOP: 1.75pt">
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+                              <tr> 
+                                <td width="200" bordercolor="#999999" bgcolor="99ccff"><strong><font size="2" face="Verdana, Arial, Helvetica, sans-serif">&nbsp;Access 
+                                  Information </font></strong></td>
+                                <td width="205">&nbsp;</td>
+                              </tr>
+                              <tr bgcolor="#999999"> 
+                                <td height="182" colspan="2" align="left" valign="top"> 
+                                  <TABLE width="100%" height="100%" border=0 cellPadding=3 cellSpacing=2 bgcolor="#FFFFFF">
+                  <TBODY>
+                                      <TR align="left"> 
+                                        <TD valign="top"><font size="2" face="Verdana, Arial, Helvetica, sans-serif"><strong><a href="http://www.laurushealth.com/library/MedicalAdvances/" target="_blank"><img src="/content/DEMO75063002/home/medlinebrand.jpg" alt="Search Medline" width="50" height="50" border="0" align="left"></a></strong></font></TD>
+                                        <TD height="53" valign="top"> <p><font size="2" face="Verdana, Arial, Helvetica, sans-serif"><strong>
+                                        <a target="_blank" href="http://consumer.healthvision.com/library/MedicalAdvances/">Medline</a></strong> 
+                                            - Search the National Library of Medicine's 
+                                            database of more than 3 million articles.</font></p></TD>
+                                      </TR>
+                                      <TR align="left"> 
+                                        <TD valign="top"><font size="2" face="Verdana, Arial, Helvetica, sans-serif"><strong>
+				<a href="http://www.veritasmedicine.com" target="new"><img src="/content/DEMO75063002/home/trialsbrand.jpg" alt="Clinical Trials" width="50" height="50" border="0" align="left"></a></strong></font></TD>
+                                        <TD valign="top"><font size="2" face="Verdana, Arial, Helvetica, sans-serif"><strong>
+                                        <a target="new" href="http://www.veritasmedicine.com">Clinical 
+                                          Trials</a></strong> - Access to clinical 
+                                          trials and information on treatment 
+                                          options from Veritas Medicine</font></TD>
+                                      </TR>
+                                      <TR align="left"> 
+                                        <TD valign="top"><font size="2" face="Verdana, Arial, Helvetica, sans-serif"><strong><a href="http://www.laurushealth.com/library/fdadrugapprovals/FDADrugApprovals.htm" target="_blank"><img src="/content/DEMO75063002/home/fdadrugbrand.jpg" alt="FDA Approvals" width="50" height="50" border="0" align="left"></a></strong></font></TD>
+                                        <TD valign="top"><font size="2" face="Verdana, Arial, Helvetica, sans-serif"><strong>
+                                        <a target="_blank" href="http://consumer.healthvision.com/library/fdadrugapprovals/FDADrugApprovals.htm">FDA 
+                                          Drug Approvals</a></strong> - Profiles 
+                                          of the latest drugs approved by the 
+                                          Food and Drug Administration.</font></TD>
+                                      </TR>
+                                    </TBODY>
+                                  </TABLE></td>
+                              </tr>
+                            </table> 
+							<br>
+                            <table width="100%" border="0" cellspacing="0" cellpadding="1">
+                              <tr> 
+                                <td width="200" bordercolor="#999999" bgcolor="99ccff"><strong><font size="2" face="Verdana, Arial, Helvetica, sans-serif">&nbsp;CHS 
+                                  Program Updates</font></strong></td>
+                                <td width="205">&nbsp;</td>
+                              </tr>
+                              <tr bgcolor="#999999"> 
+                                
+              <td colspan="2" align="left" valign="top"> 
+                <TABLE width="100%" height="99%" border=0 cellPadding=3 cellSpacing=2 bgcolor="#FFFFFF">
+                  <TBODY>
+                    <TR align="left"> 
+                      <TD valign="top"><font size="2" face="Verdana, Arial, Helvetica, sans-serif"><strong></strong></font> 
+                        <p>
+                        <font face="Verdana, Arial, Helvetica, sans-serif" size="2">
+                        <strong>Medical Staff Meeting Minutes</strong><br>
+                        Click <a href="/content/DEMO75063002/demo/medstaffmeeting12032003.pdf" target="_blank">here</a>                       for minutes from the latest HSC medical staff meeting.</font></p> 
+                        <p><strong><font size="2" face="Verdana, Arial, Helvetica, sans-serif">Community 
+                          Health Systems Launches MyCare On-Line</font></strong><br>
+                          <img src="/content/DEMO75063002/home/image002.gif" alt="My Care Online" width="175" height="41" align="left"><font size="2" face="Verdana, Arial, Helvetica, sans-serif">Add 
+                        more value to your patient relationships through MyCare 
+                        On-Line.&nbsp; <a href="http://consumer.healthvision.com/" target="_blank">MyCare 
+                        On-Line</a> provides an interactive patient/practice 
+                        experience and tools patients 
+                          want to monitor and  improve the 
+                          healthcare they receive. <a href="http://www.healthvision.com" target="_blank">Contact 
+                          us</a> today to participate in the program 
+                          or for more information.</font></p> 
+                        </TD>
+                    </TR>
+                  </TBODY>
+                </TABLE></td>
+                              </tr>
+                            </table> </td>
+ </tr>
+</table></div>
+</div>
+	    
+<!-- End Content Area -->
+ 
+	    </TD>
+	</TR>
+ 
+</TABLE>
+</TD>
+</TR>
+ 
+ 
+	<TR>
+		<TD width='100%' valign=bottom align=right class=size1><A href='#top'>[top]</A></TD>
+	</TR>
+ 
+ 
+</TABLE>
+ 
+<SCRIPT Language="vbscript">
+dim myOOOEventStatus, myMsg, myVar, myPageURL, myQueryString
+myOOOEventStatus = ""
+myQueryString = ""
+if myOOOEventStatus  = "ACTIVE" then
+      myMsg ="You are currently 'Out of the Office'. "
+      myMsg = myMsg & vbCrLf & "Do you want to cancel Out of Office?"
+ 
+      myVar = MsgBox(myMsg, vbYesNo, "Cancel Out Of Office")
+      if myVar = vbYes then
+         if "" <> myQueryString then
+             myPageURL= "HV-SHMC-altComboCritMsgTypePaging.asp?" & myQueryString & "&cancelOOOEvent=YES"
+         else
+             myPageURL= "HV-SHMC-altComboCritMsgTypePaging.asp?cancelOOOEvent=YES"
+         End IF
+         window.location.href = myPageURL
+    End if
+End if
+ 
+</SCRIPT>
+<SCRIPT language=javascript>
+
+    //var js_eventStatus = "";
+
+    //js_eventStatus = "ACTIVE";
+    //if (js_eventStatus == "ACTIVE" ) {
+    //   var msg = "You are currently 'Out of the Office'. ";
+    //       msg += "\nClick 'Cancel' to cancel Out of Office, or ";
+    //       msg += "\nclick 'OK' to keep Out of Office as currently defined";
+
+    //    if (!(confirm(msg)))
+    //    {
+    //      cancelOOOEvent();
+    //    }
+    //}
+</SCRIPT>
+<!-- debug info
+<p>Debug info
+<br>
+thisQueryString = ""
+-->
+</BODY>
+</HTML>
+<!--
+ 
+Page Start
+ start: 60116.99609375
+ end:   60117.1953125
+ total: 0.19921875
+ 
+get priority messages
+ start: 60117.1953125
+ end:   60117.39453125
+ total: 0.19921875
+ 
+get message counts/type
+ start: 60117.39453125
+ end:   60117.42578125
+ total: 0.03125
+ 
+render SHMC summary
+ start: 60117.42578125
+ end:   60117.43359375
+ total: 0.0078125
+ 
+render content
+ start: 60117.43359375
+ end:   60118.5703125
+ total: 1.13671875
+ 
+Total:  1.57421875
+ 
+-->
+
