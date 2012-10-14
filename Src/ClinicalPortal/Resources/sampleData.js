@@ -7,7 +7,7 @@
                             "attr": { "id": "homePage" },
                             "icon": "leaf"
                         },
-                        "metadata": { "href": "HomePage.html" }
+                        "metadata": { "href": "Home.html" }
                     },
                     { "data":
                         {
