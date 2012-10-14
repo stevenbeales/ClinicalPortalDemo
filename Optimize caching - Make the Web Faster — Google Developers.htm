@@ -1,0 +1,867 @@
+
+<!DOCTYPE html>
+<html lang="en" class="devsite">
+  <head>
+    <meta charset="utf-8" />
+    <script src="/_static/js/script_head.js"></script>
+    <link rel="stylesheet" type="text/css" href="/_static/css/screen.css" />
+    <link rel="shortcut icon" href="/_static/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/_static/images/apple-touch-icon.png">
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet' type='text/css'>
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+    <script id="jqueryui" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js"></script>
+    <script src="//www.google.com/jsapi?key=AIzaSyCZfHRnq7tigC-COeQRmoa9Cxr0vbrK6xw"></script>
+    <script>
+      google.load('visualization', '1', {packages: ['table']});
+    </script>
+    <script type="text/javascript" src="//www.gstatic.com/feedback/api.js"></script>
+    <!--[if lt IE 9]>
+    <script src="/_static/js/html5shim/html5.js"></script>
+    <![endif]-->
+
+    
+    <script>
+      google.load('search', '1', {language : 'en'});
+    </script>
+    
+
+    
+  <script type="text/javascript">
+    var contentTimer = new window.jstiming.Timer();
+
+    var ___gcfg = ___gcfg || {};
+    ___gcfg.lang = 'en';
+  </script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js"></script>
+  
+  <title>Optimize caching - Make the Web Faster &mdash; Google Developers</title>
+  
+  
+  
+    
+    
+    
+    <link rel="stylesheet" href="/speed/styles/local.css">
+  
+
+
+    
+    
+
+  </head>
+  <body class="two-column docs">
+    
+    <div id="sandbar">
+      
+      <a href="/sandbar?q=&page_url=/speed/docs/best-practices/caching"></a>
+      <div id="gc-googlebar"></div>
+      <img src="/_static/images/google-logo.png" style="display:none;"/>
+      
+    </div>
+    
+
+    
+    
+
+    <div id="gc-wrapper" itemscope itemtype="http://schema.org/Article">
+      
+      <input id="gc-analytics" type="hidden" value="UA-24532603-1" />
+      
+
+      
+
+      <div id="gc-topnav">
+        <div>
+          <ul>
+            
+            
+            <li class=""><a href="/">Home</a></li>
+            
+            <li class="active"><a href="/products/">Products</a></li>
+            
+            <li class=""><a href="/events/">Events</a></li>
+            
+            <li class=""><a href="/showcase/">Showcase</a></li>
+            
+            <li class=""><a href="/live/">Live</a></li>
+            
+            <li class=""><a href="/groups/">Groups</a></li>
+            
+            
+          </ul>
+        </div>
+      </div>
+      
+      
+
+      
+      
+      
+        <div id="gc-appbar">
+          
+          
+<h1>
+
+  <a href="/speed/">Make the Web Faster</a>
+  <div class="plusone-container">
+    <div class="g-plusone"
+      data-href="https://developers.google.com/speed/"
+      data-size="medium"
+      data-count="count"
+      data-source="google:developers"></div>
+  </div>
+
+
+
+
+
+
+</h1>
+
+          
+        </div>
+      
+      
+
+      
+      <div id="gc-main">
+        
+      
+      
+      <div id="gc-sidebar">
+        
+
+  
+
+
+
+  <nav class="gc-toc"><ul><li class=""><a href="/speed/" data-title="Overview"><span>Overview</span></a></li><li class=""><a href="/speed/pagespeed/" data-title="PageSpeed"><span>PageSpeed</span></a><ul><li class=""><span class="tlw-title" data-title="Analysis">Analysis</span><ul><li class=""><a href="/speed/pagespeed/insights" data-title="Insights"><span>Insights</span></a></li><li class=""><a href="/speed/pagespeed/insights_extensions" data-title="Insights Extensions"><span>Insights Extensions</span></a><ul><li class=""><a href="/speed/docs/insights/using_chrome" data-title="Chrome"><span>Chrome</span></a></li><li class=""><a href="/speed/docs/insights/using_firefox" data-title="Firefox"><span>Firefox</span></a></li></ul></li><li class=""><a href="/speed/docs/insights/v1/getting_started" data-title="Insights API"><span>Insights API</span></a><ul><li class=""><span class="tlw-title" data-title="Documentation">Documentation</span><ul><li class=""><a href="/speed/docs/insights/v1/getting_started" data-title="Getting Started"><span>Getting Started</span></a></li><li class=""><a href="/speed/docs/insights/v1/performance" data-title="Performance Tips"><span>Performance Tips</span></a></li><li class=""><a href="/speed/docs/insights/v1/reference" data-title="Reference"><span>Reference</span></a></li><li class=""><a href="/speed/docs/insights/release_notes" data-title="Release Notes"><span>Release Notes</span></a></li><li class=""><a href="/speed/docs/insights/terms" data-title="Terms of Service"><span>Terms of Service</span></a></li></ul></li><li class=""><span class="tlw-title" data-title="Resources">Resources</span><ul><li class=""><a href="/speed/docs/insights/libraries" data-title="Libraries and Samples"><span>Libraries and Samples</span></a></li><li class=""><a href="http://code.google.com/apis/console" data-title="APIs Console"><span>APIs Console</span></a></li></ul></li><li class=""><a href="/speed/docs/insights/libraries" data-title="Libraries"><span>Libraries</span></a></li></ul></li><li class=""><a href="/speed/docs/insights/rules" data-title="Rules"><span>Rules</span></a><ul><li class=""><a href="/speed/docs/best-practices/rtt#AvoidBadRequests" data-title="Avoid Bad Requests"><span>Avoid Bad Requests</span></a></li><li class=""><a href="/speed/docs/best-practices/rtt#AvoidCssImport" data-title="Avoid CSS @import"><span>Avoid CSS @import</span></a></li><li class=""><a href="/speed/docs/best-practices/rendering#AvoidCSSExpressions" data-title="Avoid CSS Expressions"><span>Avoid CSS Expressions</span></a></li><li class=""><a href="/speed/docs/best-practices/rtt#AvoidDocumentWrite" data-title="Minimize document.write"><span>Minimize document.write</span></a></li><li class=""><a href="/speed/docs/best-practices/rtt#CombineExternalCSS" data-title="Combine External CSS"><span>Combine External CSS</span></a></li><li class=""><a href="/speed/docs/best-practices/rtt#CombineExternalJS" data-title="Combine External JavaScript"><span>Combine External JavaScript</span></a></li><li class=""><a href="/speed/docs/best-practices/rtt#SpriteImages" data-title="Combine Image Using CSS Sprite"><span>Combine Image Using CSS Sprite</span></a></li><li class=""><a href="/speed/docs/best-practices/payload#DeferLoadingJS" data-title="Defer Loading of JavaScript"><span>Defer Loading of JavaScript</span></a></li><li class=""><a href="/speed/docs/best-practices/payload#DeferParsingJS" data-title="Defer Parsing of JavaScript"><span>Defer Parsing of JavaScript</span></a></li><li class=""><a href="/speed/docs/best-practices/payload#GzipCompression" data-title="Enable Compression"><span>Enable Compression</span></a></li><li class=""><a href="/speed/docs/best-practices/caching#LeverageBrowserCaching" data-title="Leverage Browser Caching"><span>Leverage Browser Caching</span></a></li><li class=""><a href="/speed/docs/best-practices/caching#LeverageProxyCaching" data-title="Leverage Proxy Caching"><span>Leverage Proxy Caching</span></a></li><li class=""><a href="/speed/docs/best-practices/mobile#CacheLandingPageRedirects" data-title="Make Landing Page Redirects Cacheable"><span>Make Landing Page Redirects Cacheable</span></a></li><li class=""><a href="/speed/docs/best-practices/payload#MinifyCSS" data-title="Minify CSS"><span>Minify CSS</span></a></li><li class=""><a href="/speed/docs/best-practices/payload#MinifyHTML" data-title="Minify HTML"><span>Minify HTML</span></a></li><li class=""><a href="/speed/docs/best-practices/payload#MinifyJS" data-title="Minigy JavaScript"><span>Minigy JavaScript</span></a></li><li class=""><a href="/speed/docs/best-practices/request#MinimizeRequestSize" data-title="Minimize Request Size"><span>Minimize Request Size</span></a></li><li class=""><a href="/speed/docs/best-practices/rtt#MinimizeDNSLookups" data-title="Minimize DNS Lookups"><span>Minimize DNS Lookups</span></a></li><li class=""><a href="/speed/docs/best-practices/rtt#AvoidRedirects" data-title="Minimize Redirects"><span>Minimize Redirects</span></a></li><li class=""><a href="/speed/docs/best-practices/payload#CompressImages" data-title="Optimize Images"><span>Optimize Images</span></a></li><li class=""><a href="/speed/docs/best-practices/rtt#PutStylesBeforeScripts" data-title="Optimize the Order of Styles and Scripts"><span>Optimize the Order of Styles and Scripts</span></a></li><li class=""><a href="/speed/docs/best-practices/rtt#ParallelizeDownloads" data-title="Parallelize Downloads Across Hostnames"><span>Parallelize Downloads Across Hostnames</span></a></li><li class=""><a href="/speed/docs/best-practices/rtt#PreferAsyncResource" data-title="Prefer Asynchronous Resources"><span>Prefer Asynchronous Resources</span></a></li><li class=""><a href="/speed/docs/best-practices/rendering#PutCSSInHead" data-title="Put CSS in the Document Head"><span>Put CSS in the Document Head</span></a></li><li class=""><a href="/speed/docs/best-practices/payload#RemoveUnusedCSS" data-title="Remove Unused CSS"><span>Remove Unused CSS</span></a></li><li class=""><a href="/speed/docs/best-practices/payload#duplicate_resources" data-title="Serve Resources from a Consistent URL"><span>Serve Resources from a Consistent URL</span></a></li><li class=""><a href="/speed/docs/best-practices/payload#ScaleImages" data-title="Serve Scaled Images"><span>Serve Scaled Images</span></a></li><li class=""><a href="/speed/docs/best-practices/request#ServeFromCookielessDomain" data-title="Serve Static Content from a Cookieless Domain"><span>Serve Static Content from a Cookieless Domain</span></a></li><li class=""><a href="/speed/docs/best-practices/rendering#SpecifyCharsetEarly" data-title="Specify a Character Set"><span>Specify a Character Set</span></a></li><li class=""><a href="/speed/docs/best-practices/rendering#SpecifyImageDimensions" data-title="Specify Image Dimensions"><span>Specify Image Dimensions</span></a></li><li class=""><a href="/speed/docs/best-practices/rendering#UseEfficientCSSSelectors" data-title="Use Efficient CSS Selectors"><span>Use Efficient CSS Selectors</span></a></li></ul></li><li class=""><a href="/speed/docs/insights/faq" data-title="FAQ"><span>FAQ</span></a></li></ul></li><li class=""><span class="tlw-title" data-title="Optimization">Optimization</span><ul><li class=""><a href="/speed/pagespeed/service" data-title="Service"><span>Service</span></a><ul><li class=""><span class="tlw-title" data-title="Get Started">Get Started</span><ul><li class=""><a href="/speed/docs/pss/tryit" data-title="Measure Speedup"><span>Measure Speedup</span></a></li><li class=""><a href="/speed/docs/pss/setup" data-title="Setup Guide"><span>Setup Guide</span></a></li><li class=""><a href="/speed/docs/pss/operating" data-title="Operating Your Site"><span>Operating Your Site</span></a></li><li class=""><a href="/speed/docs/pss/settings" data-title="Configure Rewriters"><span>Configure Rewriters</span></a><ul><li class=""><a href="/speed/docs/pss/rewriters" data-title="Rewriter Documentation"><span>Rewriter Documentation</span></a><ul><li class=""><span class="tlw-title" data-title="HTML">HTML</span><ul><li class=""><a href="/speed/docs/pss/InlineSmallResources" data-title="Inline Small Resources"><span>Inline Small Resources</span></a></li><li class=""><a href="/speed/docs/pss/OptimizeHtml" data-title="Optimize HTML"><span>Optimize HTML</span></a></li><li class=""><a href="/speed/docs/pss/ProxyResources" data-title="Proxy Resources"><span>Proxy Resources</span></a></li></ul></li><li class=""><span class="tlw-title" data-title="CSS">CSS</span><ul><li class=""><a href="/speed/docs/pss/CombineCSS" data-title="Combine CSS"><span>Combine CSS</span></a></li><li class=""><a href="/speed/docs/pss/FlattenCssImports" data-title="Flatten CSS Imports"><span>Flatten CSS Imports</span></a></li><li class=""><a href="/speed/docs/pss/MinifyCSS" data-title="Minify CSS"><span>Minify CSS</span></a></li><li class=""><a href="/speed/docs/pss/MoveCSSToHead" data-title="Prioritize CSS"><span>Prioritize CSS</span></a></li></ul></li><li class=""><span class="tlw-title" data-title="Images">Images</span><ul><li class=""><a href="/speed/docs/pss/LazyloadImages" data-title="Lazyload Images"><span>Lazyload Images</span></a></li><li class=""><a href="/speed/docs/pss/OptimizeImages" data-title="Minify Images"><span>Minify Images</span></a></li></ul></li><li class=""><span class="tlw-title" data-title="JavaScript">JavaScript</span><ul><li class=""><a href="/speed/docs/pss/CombineJavaScript" data-title="Combine JavaScript"><span>Combine JavaScript</span></a></li><li class=""><a href="/speed/docs/pss/DeferJavaScript" data-title="Defer JavaScript"><span>Defer JavaScript</span></a></li><li class=""><a href="/speed/docs/pss/OptimizeJavaScript" data-title="Minify JavaScript"><span>Minify JavaScript</span></a></li></ul></li><li class=""><span class="tlw-title" data-title="Prioritize Content">Prioritize Content</span><ul><li class=""><a href="/speed/docs/pss/FlushResourcesEarly" data-title="Flush Resources Early"><span>Flush Resources Early</span></a></li><li class=""><a href="/speed/docs/pss/PrioritizeAboveTheFold" data-title="Cache and prioritize visible content"><span>Cache and prioritize visible content</span></a></li></ul></li><li class=""><span class="tlw-title" data-title="Others">Others</span><ul><li class=""><a href="/speed/docs/pss/AddEtags" data-title="Add ETags"><span>Add ETags</span></a></li><li class=""><a href="/speed/docs/pss/LatencyMeasure" data-title="Measure Page Load Time"><span>Measure Page Load Time</span></a></li><li class=""><a href="/speed/docs/pss/ShardResources" data-title="Shard Domains"><span>Shard Domains</span></a></li><li class=""><a href="/speed/docs/pss/MiscFeatures" data-title="Miscellaneous Features"><span>Miscellaneous Features</span></a></li></ul></li></ul></li></ul></li><li class=""><a href="/speed/docs/pss/errors" data-title="Caching and Errors"><span>Caching and Errors</span></a></li><li class=""><a href="/speed/docs/pss/log" data-title="Audit Log"><span>Audit Log</span></a></li><li class=""><a href="/speed/docs/pss/releasenotes" data-title="Release Notes"><span>Release Notes</span></a></li></ul></li><li class=""><a href="/speed/docs/pss/gallery" data-title="Customer Gallery"><span>Customer Gallery</span></a></li><li class=""><a href="/speed/docs/pss/community" data-title="Community"><span>Community</span></a></li><li class=""><a href="/speed/docs/pss/videos" data-title="Support Videos"><span>Support Videos</span></a></li><li class=""><a href="/speed/docs/pss/faq" data-title="FAQ"><span>FAQ</span></a></li><li class=""><a href="/speed/docs/pss/terms" data-title="Terms of Service"><span>Terms of Service</span></a></li></ul></li><li class=""><a href="/speed/pagespeed/mod" data-title="mod_pagespeed"><span>mod_pagespeed</span></a><ul><li class=""><a href="/speed/docs/mod_pagespeed/using_mod" data-title="Get Started"><span>Get Started</span></a><ul><li class=""><a href="/speed/docs/mod_pagespeed/download" data-title="Installing From Packages"><span>Installing From Packages</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/build_from_source" data-title="Installing From Source"><span>Installing From Source</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/configuration" data-title="Module Configuration"><span>Module Configuration</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/config_filters" data-title="Configuring Filters"><span>Configuring Filters</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/domains" data-title="Mapping Domains"><span>Mapping Domains</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/restricting_urls" data-title="URL Control"><span>URL Control</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/https_support" data-title="HTTPS Support"><span>HTTPS Support</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/system" data-title="System Integration"><span>System Integration</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/experiment" data-title="Experimenting with mod_pagespeed"><span>Experimenting with mod_pagespeed</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/mod_security" data-title="Security Considerations"><span>Security Considerations</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/release_notes" data-title="Release Notes"><span>Release Notes</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/faq" data-title="Frequently Asked Questions"><span>Frequently Asked Questions</span></a></li></ul></li><li class=""><a href="/speed/docs/mod_pagespeed/filters" data-title="Filter Documentation"><span>Filter Documentation</span></a><ul><li class=""><a href="/speed/docs/mod_pagespeed/filter-head-add" data-title="Add Head"><span>Add Head</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-instrumentation-add" data-title="Add Instrumentation"><span>Add Instrumentation</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-make-google-analytics-async" data-title="Async Google Analytics"><span>Async Google Analytics</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-whitespace-collapse" data-title="Collapse Whitespace"><span>Collapse Whitespace</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-css-combine" data-title="Combine CSS"><span>Combine CSS</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-js-combine" data-title="Combine JavaScript"><span>Combine JavaScript</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-head-combine" data-title="Combine Heads"><span>Combine Heads</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-convert-meta-tags" data-title="Convert Meta Tags"><span>Convert Meta Tags</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-js-defer" data-title="Defer JavaScript"><span>Defer JavaScript</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-attribute-elide" data-title="Elide Attributes"><span>Elide Attributes</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-cache-extend" data-title="Extend Cache"><span>Extend Cache</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-flatten-css-imports" data-title="Flatten CSS @imports"><span>Flatten CSS @imports</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-css-inline-import" data-title="Inline @import to Link"><span>Inline @import to Link</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-css-inline" data-title="Inline CSS"><span>Inline CSS</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-js-inline" data-title="Inline JavaScript"><span>Inline JavaScript</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-inline-preview-images" data-title="Inline Preview Images"><span>Inline Preview Images</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-insert-ga" data-title="Insert Google Analytics"><span>Insert Google Analytics</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-lazyload-images" data-title="Lazily Load Images"><span>Lazily Load Images</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-local-storage-cache" data-title="Local Storage Cache"><span>Local Storage Cache</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-js-minify" data-title="Minify JavaScript"><span>Minify JavaScript</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-css-above-scripts" data-title="Move CSS Above Scripts"><span>Move CSS Above Scripts</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-css-to-head" data-title="Move CSS to Head"><span>Move CSS to Head</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-image-optimize" data-title="Optimize Images"><span>Optimize Images</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-css-outline" data-title="Outline CSS"><span>Outline CSS</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-js-outline" data-title="Outline JavaScript"><span>Outline JavaScript</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-comment-remove" data-title="Remove Comments"><span>Remove Comments</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-quote-remove" data-title="Remove Quotes"><span>Remove Quotes</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-css-rewrite" data-title="Rewrite CSS"><span>Rewrite CSS</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-domain-rewrite" data-title="Rewrite Domain"><span>Rewrite Domain</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-rewrite-style-attributes" data-title="Rewrite Style Attributes"><span>Rewrite Style Attributes</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/module-run-experiment" data-title="Run Experiments"><span>Run Experiments</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-image-sprite" data-title="Sprite Images"><span>Sprite Images</span></a></li><li class=""><a href="/speed/docs/mod_pagespeed/filter-trim-urls" data-title="Trim URLs"><span>Trim URLs</span></a></li></ul></li></ul></li><li class=""><a href="/speed/pagespeed/psol" data-title="Optimization SDK"><span>Optimization SDK</span></a><ul><li class=""><a href="/speed/pagespeed/porting" data-title="Porting"><span>Porting</span></a></li></ul></li></ul></li></ul></li><li class=""><a href="/speed/public-dns/" data-title="Public DNS"><span>Public DNS</span></a><ul><li class=""><span class="tlw-title" data-title="Getting Started">Getting Started</span><ul><li class=""><a href="/speed/public-dns/docs/intro" data-title="Introduction"><span>Introduction</span></a></li><li class=""><a href="/speed/public-dns/docs/using" data-title="Using Google Public DNS"><span>Using Google Public DNS</span></a></li></ul></li><li class=""><span class="tlw-title" data-title="Technical Information">Technical Information</span><ul><li class=""><a href="/speed/public-dns/docs/performance" data-title="Performance Benefits"><span>Performance Benefits</span></a></li><li class=""><a href="/speed/public-dns/docs/security" data-title="Security Benefits"><span>Security Benefits</span></a></li></ul></li><li class=""><a href="/speed/public-dns/groups" data-title="Discussion Groups and Issue Reporting"><span>Discussion Groups and Issue Reporting</span></a></li><li class=""><a href="/speed/public-dns/faq" data-title="FAQ"><span>FAQ</span></a></li><li class=""><a href="/speed/public-dns/privacy" data-title="Privacy"><span>Privacy</span></a></li></ul></li><li class=""><a href="/speed/libraries/" data-title="Hosted Libraries"><span>Hosted Libraries</span></a><ul><li class=""><a href="/speed/libraries/" data-title="Overview"><span>Overview</span></a></li><li class=""><a href="/speed/libraries/devguide" data-title="Developer&#39;s Guide"><span>Developer&#39;s Guide</span></a></li><li class=""><a href="/speed/libraries/terms" data-title="Terms of Service"><span>Terms of Service</span></a></li></ul></li><li class=""><a href="/speed/protocols" data-title="Protocols"><span>Protocols</span></a><ul><li class=""><a href="/speed/protocols" data-title="Overview"><span>Overview</span></a></li><li class=""><a href="/speed/spdy/mod_spdy/" data-title="mod_spdy"><span>mod_spdy</span></a><ul><li class=""><a href="/speed/spdy/mod_spdy/install" data-title="Installation and Configuration"><span>Installation and Configuration</span></a></li><li class=""><a href="/speed/spdy/mod_spdy/php" data-title="Using PHP"><span>Using PHP</span></a></li></ul></li></ul></li><li class=""><a href="/speed/standards" data-title="Standards"><span>Standards</span></a><ul><li class=""><a href="/speed/standards" data-title="Overview"><span>Overview</span></a></li><li class=""><a href="/speed/webp" data-title="WebP"><span>WebP</span></a><ul><li class=""><span class="tlw-title" data-title="Docs">Docs</span><ul><li class=""><a href="/speed/webp/docs/using" data-title="Getting started"><span>Getting started</span></a></li><li class=""><a href="/speed/webp/docs/cwebp" data-title="The cwebp Encoder"><span>The cwebp Encoder</span></a></li><li class=""><a href="/speed/webp/docs/dwebp" data-title="The dwebp Decoder"><span>The dwebp Decoder</span></a></li><li class=""><a href="/speed/webp/docs/api" data-title="The libwebp API"><span>The libwebp API</span></a></li><li class=""><a href="/speed/webp/docs/riff_container" data-title="Container Specification"><span>Container Specification</span></a></li><li class=""><a href="/speed/webp/docs/webp_lossless_bitstream_specification" data-title="Lossless Bitstream Specification"><span>Lossless Bitstream Specification</span></a></li></ul></li><li class=""><span class="tlw-title" data-title="Study">Study</span><ul><li class=""><a href="/speed/webp/docs/webp_lossless_alpha_study" data-title="Lossless and Alpha study"><span>Lossless and Alpha study</span></a></li><li class=""><a href="/speed/webp/docs/webp_study" data-title="WebP lossy study"><span>WebP lossy study</span></a></li></ul></li><li class=""><a href="/speed/webp/faq" data-title="FAQ"><span>FAQ</span></a></li><li class=""><a href="/speed/webp/gallery" data-title="Gallery"><span>Gallery</span></a><ul><li class=""><a href="/speed/webp/gallery2" data-title="Lossless and Alpha Gallery"><span>Lossless and Alpha Gallery</span></a></li><li class=""><a href="/speed/webp/gallery1" data-title="WebP Lossy Gallery"><span>WebP Lossy Gallery</span></a></li></ul></li><li class=""><a href="/speed/webp/community" data-title="Community"><span>Community</span></a></li><li class=""><a href="/speed/webp/download" data-title="Download"><span>Download</span></a><ul><li class=""><a href="/speed/webp/docs/precompiled" data-title="Precompiled utilities"><span>Precompiled utilities</span></a></li><li class=""><a href="/speed/webp/docs/compiling" data-title="Compiling the utilities"><span>Compiling the utilities</span></a></li><li class=""><a href="/speed/webp/docs/webp_codec" data-title="WebP Codec for Windows"><span>WebP Codec for Windows</span></a></li></ul></li></ul></li></ul></li><li class=""><a href="/speed/docs/best-practices/rules_intro" data-title="Performance Best Practices"><span>Performance Best Practices</span></a><ul><li class=""><a href="/speed/docs/best-practices/caching" data-title="Optimize Caching"><span>Optimize Caching</span></a></li><li class=""><a href="/speed/docs/best-practices/rtt" data-title="Minimize Round Trip Times"><span>Minimize Round Trip Times</span></a></li><li class=""><a href="/speed/docs/best-practices/request" data-title="Minimize Request Overhead"><span>Minimize Request Overhead</span></a></li><li class=""><a href="/speed/docs/best-practices/payload" data-title="Minimize Payload Size"><span>Minimize Payload Size</span></a></li><li class=""><a href="/speed/docs/best-practices/rendering" data-title="Optimize Browser Rendering"><span>Optimize Browser Rendering</span></a></li><li class=""><a href="/speed/docs/best-practices/mobile" data-title="Optimize for Mobile"><span>Optimize for Mobile</span></a></li></ul></li><li class=""><a href="/speed/articles/" data-title="Articles"><span>Articles</span></a><ul><li class=""><a href="/speed/articles/tech-talks" data-title="Tech Talks at Google"><span>Tech Talks at Google</span></a></li><li class=""><a href="/speed/articles/web-metrics" data-title="Web metrics: Size and number of resources"><span>Web metrics: Size and number of resources</span></a></li><li class=""><a href="/speed/articles/use-compression" data-title="Use compression to make the web faster"><span>Use compression to make the web faster</span></a></li><li class=""><a href="/speed/articles/browser-paint-events" data-title="Capturing and analyzing browser paint events using Page Speed Activity"><span>Capturing and analyzing browser paint events using Page Speed Activity</span></a></li><li class=""><a href="/speed/articles/compressing-javascript" data-title="Compressing your JavaScript with Closure Compiler"><span>Compressing your JavaScript with Closure Compiler</span></a></li><li class=""><a href="/speed/articles/optimizing-css" data-title="CSS: Using every declaration just once"><span>CSS: Using every declaration just once</span></a></li><li class=""><a href="/speed/articles/gzip" data-title="How gzip compression works"><span>How gzip compression works</span></a></li><li class=""><a href="/speed/articles/caching" data-title="HTTP caching"><span>HTTP caching</span></a></li><li class=""><a href="/speed/articles/identifying-page-speed-problems" data-title="Improving website performance with Page Speed"><span>Improving website performance with Page Speed</span></a></li><li class=""><a href="/speed/articles/mobile" data-title="Make the mobile web faster"><span>Make the mobile web faster</span></a></li><li class=""><a href="/speed/articles/reflow" data-title="Minimizing browser reflow"><span>Minimizing browser reflow</span></a></li><li class=""><a href="/speed/articles/optimizing-javascript" data-title="Optimizing JavaScript code"><span>Optimizing JavaScript code</span></a></li><li class=""><a href="/speed/articles/optimizing-opensocial-gadgets" data-title="Optimizing OpenSocial gadgets"><span>Optimizing OpenSocial gadgets</span></a></li><li class=""><a href="/speed/articles/optimizing-images" data-title="Optimizing web graphics"><span>Optimizing web graphics</span></a></li><li class=""><a href="/speed/articles/optimizing-php" data-title="PHP performance tips"><span>PHP performance tips</span></a></li><li class=""><a href="/speed/articles/prefetching" data-title="Prefetching resources"><span>Prefetching resources</span></a></li><li class=""><a href="/speed/articles/include-scripts-properly" data-title="Properly including stylesheets and scripts"><span>Properly including stylesheets and scripts</span></a></li><li class=""><a href="/speed/articles/optimizing-html" data-title="Reducing the file size of HTML documents"><span>Reducing the file size of HTML documents</span></a></li><li class=""><a href="/speed/articles/spdy-for-mobile" data-title="SPDY performance on mobile networks"><span>SPDY performance on mobile networks</span></a></li><li class=""><a href="/speed/articles/javascript-dom" data-title="Speeding up JavaScript: Working with the DOM"><span>Speeding up JavaScript: Working with the DOM</span></a></li><li class=""><a href="/speed/articles/usability-latency" data-title="UI messaging and perceived latency"><span>UI messaging and perceived latency</span></a></li><li class=""><a href="/speed/articles/html5-performance" data-title="Using HTML 5 for performance improvements"><span>Using HTML 5 for performance improvements</span></a></li></ul></li><li class=""><a href="/speed/tools" data-title="Tools"><span>Tools</span></a></li><li class=""><a href="/speed/community" data-title="Community"><span>Community</span></a></li></ul></nav>
+
+
+
+      </div>
+      
+
+      <div id="gc-content"
+           
+           
+           >
+        
+        <div>
+          
+  
+  <h1 itemprop="name" class="page-title" >Optimize caching</h1>
+  
+  <div itemprop="articleBody">
+  
+
+
+
+<p>Most web pages include resources that change infrequently,
+such as
+CSS files, image files,
+JavaScript files, and so on. These resources take time to
+download
+over the network, which increases the time it takes to load a web page.
+HTTP
+caching allows these resources to be saved, or cached, by a browser or
+proxy. Once a resource is cached, a
+browser or proxy can refer to the locally cached copy instead of having
+to download it again on subsequent visits to the web
+page.&nbsp;Thus
+caching is a double win: you reduce <a href="/speed/docs/best-practices/rtt">
+round-trip time</a>
+by
+eliminating numerous HTTP requests for the required
+resources, and you substantially reduce the total payload size of the
+responses. Besides leading to a
+dramatic reduction in
+page load
+time for subsequent user visits, enabling caching can also
+significantly reduce the
+bandwidth and hosting costs for your site.</p>
+<ol class="toc">
+<li><a href="#LeverageBrowserCaching">Leverage
+browser caching</a></li>
+<li><a href="#LeverageProxyCaching">Leverage proxy
+caching</a></li>
+</ol>
+<h2 id="LeverageBrowserCaching">Leverage browser caching</h2>
+
+<h3>Overview</h3>
+<p>Setting an expiry date or a maximum age in the HTTP headers
+for static resources instructs the browser to load previously
+downloaded
+resources from local disk rather than over the network.</p>
+
+<h3>Details</h3>
+<p>HTTP/S supports local caching of static resources by the
+browser. Some of the newest browsers (e.g. IE 7, Chrome) use a
+heuristic to decide how long to cache all resources that don't have
+explicit caching headers. Other
+older browsers may require that caching headers be set before they will
+fetch a resource from the cache; and some may never cache any resources
+sent over SSL.&nbsp;</p>
+<p>To take advantage of the full benefits of caching consistently
+across
+all browsers, we recommend that you configure your web server to
+explicitly set caching headers and apply them
+to <i>all</i>
+cacheable static resources, not
+just a small subset (such as images).&nbsp;Cacheable resources
+include JS and CSS files, image
+files, and other binary object files (media files, PDFs, Flash files,
+etc.). In general, HTML is not static,
+and shouldn't be considered cacheable.&nbsp;
+</p>
+<p>HTTP/1.1
+provides the following caching response headers :</p>
+<ul>
+<li><code>Expires</code> and <code>Cache-Control:
+max-age</code>.
+These
+specify the &#8220;freshness lifetime&#8221; of a resource, that is, the time
+period during
+which the browser can use the cached resource without checking to see
+if a new
+version is available from the web server. They are "strong caching
+headers" that apply unconditionally;
+that is, once they're set and the resource is downloaded, the browser
+will not issue any GET requests for the resource until the expiry date
+or maximum age is reached.</li>
+<li><code>Last-Modified</code> and <code>ETag</code>.
+These specify some characteristic about the resource that the browser
+checks to determine if the
+files are the same. In the <code>Last-Modified</code>
+header, this is
+always a date. In the <code>ETag</code> header, this can
+be any value that uniquely identifies a resource (file versions or
+content hashes are typical). <code>Last-Modified</code> is
+a "weak" caching header in that the browser applies a heuristic to
+determine whether to fetch the item from cache or not. (The heuristics
+are different among different browsers.) However, these headers
+allow the browser
+to efficiently update its cached resources by issuing conditional
+GET
+requests when the user explicitly reloads the page. Conditional GETs
+don't return the full
+response unless the resource has changed at the server, and thus have
+lower latency than full GETs. </li>
+</ul>
+<p>
+It
+is important to specify one of <code>Expires</code>
+or <code>Cache-Control max-age</code>,
+<i>and</i> one of <code>Last-Modified</code>
+or <code>ETag</code>,
+for all cacheable resources. It is
+redundant to specify both <code>Expires</code>
+and <code>Cache-Control: max-age</code>,
+or to specify both <code>Last-Modified</code>
+and <code>ETag</code>.&nbsp;</p>
+
+<h3>Recommendations</h3>
+<dl>
+<dt>Set caching headers aggressively for all static resources.
+</dt>
+<dd>For all cacheable resources, we recommend the following
+settings:
+<ul>
+<li>Set <code>Expires</code>
+to a minimum of one month, and preferably up to one year, in the
+future. (We
+prefer <code>Expires</code> over <code>Cache-Control:
+max-age </code>because it is is more
+widely supported.) Do not set it to more than one year in the future,
+as that violates the RFC guidelines.
+<p>If you know exactly when a resource is going to
+change, setting a shorter expiration is okay. But if you think it
+"might change soon" but don't know when, you should set a long
+expiration and use URL fingerprinting (described below). Setting
+caching aggressively does not "pollute" browser caches: as far as we
+know, all browsers clear their caches according to a Least Recently
+Used algorithm; we are not aware of any browsers that wait until
+resources expire before purging them. </p>
+</li>
+<li>Set the <code>Last-Modified</code> date to
+the
+last time the
+resource was changed. If the<code>
+Last-Modified</code> date is sufficiently far enough in the past,
+chances are
+the browser won't refetch it. </li>
+</ul>
+</dd>
+<dt>Use fingerprinting to dynamically enable caching.</dt>
+<dd>For resources
+that change occasionally, you can have the
+browser cache the resource until it changes on the server, at which
+point the server tells the browser that a new version is
+available. You accomplish this by embedding a fingerprint of the
+resource in its URL (i.e. the file path). When the resource changes, so
+does its
+fingerprint, and in turn, so does its URL. As soon as the URL changes,
+the browser is forced to re-fetch the resource. Fingerprinting allows
+you to set expiry dates long into the future even for resources that
+change more frequently than that. Of course, this technique requires
+that all of the pages that reference the resource know about the
+fingerprinted URL, which may or may not be feasible, depending on how
+your pages are coded.</dd>
+<dt>Set the Vary header correctly for Internet Explorer.</dt>
+<dd>Internet Explorer does not cache any resources that are
+served with the
+<code>Vary</code> header and any fields but <code>Accept-Encoding</code>
+and <code>User-Agent</code>. To
+ensure these resources are cached by IE, make sure to strip out any
+other fields from the Vary header, or remove the Vary header altogether
+if possible</dd>
+<dt>Avoid URLs that cause cache
+collisions in Firefox.</dt>
+<dd>The Firefox disk cache hash functions
+can generate collisions for URLs that differ only slightly, namely only
+on 8-character boundaries. When
+resources hash to the same key, only one of the resources is persisted
+to disk cache; the remaining resources with the same key have to be
+re-fetched across browser restarts. Thus, if you are using
+fingerprinting or are otherwise
+programmatically generating file URLs, to maximize cache hit rate,
+avoid the Firefox hash collision issue by ensuring that your
+application generates URLs that differ on more than 8-character
+boundaries.
+</dd>
+<dt>Use the <code>Cache control: public</code>
+directive to enable HTTPS caching for Firefox.</dt>
+<dd>Some versions of Firefox require that the&nbsp;<code>Cache
+control: public</code>
+header to be set in order for resources sent over SSL to be
+cached on disk, even if the other caching headers are explicitly set.
+Although this header is normally used to enable caching by proxy
+servers (as described below), proxies cannot cache any content sent
+over HTTPS, so it is always safe to set this header for HTTPS
+resources.
+</dd>
+</dl>
+
+<h3>Example</h3>
+<p>For the stylesheet used to display the user's calendar after
+login,
+Google Calendar
+embeds a fingerprint in its filename:
+calendar/static/<i>fingerprint_key</i>doozercompiled.css,
+where the fingerprint key is a 128-bit hexadecimal number. At the time
+of the screen shot below (taken from Page Speed's <b>Show
+Resources</b> panel), the fingerprint was set to
+82b6bc440914c01297b99b4bca641a5d: </p>
+<p> <img src="/speed/docs/insights/images/cachingheader1.png" border="0" height="440" width="816" /></p>
+<p>The fingerprinting mechanism
+allows the server to set the <code>Expires</code> header
+to exactly
+one year ahead of the request date; the <code>Last-Modified</code>
+header to the date the file was last modified; and the <code>Cache-Control:
+max-age</code> header to 3153600. To cause the client to
+re-download the file in
+case it changes before its expiry date or maximum age, the fingerprint
+(and therefore the URL) changes whenever the file's content does.</p>
+<h3>Additional resources</h3>
+<ul>
+<li>For
+an in-depth explanation of HTTP caching, see the <a href="http://www.w3.org/Protocols/rfc2616/rfc2616.html">HTTP/1.1
+RFC</a>,
+sections <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.2">13.2</a>,
+<a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec14.21">14.21</a>,
+and <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec14.9.3">14.9.3</a>.</li>
+<li>For details on enabling caching in Apache, consult the
+<a href="http://apache.org/docs/2.2/caching.html">Apache
+Caching
+Guide</a>.</li>
+</ul>
+<p class="backtotop"><a href="#top">Back to
+top</a></p>
+<h2 id="LeverageProxyCaching">Leverage proxy caching</h2>
+<h3>Overview</h3>
+<p>Enabling public caching in the HTTP headers for static
+resources allows the browser to download resources from a nearby proxy
+server rather than from a remote origin server.</p>
+<h3>Details</h3>
+<p>In addition to browser caching, HTTP provides for proxy
+caching,
+which enables static resources to be cached on public web proxy
+servers, most notably those used by ISPs. This means that even
+first-time users
+to your site can benefit from caching: once a static resource has been
+requested by one user through the proxy, that resource is available for
+all other users whose requests go through that same proxy. Since those
+locations are
+likely to be in closer network proximity to your users than your
+servers, proxy caching can result in a significant reduction in network
+latency. Also, if enabled proxy caching effectively gives you free web
+site hosting,
+since responses served from proxy caches don't draw on your servers'
+bandwidth at all. </p>
+<p>You use the <code>Cache-control: public</code>
+header to
+indicate that a resource can be cached by public web
+proxies in addition to the browser that issued the
+request.&nbsp;With
+some exceptions (described below), you should configure your web server
+to
+set this header to <code>public</code> for cacheable
+resources.
+</p>
+<h3>Recommendations</h3>
+<dl>
+<dt>Don't include a query string in the URL for static
+resources.
+</dt>
+<dd>Most proxies, most notably Squid up through version 3.0,
+do not cache resources with a "?" in their URL even if a <code>Cache-control:
+public</code> header is present in the response. To enable proxy
+caching for these resources, remove query strings from
+references to static resources, and instead encode the parameters into
+the file names themselves.
+</dd>
+<dt>Don't enable proxy caching for resources that set cookies. </dt>
+<dd>Setting the header to public effectively shares resources
+among
+multiple users, which means that any cookies set for those resources
+are
+shared as well. While many proxies won't actually cache any resources
+with cookie headers set, it's better to avoid the risk altogether.
+Either set the <code>Cache-Control </code>header
+to <code>private</code> or serve these resources
+<a href="/speed/docs/best-practices/request#ServeFromCookielessDomain">from
+a cookieless domain</a>.
+</dd>
+<dt>Be aware of issues with proxy caching of JS and CSS files. </dt>
+<dd>Some public proxies have bugs that do not detect the
+presence
+of the
+<code>Content-Encoding</code> response header. This can
+result in
+compressed versions being delivered to client browsers that cannot
+properly decompress the files. Since these files should always be
+<a href="/speed/docs/best-practices/payload#GzipCompression">gzipped</a>
+by your server, to ensure that the
+client can correctly read the files, do either of the following:
+<ul>
+<li>Set the the <code>Cache-Control </code>header
+to <code>private</code>.
+This disables proxy caching altogether for these resources. If your
+application is multi-homed around the globe and relies less on proxy
+caches for user locality, this might be an appropriate setting.</li>
+<li>Set the <code>Vary: Accept-Encoding</code>
+response header. This instructs the proxies to cache two versions of
+the resource: one
+compressed, and one uncompressed. The correct version of the resource
+is delivered based on the client request header. This is a good choice
+for applications that are singly homed and depend on public
+proxies for user locality.</li>
+</ul>
+</dd>
+</dl>
+<p class="backtotop"><a href="#top">Back to
+top</a></p>
+
+
+  
+  </div>
+
+        </div>
+        
+<div id="gc-content-footer">
+
+
+
+<div itemprop="datePublished" content="2012-03-28T01:28:33.500020" id="gc-content-last-updated">Last updated March 28, 2012.</div>
+
+</div>
+
+
+
+
+      </div>
+
+      </div>
+      
+
+      
+      
+      <footer id="gc-footer">
+        <div id="gc-copyright">
+          <a href="/">
+            <img id="developers-logo-footer" src="/_static/images/developers-logo-footer.png" alt="Google Developers logo" style="vertical-align: center; float: left"/>
+          </a>
+          <ul>
+            <li><a href="http://www.google.com/">Google</a></li>
+            <li><a href="/readme/terms">Terms of Service</a></li>
+            <li><a href="http://www.google.com/intl/en/privacy/">Privacy Policy</a></li>
+            <li><a href="/jobs">Jobs</a></li>
+            <li><a class="google-feedback" data-p="81425" data-b="Documentation"  data-v="devsite-20121012-rc02.362408891254646927" href="">Report a bug</a></li>
+          </ul>
+        </div>
+        
+        <div id="gc-language">
+          <ul>
+            <li>
+              <form id="setlang" action="/i18n/setlang/" method="post">
+                <div style='display:none'><input type='hidden' name='csrfmiddlewaretoken' value='dcf10cec9fca2926ed75d3162d014ec2' /></div>
+                <select id="footer_language" name="language">
+                  
+                  
+                  <option
+                     value="ar"
+                     >
+                    العربيّة
+                  </option>
+                  
+                  <option
+                     value="bg"
+                     >
+                    български
+                  </option>
+                  
+                  <option
+                     value="ca"
+                     >
+                    català
+                  </option>
+                  
+                  <option
+                     value="zh-cn"
+                     >
+                    简体中文
+                  </option>
+                  
+                  <option
+                     value="zh-tw"
+                     >
+                    繁體中文
+                  </option>
+                  
+                  <option
+                     value="hr"
+                     >
+                    Hrvatski
+                  </option>
+                  
+                  <option
+                     value="cs"
+                     >
+                    česky
+                  </option>
+                  
+                  <option
+                     value="da"
+                     >
+                    Dansk
+                  </option>
+                  
+                  <option
+                     value="nl"
+                     >
+                    Nederlands
+                  </option>
+                  
+                  <option
+                     value="en"
+                      selected="selected" >
+                    English
+                  </option>
+                  
+                  <option
+                     value="fa"
+                     >
+                    فارسی
+                  </option>
+                  
+                  <option
+                     value="fi"
+                     >
+                    suomi
+                  </option>
+                  
+                  <option
+                     value="fr"
+                     >
+                    Français
+                  </option>
+                  
+                  <option
+                     value="de"
+                     >
+                    Deutsch
+                  </option>
+                  
+                  <option
+                     value="el"
+                     >
+                    Ελληνικά
+                  </option>
+                  
+                  <option
+                     value="he"
+                     >
+                    עברית
+                  </option>
+                  
+                  <option
+                     value="hi"
+                     >
+                    Hindi
+                  </option>
+                  
+                  <option
+                     value="hu"
+                     >
+                    Magyar
+                  </option>
+                  
+                  <option
+                     value="id"
+                     >
+                    Bahasa Indonesia
+                  </option>
+                  
+                  <option
+                     value="it"
+                     >
+                    italiano
+                  </option>
+                  
+                  <option
+                     value="ja"
+                     >
+                    日本語
+                  </option>
+                  
+                  <option
+                     value="ko"
+                     >
+                    한국어
+                  </option>
+                  
+                  <option
+                     value="lv"
+                     >
+                    latviešu
+                  </option>
+                  
+                  <option
+                     value="lt"
+                     >
+                    Lithuanian
+                  </option>
+                  
+                  <option
+                     value="nb"
+                     >
+                    Norsk (bokmål)
+                  </option>
+                  
+                  <option
+                     value="nn"
+                     >
+                    Norsk (nynorsk)
+                  </option>
+                  
+                  <option
+                     value="pl"
+                     >
+                    polski
+                  </option>
+                  
+                  <option
+                     value="pt-br"
+                     >
+                    Português Brasileiro
+                  </option>
+                  
+                  <option
+                     value="pt"
+                     >
+                    Português
+                  </option>
+                  
+                  <option
+                     value="ro"
+                     >
+                    Română
+                  </option>
+                  
+                  <option
+                     value="ru"
+                     >
+                    Русский
+                  </option>
+                  
+                  <option
+                     value="sr"
+                     >
+                    српски
+                  </option>
+                  
+                  <option
+                     value="sk"
+                     >
+                    slovenský
+                  </option>
+                  
+                  <option
+                     value="sl"
+                     >
+                    Slovenščina
+                  </option>
+                  
+                  <option
+                     value="es"
+                     >
+                    español
+                  </option>
+                  
+                  <option
+                     value="sv"
+                     >
+                    Svenska
+                  </option>
+                  
+                  <option
+                     value="th"
+                     >
+                    Thai
+                  </option>
+                  
+                  <option
+                     value="tr"
+                     >
+                    Türkçe
+                  </option>
+                  
+                  <option
+                     value="uk"
+                     >
+                    Українська
+                  </option>
+                  
+                  <option
+                     value="vi"
+                     >
+                    Vietnamese
+                  </option>
+                  
+                </select>
+              </form>
+            </li>
+          </ul>
+        </div>
+        
+      </footer>
+      
+      
+    </div>
+    <div id="needAuth" class="msgDialogContent">
+      
+      <h1>Authentication required</h1>
+      
+      <div>
+        You need to be signed in with <a href='http://www.google.com/+'>Google+</a> to do that.
+      </div>
+      <button>Sign in</button>
+      <button>Cancel</button>
+    </div>
+    <div id="signingIn" class="msgDialogContent">
+      
+      <h1>Signing you in...</h1>
+      <div>
+        
+        Google Developers needs your permission to do that.
+      </div>
+      
+      <button>Try again</button>
+      
+      <button>Cancel</button>
+    </div>
+    <script src="/_static/js/script_foot.js"></script>
+    <script>
+      (function($) {
+        devsite.devsite.Init($, null, '');
+      })(jQuery);
+
+      
+      devsite.localInit = function() {
+        
+      };
+      
+    </script>
+    <!-- Google Code for PXL - Developers - Codesite - HP - 90d Remarketing List -->
+    <script type="text/javascript">
+    $('#setlang select').each(function() {
+      if ($.browser.msie) {
+        $(this).change(function() {
+          $('#setlang').submit();
+        });
+      } else {
+        $(this).kdSelect({'change': function() {
+          $('#setlang').submit();
+        }});
+      }
+    });
+    </script>
+    <script type="text/javascript">
+      /* <![CDATA[ */
+      var google_conversion_id = 992540712;
+      var google_conversion_language = "en";
+      var google_conversion_format = "3";
+      var google_conversion_color = "ffffff";
+      var google_conversion_label = "qio2CKCPwQMQqPCj2QM";
+      var google_conversion_value = 0;
+      /* ]]> */
+    </script>
+    <script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
+    </script>
+    <noscript>
+      <div style="display:inline;">
+        <img height="1" width="1" style="border-style:none;" alt="" src="//www.googleadservices.com/pagead/conversion/992540712/?label=qio2CKCPwQMQqPCj2QM&amp;guid=ON&amp;script=0"/>
+      </div>
+    </noscript>
+    
+
+
+
+
+
+<script type="text/javascript">
+$(document).ready(function(e) {
+    // Render any carousels on the page
+    $('.carousel').carousel();
+    // Render any feed widgets on the page
+    
+    $('.feed').rss();
+    $('.feed-plain').rss();
+    // Render any OSS widgets on the page.
+    $('.oss').oss();
+    });
+</script>
+
+<script type="text/javascript" defer>
+
+
+$(document).ready(function() {
+    contentTimer.name = 'content';
+    contentTimer.tick('ol');
+    window.jstiming.report(contentTimer);
+
+    // Boilerplate javascript to enable the plusone button
+    var po = document.createElement('script'); po.type = 'text/javascript';
+    po.async = true;
+    po.src = 'https://apis.google.com/js/plusone.js?onload=devsite_plusoneLoaded';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(po, s);
+});
+</script>
+
+
+
+
+  </body>
+</html>
