@@ -28,7 +28,7 @@ namespace ClinicalPortal.Service
             homeMenu.Title = "Home Page";
             homeMenu.Icon = "leaf";
             homeMenu.AppendAttr("id", "homePage");
-            homeMenu.AppendMetaData("href", "Home.html");
+            homeMenu.AppendAttr("href", "Home.html");
             MenuItems.Add(homeMenu);
 
             //Message Center
@@ -36,7 +36,7 @@ namespace ClinicalPortal.Service
             msgMenu.Title = "Message Center";
             msgMenu.Icon = "leaf";
             msgMenu.AppendAttr("id", "messageCenter");
-            msgMenu.AppendMetaData("href", "#");
+            msgMenu.AppendAttr("href", "MessageCenter.html");
             MenuItems.Add(msgMenu);
 
             //Patient Data
@@ -49,11 +49,13 @@ namespace ClinicalPortal.Service
             MenuItem patientSearchMenu = new MenuItem();
             patientSearchMenu.Title = "Patient Search";
             patientSearchMenu.Icon = "leaf";
+            patientSearchMenu.AppendAttr("href", "PatientSearch.html");
             patientMenu.AppendChildMenu(patientSearchMenu);
 
             MenuItem patientSummaryMenu = new MenuItem();
             patientSummaryMenu.Title = "Patient Summary";
             patientSummaryMenu.Icon = "leaf";
+            patientSummaryMenu.AppendAttr("href", "PatientSummary.html");
             patientMenu.AppendChildMenu(patientSummaryMenu);
             //Tools
             if (HasRole("admin", roles))
@@ -62,6 +64,7 @@ namespace ClinicalPortal.Service
                 toolsMenu.Title = "Tools";
                 toolsMenu.Icon = "folder";
                 toolsMenu.AppendAttr("id", "tools");
+                toolsMenu.AppendAttr("href", "Tools.html");
                 MenuItems.Add(toolsMenu);
             }
             

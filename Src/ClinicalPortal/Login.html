@@ -25,7 +25,7 @@
 
 					    //Do something to login - just faking things here...
 					    var loginOk = false;
-					    if (userId == "admin" && password == "admin") {
+					    if ((userId == "admin" && password == "admin") || (userId == "user" && password == "user")) {
 					        loginOk = true;
 					    }
 					    if (loginOk) {

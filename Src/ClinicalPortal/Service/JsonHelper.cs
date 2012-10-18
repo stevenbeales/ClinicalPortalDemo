@@ -31,8 +31,12 @@ namespace ClinicalPortal.Service
         public static string ObjectLiteral(string objName, IDictionary<string, string> properties)
         {
             StringBuilder objJson = new StringBuilder();
-            QuotationString(objJson, objName);
-            objJson.Append(":").Append("{");
+            if (!string.IsNullOrEmpty(objName))
+            {
+                QuotationString(objJson, objName);
+                objJson.Append(":");
+            }
+            objJson.Append("{");
 
             int i = 0;
             foreach (KeyValuePair<string, string> item in properties)

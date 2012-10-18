@@ -1,0 +1,1224 @@
+﻿/* Infor DataGrid 
+----------------------------------*/
+
+.inforDataGrid {
+    background: white;
+    outline: 0;
+    border: 1px solid #999999;
+}
+
+/* Container div for the collection of header cells */
+.slick-header
+{
+	border-top-width: 0px;
+}
+
+/* The collection of header cells */
+.slick-header-columns
+{
+	background: #C4C4C4 none;
+	border-bottom: 1px solid #666666;
+	width: 999999px;
+	position: relative;
+	white-space: nowrap;
+	cursor: default;
+	overflow: hidden;
+	height: 25px;
+}
+
+/* The border of the header-columns changes when the filter becomes visible */
+.filter-visible
+{
+    border-bottom: 1px solid White;
+} 
+
+/* An individual header cell */
+.slick-header-column.ui-state-default 
+{
+	border-right: 1px solid White;
+	border-left: 1px solid #999999;
+	background-color: #c4c4c4;
+	background-image: none;
+	height: 22px;
+	font-family: Arial;
+	font-size: 11px;
+	text-overflow: ellipsis;
+	position: relative;
+	display: inline-block;
+	overflow: hidden;
+	margin: 0;
+	padding: 2px 4px;
+	float: left;
+	line-height: 22px;
+}	 
+		 
+.slick-header-column-sorted {
+	font-weight: bold;
+}      
+
+.slick-header-column.ui-state-hover
+{
+	background: #999999 none;
+}
+
+.selector-checkbox-header >span
+{
+	margin-left: 2px;
+    margin-right: -1px;/*removes a little . on IE*/
+    margin-top: 1px;
+}
+
+.selector-checkbox-header
+{
+	margin-left: -2px;
+}
+
+ /* Header text */  
+ .slick-column-name
+{
+	font-size: 11px;
+	color: #000000;
+}
+
+/* Checkbox header */
+.slick-column-name input
+{
+	margin-left: -4px;
+	margin-top: 2px;
+	padding: 0px;
+}
+
+/* Container for all Filter Cells */
+.slick-header-columns, .slick-headerrow-columns, .slick-summaryrow-columns  {
+  width: 999999px;
+  position: relative;
+  white-space: nowrap;
+  cursor: default;
+  overflow: hidden;
+}
+
+.slick-headerrow
+{
+    background: url(images/filter-gradient-bg.png) repeat-x;
+}
+
+.slick-summaryrow-columns
+{
+    background: #F1F1F1;
+    border-top: 1px solid #B4B4B4;
+}
+
+.slick-headerrow-column, .slick-cell, .slick-summaryrow-column {
+    position: absolute;
+	overflow: hidden;
+    white-space: nowrap;
+    vertical-align: middle;
+    z-index: 1;
+    padding: 3px;
+	white-space: nowrap;
+	cursor: default;
+}
+
+/* header and summary rows. */
+.slick-headerrow-column 
+{
+    background: url(images/filter-gradient-bg.png) repeat-x;
+    margin-left: 2px;
+    border-bottom: 0;
+    padding-top: 2px;
+    height: 100%;
+}
+
+.slick-summaryrow-column  {
+	background: none repeat scroll 0 0 #F1F1F1;
+    border-left: 1px solid white;
+	border-right: 1px solid #B4B4B4;
+	margin: 0;
+	height: 19px;
+	height: 100%;
+}
+
+.slick-headerrow-column input 
+{
+    margin-left: -2px;
+    padding: 0;
+	text-indent: 4px;
+	margin-top: 2px;
+	padding-right: 3px;
+}
+
+.slick-headerrow-column .inforDropDownList 
+{
+    margin-top: 0;
+}
+
+.slick-headerrow-column  .inforTriggerField {
+	margin-top: 2px;
+}
+
+.slick-headerrow-column .inforDateField 
+{
+	height: 18px;
+    margin-left: -2px;
+    margin-top: 2px;
+	width: inherit;
+}
+
+.slick-headerrow-column .inforDatePickerButton 
+{
+	margin-top: 2px;
+}
+
+.slick-headerrow-column .inforTextBox 
+{
+    margin-left: 4px;
+}
+
+.slick-cell 
+{
+	height: 23px;
+	font-size: 11px;
+	font-family: Arial;
+	padding-left: 4px;
+	padding-right: 4px;
+	color: black;
+}
+
+
+.slick-cell.non-data-cell
+{
+	padding-left: 1px !important;
+}
+
+/* Must be before .slick-cell-hovered */
+.slick-cell-checkboxsel 
+{
+	background: White;
+	border-right-color: silver;
+	border-right-style: solid;
+	margin-left: -2px;
+}
+
+/* Color for a selected row*/
+.slick-row.selected 
+{
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAABkCAIAAADITs03AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwAAADsABataJCQAAABp0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuMTAw9HKhAAAAFUlEQVQoU2PYfeAww9ELN0bx4AgDAD/Q8mb+bWoKAAAAAElFTkSuQmCC");
+	background-repeat: repeat-x;
+}
+
+/*Style Hovered Rows*/
+.slick-row-hovered
+{
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAABkCAIAAADITs03AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwQAADsEBuJFr7QAAABp0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuMTAw9HKhAAAAFUlEQVQoU2M4efoMw+v3n0bx4AgDAOUnF1R6oPaDAAAAAElFTkSuQmCC");
+	background-repeat: repeat-x;
+	background-color: none;
+}
+
+/* If not !important, gets overridden by .slick-cell.active */
+.slick-cell.invalid > input
+{
+	border: 1px solid Red !important;   
+}
+
+/* A focused cell*/
+.slick-cell.active
+{ 
+	border: 1px solid #999999;
+    padding-bottom: 3px;
+    padding-left: 4px;
+    padding-top: 2px;
+} 
+
+.slick-cell.active  > .inforTextbox
+{
+	width: inherit;
+}
+
+.slick-cell.active  > .inforTriggerField
+{
+	margin-left: -3px;
+	margin-top: 1px;
+	overflow: visible;
+}
+
+.slick-cell.active  > .inforTriggerField > table.inforTriggerFieldTable tr
+{
+	margin-top: -8px !important;
+}	
+
+.slick-cell.active table.inforTriggerFieldTable {
+	overflow: visible;
+}
+
+.slick-headerrow-column table.inforTriggerFieldTable
+{
+	overflow: visible;
+}	
+
+/* Special styling for focused non-data cells
+ * (icon, drilldown) since 'unselectable' was not working in the column def */
+.non-data-cell.active
+{
+   border: none;
+   padding-bottom: 3px;
+   padding-top: 3px;
+}
+
+/* Styling for a data cell that cannot be edited.
+ * If not !important, gets overridden by .slick-cell.selected */
+.uneditable
+{
+	background-color: #F0F0F0 !important;
+    height: inherit;
+    margin-left: -4px;
+    margin-right: -4px;
+    margin-top: -2px;
+    padding: 3px 4px 4px;
+}
+
+/* Allow selected line color to come threw */
+
+.slick-row-hovered  .slick-cell div.uneditable{
+	background-color: #EBEFF2 !important;
+}
+
+.selected > .uneditable, .slick-row-hovered.selected  .slick-cell div.uneditable
+{
+	background-color: #C5D0D8 !important;
+}
+
+/* The checkbox in each data row */
+.selector-checkbox
+{
+	height: 14px;
+    margin-bottom: 7px;
+    margin-left: 2px !important;
+    margin-top: 3px;
+    padding: 0;
+    width: 14px;
+}
+
+
+.drilldown 
+{
+	height: 14px;
+	background-image: url(images/drilldown_sprite.png);
+	display: inline-block;
+	margin: 3px -1px 3px 1px;
+    width: 14px;
+}
+
+.drilldown:hover
+{
+	background-position: -14px 0px;
+}
+
+.drilldown:active
+{
+	background-position: -28px 0px;
+}
+
+.uneditable > .drilldown 
+{
+	background-position: -42px 0px;
+}
+
+.uneditable.uncolored
+{
+	background-color: transparent !important;
+}
+
+.indicator-icon
+{
+	height: 10px;
+	width: 10px;
+	background-image: none;
+	display: block;
+	margin-top: 5px;
+	margin-left: 1px;
+}
+
+.dirty-icon
+{
+	background-image: url(images/status-icons_sprite.png);
+	background-position: 0px;
+}
+
+.error-icon
+{
+	background-image: url(images/status-icons_sprite.png);
+	background-position: -10px !important;
+}
+
+.slick-header-column .inforRequiredIndicator {
+	float: none;
+	top: -8px;
+	margin-left: -3px;
+	display: inline-block;
+}
+
+html[dir="rtl"] .slick-header-column .inforRequiredIndicator {
+	float: none;
+    margin-left: -3px;
+    margin-right: -1px;
+    padding-right: 2px;
+}
+
+.new-icon
+{
+	background-image: url(images/status-icons_sprite.png);
+	background-position: -20px;
+}
+
+input.editor-text
+{
+	font-family: Arial;
+	font-size: 11px;
+	overflow: hidden;
+	
+	width: 100%;
+    height: 100%;
+    border: 0;
+    margin: 0;
+    background: transparent;
+    outline: 0;
+    padding: 0;
+	color: black;
+}
+
+/* If not !important, gets overridden in jquery.ui.theme.css (if included) */
+.editor-select
+{
+	font-family: Arial !important;
+	font-size: 11px !important;
+}
+
+.editor-select-option
+{
+	font-size: 11px;
+}
+
+/* Special styling for DropDownLists in the grid. Needs to be !important to override default styling. */
+.inforDataGridDropDownList 
+{
+    width: 80% !important;
+}
+
+.slick-header.ui-state-default, .slick-headerrow.ui-state-default, .slick-summaryrow.ui-state-default  {
+    width: 100%;
+    overflow: hidden;
+    border-left: 0px;
+}
+
+.slick-summaryrow {
+	background-color: #F1F1F1;
+}
+
+.slick-header-columns, .slick-headerrow-columns, .slick-summaryrow-columns {
+    width: 999999px;
+    position: relative;
+    white-space: nowrap;
+    cursor: default;
+    overflow: hidden;
+}
+
+.slick-header-column-sorted {
+    font-style: normal;
+}
+
+.slick-sort-indicator {
+   display: inline-block;
+   margin-left: 4px;
+   margin-right: 4px;
+   width: 5px;
+   height: 7px;
+}
+
+.slick-sort-indicator-desc {
+    background: url(images/sort_indicators_sprite.png);
+	background-position: 0px -16px; 
+}
+
+.slick-sort-indicator-asc {
+    background: url(images/sort_indicators_sprite.png);
+	background-position: 0px 0px;
+}
+
+.slick-header-column.ui-state-hover > .slick-sort-indicator-desc {
+	background-position: 0px -50px;
+}
+
+.slick-header-column.ui-state-hover > .slick-sort-indicator-asc  {
+	background-position: 0px -32px;
+}
+
+.slick-resizable-handle {
+    position: absolute;
+    font-size: 0.1px;
+    display: block;
+    cursor: e-resize;
+    width: 12px;
+    right: -8px;
+    top: 0;
+    height: 100%;
+	z-index: 100;
+}
+
+/*Drag Object Color*/
+.slick-sortable-placeholder {
+    border: 1px dashed #606060 !important;
+    height: 16px !important;
+    margin: 1px !important;
+}
+
+.slick-header-column-active {
+   opacity: .80;
+   filter: alpha(opacity=80);
+}
+
+.slick-header-column-resize {
+   background-color: #606060 !important;
+   opacity: .80;
+   filter: alpha(opacity=80);
+}
+
+.grid-canvas {
+    position: relative;
+    outline: 0;
+}
+
+.slick-row.ui-widget-content, .slick-row.ui-state-active {
+    position: absolute;
+	width: 100%;
+}
+
+/*Grouping..*/
+.slick-group {
+   line-height: 10px;
+}
+
+.slick-group-toggle {
+    width: 9px;
+    height: 9px;
+    margin-right: 5px;
+	display: inline-block;
+}
+
+.slick-group-totals .slick-cell{
+    color: #245D9B;
+	font-weight: 500;
+}
+
+.inforDataGridGroupText {
+	position: relative;
+    top: -2px;
+}
+
+.slick-cell .inforExpandButton {
+	background-position: 1px 3px;
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 15px;
+    margin-right: 3px;
+    width: 14px;
+}
+
+/*Editable Cells*/
+.slick-cell.editable {
+    z-index: 11;
+    background: transparent;
+    border-color: #999999;
+    border-style: solid;
+}
+
+.slick-cell.hasTextEditor
+{
+   border: none;
+   padding-top: 1px;
+   padding-bottom: 5px;
+   padding-left: 0px; 
+   height: 18px !important;
+   margin-top: 0px;
+   overflow: visible;
+}
+
+.slick-cell.hasComboEditor
+{
+   border: none;
+   padding-top: 2px;
+   padding-bottom: 4px;
+   padding-left: 4px; 
+   height: 18px !important;
+   margin-top: 0px;
+   overflow: visible;
+}
+
+.slick-cell.hasDateEditor
+{
+   border: none;
+   padding-top: 2px;
+   padding-bottom: 4px;
+   padding-left: 3px; 
+   height: 18px !important;
+   margin-top: 0px;
+}
+
+.slick-cell.hasCheckboxEditor 
+{
+    border: none;
+	padding-bottom: 0px;
+    padding-top: 3px;
+	background: transparent;
+}
+
+/*Center the checkbox in the column*/
+.slick-cell  > .inforCheckbox
+{
+	margin-top: -1px;
+}
+
+/*Readonly checkbox dont need colored cells they have a special style*/
+.uneditable.inforCheckbox
+{
+	background-color: transparent !important;
+	margin-left: 0px !important;
+	margin-right: 0px !important;
+	padding-left: 0px !important;
+	margin-top: -3px;
+	padding-right: 1px;
+}
+
+.alignCenter {
+	text-align: center;
+}
+
+.alignHeaderCenter {
+	text-align: center;
+}
+
+.alignHeaderRight {
+	text-align: right;
+	direction: rtl;
+}
+
+html[dir="rtl"]  .alignHeaderRight {
+	text-align: left;
+	direction: ltr;
+}
+
+.alignRight {
+	text-align: right;
+}
+
+html[dir="rtl"]  .alignRight {
+	text-align: left;
+}
+
+.alignLeft {
+	text-align: left;
+}
+
+html[dir="rtl"]  .alignLeft {
+	text-align: right;
+}
+
+
+.slick-cell  > .inforCheckbox span
+{
+	 margin-top: -3px;
+}
+
+.slick-cell  > .inforCheckbox  > span > .inforCheckbox 
+{
+	visibility:hidden;
+}
+
+.slick-column-name  > .inforCheckbox  > span > .inforCheckbox 
+{
+	visibility:hidden;
+}
+
+.slick-column-name  > .inforCheckbox
+{
+	left: -2px;
+    position: relative;
+    top: -3px;
+}
+
+.slick-reorder-proxy {
+    display: inline-block;
+    background: #C5D0D8;
+    opacity: 0.70;
+    filter: alpha(opacity=70);
+    cursor: default;
+}
+
+.slick-reorder-guide {
+    display: inline-block;
+    height: 22px;
+    background: #C5D0D8;
+    opacity: 0.9;
+    filter: alpha(opacity=90);
+}
+
+.slick-selection {
+    z-index: 10;
+    position: absolute;
+    border: 2px dashed black;
+}
+
+.slick-row.loading {
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+
+.slick-row {
+    position: absolute;
+    line-height: 22px;
+	border-bottom: 1px solid #B4B4B4;
+}
+
+.inforGridSettingsButton {
+    background: url("images/sprite_btn_gridMenuOptions.png") repeat scroll 0 0;
+	float: right;
+    height: 24px;
+    left: 0px;
+    margin-bottom: -27px;
+    top: 0px;
+    width: 19px;
+    z-index: 1;
+	border: none;
+    position: relative;
+}
+
+.inforGridSettingsButton:hover
+{
+   background-position: -38px 0px;
+}
+
+.inforGridSettingsButton:active
+{
+   background-position: -19px 0px; 
+}
+
+.inforFilterMenuButton {
+    background: url("images/sprite_btn_gridMenuOptions.png") no-repeat scroll #c4c4c4;
+    background-position: -57px 0px;
+	float: right;
+    height: 24px;
+    left: 6px;
+    margin-bottom: -27px;
+    top: 28px;
+    width: 25px;
+    z-index: 3;
+	border: none;
+    position: relative;
+}
+
+.inforFilterMenuButton:hover
+{
+   background-position: -95px 0px;
+}
+
+.inforFilterMenuButton:active
+{
+   background-position: -76px 0px; 
+}
+
+/*Filter Buttons*/
+.inforFilterButton
+{
+	background: url(images/datagrid_filtericons_sprite.png) no-repeat top left;
+	border:none;
+	width: 20px; height: 16px;
+	background-position: 0 0; 
+	left: -3px;
+    position: relative;
+    top: 4px;	/*-3px for mozilla*/
+	float:left;
+} 
+
+.inforFilterButton.between {background-position: 0 0;}
+.inforFilterButton.between:hover, .inforFilterButton.between:focus{background-position: 0 -26px;}
+.inforFilterButton.between:active{background-position: 0 -52px;}
+
+.inforFilterButton.eitherSelectedorNotSelected{background-position: 0 -78px;} 
+.inforFilterButton.eitherSelectedorNotSelected:hover, .inforFilterButton.eitherSelectedorNotSelected:focus{ background-position: 0 -104px;} 
+.inforFilterButton.eitherSelectedorNotSelected:active{ background-position: 0 -130px;} 
+
+.inforFilterButton.selected{background-position: 0 -156px;} 
+.inforFilterButton.selected:hover, .inforFilterButton.selected:focus{ background-position: 0 -182px;} 
+.inforFilterButton.selected:active{ background-position: 0 -208px;} 
+
+.inforFilterButton.contains{background-position: 0 -234px;} 
+.inforFilterButton.contains:hover, .inforFilterButton.contains:focus{background-position: 0 -260px;} 
+.inforFilterButton.contains:active{background-position: 0 -286px;} 
+
+.inforFilterButton.doesNotContain{background-position: 0 -312px;} 
+.inforFilterButton.doesNotContain:hover,.inforFilterButton.doesNotContain:focus{background-position: 0 -338px;} 
+.inforFilterButton.doesNotContain:active{background-position: 0 -364px;} 
+
+.inforFilterButton.doesNotEndWith{background-position: 0 -390px;} 
+.inforFilterButton.doesNotEndWith:hover, .inforFilterButton.doesNotEndWith:focus{background-position: 0 -416px;} 
+.inforFilterButton.doesNotEndWith:active{background-position: 0 -442px;} 
+
+.inforFilterButton.doesNotEqual{background-position: 0 -468px;} 
+.inforFilterButton.doesNotEqual:hover, .inforFilterButton.doesNotEqual:focus{background-position: 0 -494px;} 
+.inforFilterButton.doesNotEqual:active{background-position: 0 -520px;} 
+
+.inforFilterButton.doesNotStartWith{background-position: 0 -546px;} 
+.inforFilterButton.doesNotStartWith:hover, .inforFilterButton.doesNotStartWith:focus{background-position: 0 -572px;} 
+.inforFilterButton.doesNotStartWith:active{background-position: 0 -598px;} 
+
+.inforFilterButton.endsWith{background-position: 0 -624px;} 
+.inforFilterButton.endsWith:hover, .inforFilterButton.endsWith:focus{background-position: 0 -650px;} 
+.inforFilterButton.endsWith:active{background-position: 0 -676px;} 
+
+.inforFilterButton.equals{background-position: 0 -702px;} 
+.inforFilterButton.equals:hover, .inforFilterButton.equals:focus{background-position: 0 -728px;} 
+.inforFilterButton.equals:active{background-position: 0 -754px;} 
+
+.inforFilterButton.greaterThan{background-position: 0 -780px;} 
+.inforFilterButton.greaterThan:hover, .inforFilterButton.greaterThan:focus{background-position: 0 -884px;} 
+.inforFilterButton.greaterThan:active{background-position: 0 -910px;} 
+
+.inforFilterButton.greaterThanOrEquals{background-position: 0 -806px;} 
+.inforFilterButton.greaterThanorEquals:hover, .inforFilterButton.greaterThanorEquals:focus{background-position: 0 -832px;} 
+.inforFilterButton.greaterThanorEquals:active{background-position: 0 -858px;} 
+
+.inforFilterButton.isEmpty{background-position: 0 -936px;} 
+.inforFilterButton.isEmpty:hover, .inforFilterButton.isEmpty:focus{background-position: 0 -962px;} 
+.inforFilterButton.isEmpty:active{background-position: 0 -988px;} 
+
+.inforFilterButton.isNotEmpty{background-position: 0 -1014px;} 
+.inforFilterButton.isNotEmpty:hover,.inforFilterButton.isNotEmpty:focus{background-position: 0 -1040px;} 
+.inforFilterButton.isNotEmpty:active{background-position: 0 -1066px;} 
+
+.inforFilterButton.lessThanOrEquals{background-position: 0 -1118px;} 
+.inforFilterButton.lessThanOrEquals:hover,.inforFilterButton.lessThanOrEquals:focus{background-position: 0 -1144px;} 
+.inforFilterButton.lessThanOrEquals:active{background-position: 0 -1170px;} 
+
+.inforFilterButton.lessThan{background-position: 0 -1092px;} 
+.inforFilterButton.lessThan:hover, .inforFilterButton.lessThan:focus{background-position: 0 -1196px;} 
+.inforFilterButton.lessThan:active{background-position: 0 -1222px;} 
+
+.inforFilterButton.notSelected{background-position: 0 -1248px;} 
+.inforFilterButton.notSelected:hover, .inforFilterButton.notSelected:focus{background-position: 0 -1274px;} 
+.inforFilterButton.notSelected:active{background-position: 0 -1300px;} 
+
+.inforFilterButton.startsWith{background-position: 0 -1326px;} 
+.inforFilterButton.startsWith:hover, .inforFilterButton.startsWith:focus{background-position: 0 -1352px;} 
+.inforFilterButton.startsWith:active{background-position: 0 -1378px;} 
+
+.inforFilterButton.today{background-position: 0 -1404px;} 
+.inforFilterButton.today:hover, .inforFilterButton.today:focus{background-position: 0 -1430px;} 
+.inforFilterButton.today:active{background-position: 0 -1456px;} 
+
+#showFilterCheckbox{
+	opacity: 0 !important;
+	visibility: hidden !important;
+}
+
+/* Stuff for the column Picker */
+.slick-columnpicker {
+    background: none repeat scroll 0 0 #C4C4C4;
+    border: 1px solid #999999;
+    box-shadow: 3px 3px 3px #999999;
+    cursor: default;
+    min-width: 100px;
+    padding: 6px;
+}
+
+.slick-columnpicker li {
+    background: none repeat scroll 0 0 transparent;
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+}
+
+.slick-columnpicker .inforCheckbox {
+    margin: 0;
+}
+
+.slick-columnpicker div.inforCheckbox {
+    margin-top: 2px;
+}
+
+/*Popup Multi-Line Editor*/
+
+.inforGridCommentPopup {
+    cursor: default;
+    z-index: 99999;
+	direction: ltr !important;
+}
+
+.inforGridCommentPopup .menuTopLeft {
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAaCAYAAACHD21cAAAAv0lEQVQ4y2P8//8/AzmAiYFMMKpxeGhkJFcdIxEKGfv6ev0ZGRntGRgYDPBpZISJt7Q0K3Jzc6/l5+fX19LSYjA3t4ArYsGhibG4uEiQm5t7r7a2tryrqxvewGFEwkxSUlL5srKyWDUha0TRxMDAwMzExBRrYGBIdHQwMTAwMDMwMDAzMjLKKysrE9SIbiMLMQmAEYkNs5GF2JSD4j9SNDIgaYRpJslGRlI1otvKSErgoNtKtFNJyjVMuBI4IQAAz6oRKKsp5JIAAAAASUVORK5CYII=");
+    height: 26px;
+    overflow: visible;
+    width: 14px;
+}
+
+.inforGridCommentPopup .menuTopCenter {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAaCAYAAAB2BDbRAAAAHUlEQVQI12P4//8/AwNJBBAwMvT39x0Acf9TTAAAokJYGIF7zaQAAAAASUVORK5CYII=");
+  background-repeat: repeat-x;
+  height: 26px;
+  width: 1px;
+  overflow: visible;
+}
+
+.inforGridCommentPopup .pointer {
+	left: 20%;
+    position: relative;
+    top: 16px;
+}
+
+.inforGridCommentPopup .menuTopRight {
+   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAaCAYAAACHD21cAAAAzElEQVQ4y2P8//8/AzmAiYFMMKpxeGhkhGJ0QDA5Mfb39x1A4l/4////waKi4o1omjEMYvyPlFhPnjzBcO3aNYaPHz9e/Pr1a3BNTe19JI3/cWqEgd27dzFcvXr14ZMnT0x6e/veI2n8jzdwXF3dGGRlZeWlpKTyoWoY0cMDZ6gaGBgyMDExxTIwMDBj08yCS6OysjIDIyOjPFQjDPwlJR5ZsNlIrEaYc2HqGUnVSJKNyLYxkuJHZnL9yIhuG7EasSUARmJtxOAzkZv9AGG3OfwtGlshAAAAAElFTkSuQmCC");
+   height: 26px;
+   overflow: visible;
+   width: 14px;
+}
+
+.inforGridCommentPopup .menuMiddleLeft {
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAABCAYAAADuHp8EAAAAH0lEQVQI12NgYGBgAmJWIOYEYgEglgBixQkT+v/jAwDzBB7sIb1DtQAAAABJRU5ErkJggg==");
+    background-repeat: repeat-y;
+    overflow: visible;
+    width: 14px;
+	height: 1px;
+}
+
+.inforGridCommentPopup .menuMiddleCenter {
+    padding: 0;
+	background: white;
+}
+
+.inforGridCommentPopup .menuMiddleCenter  textarea{
+    border: medium none;
+    height: 90px;
+    padding: 0;
+    width: 232px;
+	font-family: Arial;
+	font-size: 11px;
+	min-width: 60px;
+	min-height: 50px;
+	overflow: visible;
+	outline: none; 
+}
+
+.inforGridCommentPopup .menuMiddleRight {
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAABCAYAAADuHp8EAAAAIElEQVQI12P4jwdMmND/n4GBQRGIJYBYAIg5gZgViJkA7bUe7Jr8xBAAAAAASUVORK5CYII=");
+    overflow: visible;
+    width: 14px;
+	height: 1px;
+}
+
+.inforGridCommentPopup .menuBottomLeft {
+   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAaCAYAAACHD21cAAABBklEQVQ4y+2TPU7EMBBG39gJYQmKyFa0KGmp2JKCNhdA4lTshfYa5ATptiEoFcShsSPLcVBEibD0yT+aN/Y3GgMoIAV2wA1wC9wdj6/TT0Pxy/EP/nHQGPPR9/1mcLJiGIZT276tghoQm0DZfQIk+3151lo/V1VFnudREA+ewbZt3+u6Pndd9yQCRVGQZdkMipUDLoAMuARyYNc0zf3h8PBSluWjUuo6BJUFUw+8sl8ts0ptjAJEe7Dv1T3brSUooNHeYZhAAshV3ACjjkChFpC70fdLsJ8i0Ah86QAKvbh5Bqw+kyDIRLpojBRKkkjLmRVf4rWoxHxtKdYCZMXzYpYNXy8WI99Wzl8bw+jEmwAAAABJRU5ErkJggg==");
+   height: 26px;
+   overflow: visible;
+   width: 14px;
+}
+
+.inforGridCommentPopup .menuBottomCenter {
+   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAaCAYAAAB2BDbRAAAAMElEQVQI12P4DwQMFBMTJvT/ZwACDxDhAiJsQYQpiNABEYogQgJECIAIThDBCiKYAIZWO/pC7xuQAAAAAElFTkSuQmCC");
+   height: 26px;
+   overflow: visible;
+   width: 1px;
+   background-repeat : repeat-x;
+}
+
+
+.inforGridCommentPopup .menuBottomRight {
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAaCAYAAACHD21cAAABBklEQVQ4y+2TvUrEQBDHf4ZY2Fna+ja+lk9g7h0Eq7s2lZ3FFicEhEuTN0gRiOY+8jFrM5G5jQloKQ78WWZ3f/ufgVn8QiTJgwdugRvgGrgCLoEo4pfxD/5xsK5rROT9x2Ce72ia5llTr1oGy7LEOUeWZY8hMEYclpfnO5xzFEVxv15vcuN2pni1Sr5AEfmoquplu319StP0DRDVxPUCuNMDAXqgA06qA7AHjpp3ekdiTULQroNx9bbHUwD2QKtgp+AEHsGxl8EA7YwrgI+1B2/A3sDWdeLYGFBMaf0cNIIHsxnCg9mbOB7NSxI8YHMfTk5rm14QYan9Nwdz69nkRDOD7Jf+4yfPbNDuUMj2ogAAAABJRU5ErkJggg==");
+	overflow: visible;
+    width: 14px;
+	height: 18px;
+}
+
+.inforGridCommentPopup table {
+	border-collapse: collapse;
+	border-spacing:0;
+}
+
+.inforGridCommentPopup table td {
+	padding: 0;
+}
+
+.menuMiddleCenter .closeButtonDiv {
+	height: 13px;
+}
+
+.menuMiddleCenter .inforCloseButtonDark {
+	float: right;
+    left: 4px;
+    position: relative;
+    top: -10px;
+}
+
+.inforGridCommentPopup .menuMiddleCenter .menuContent
+{
+   margin: -10px -6px -12px -2px;
+}
+
+/* Add the Resizable Handle
+----------------------------------*/
+.ui-resizable { position: relative;}
+.ui-resizable-handle { 
+	position: absolute;
+	font-size: 0.1px;z-index: 99999; display: block;
+}
+.ui-resizable-se { 
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAAQUlEQVQoz53QsREAIAxCUabN/ht8azWakILy3QEC5CQifMAEALJBC52gRBn4HvECTEBarwIX6oBtUxcwAYBsAGgBgVT7E8pntyoAAAAASUVORK5CYII=");
+    bottom: -1px;
+    cursor: se-resize;
+    height: 14px;
+    padding-top: 0;
+    right: 1px;
+    width: 13px;
+}
+
+/* Row Reordering..
+----------------------------------*/
+.cell-reorder 
+{
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAA4UlEQVQoz42SsQqEMAyG+5I3HNyL6eDgpo6+gi6Cizo6OiiCILqJRv5Igqc9ucJH2zRfLDWGiEwcx+Q4zl8gFw5LURRR3/e0ris9jbZtKQgClg2qdF2nh6/351FGruu6h7htGwNJkJjEz3sV5UtXfo2bOAzD13y+/jzPzE0cx5FBkqwlEcMqLsvCQcyyBrZiOFdxmiblfC3b9ZGjIv6hDduDIa5i0zQKDq97QWIq5nlOdV1bkVeVfZZlh4h2832f0jSlsiypqiorRVFQkiTkeR63qEHDhmHIDYxKTyAHvQpnB7Saf9wkyQbvAAAAAElFTkSuQmCC") no-repeat scroll center center transparent;
+	cursor: n-resize;
+}
+
+.cell-reorder:hover
+{
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAA6ElEQVQoz42STQtFQBSG50f6qFs3a0kphaXfJGXnLygpEStZ2bEk7+24Oblz535MPc0cc54Z9AoAIo5j6LoOwzB+Qr3kHJLv++j7Htu24dtomgaO48B1XQg6pW1b3jRu94/iOI7wPA+apj3Ffd9ZOrmOa13XNUzTfIqypJKvg8V5nrlRnlWv/3LjP9/4Jq7r+hU67FqzuCwLQ03yWp5ZnKZJieqH0XMWh2FgaFOuT6imoBwiRS3Pc3Rd9xGSznWWZUf0RBiGsG0baZqiLEtUVaWkKAokSQLLshBFEQQFluR/Ak4EQXCE/AE9xFcgsjoYWwAAAABJRU5ErkJggg==")  no-repeat scroll center center transparent;
+}
+
+/* Arabic RTL Changes..
+----------------------------------*/
+html[dir="rtl"]  .slick-header-column.ui-state-default{
+	float: right;
+}
+
+html[dir="rtl"]  .slick-column-name > .inforCheckbox {
+	right: 0;
+	left: 0;
+}
+
+html[dir="rtl"]  .slick-headerrow-column, .slick-cell {
+	float: right;
+}
+
+html[dir="rtl"]  .inforGridSettingsButton , html[dir="rtl"]  .inforFilterMenuButton{
+	float: left;
+	left: -3px;
+	width: 22px;
+}
+
+.inforRTLFlip {
+	-moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: FlipH;
+    -ms-filter: "FlipH";
+}
+
+html[dir="rtl"]  .inforGridCommentPopup .menuMiddleCenter  textarea{
+   direction: rtl;
+}
+
+html[dir="rtl"]  .slick-cell.active > .inforTextbox {
+	margin-right: -4px;
+}
+
+html[dir="rtl"]  .inforFilterButton
+{
+	float:right;
+	left: 1px;
+} 
+
+html[dir="rtl"] .slick-cell.active > .inforTriggerField {
+	margin-left: 0;
+    margin-right: -3px;
+	overflow: visible;
+}
+
+/*Paging Controls and Footer */
+.inforGridFooter {
+	width: inherit;
+	height: 23px;
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAXCAIAAABF+LJYAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAADJJREFUeNpiOHDgAJOAgAATJycnEyMjIxMDAwOYhmMkPgMQMyGzoXIMaGpBZgDFAAIMAPMPAuY4dQFRAAAAAElFTkSuQmCC") repeat-x center bottom;
+	border-right: 1px solid #BFBFBF;
+	border-left: 1px solid #BFBFBF;
+	border-bottom: 1px solid #BFBFBF;
+	overflow: hidden;
+}
+
+.slick-pager
+{
+	vertical-align: middle;
+	float: right;
+	padding: 0 10px;
+}
+
+html[dir="rtl"] .slick-pager, html[dir="rtl"]  .slick-record-status,html[dir="rtl"]  .slick-records-status ,html[dir="rtl"] .inforGridFooter .inforToolbarSpacer  {
+	float: left;
+}
+
+.slick-records-status, .slick-record-status {
+	vertical-align: middle;
+	float: right;
+	padding: 5px 10px;
+}
+
+.slick-pager .slick-pager-status
+{
+	display: inline-block;
+	vertical-align: middle;
+	padding: 2px 2px;
+}
+
+.slick-pager .slick-pager-nav
+{
+	display: inline-block;
+    vertical-align: middle;
+}
+
+.inforGridPagingButton 
+{
+    background-color: transparent;
+	height: 20px;
+    width: 22px;
+    border: 0 none;
+    outline: none;
+    cursor:default;
+}
+
+.inforGridFooter .inforToolbarSpacer {
+	background-position: 0 4px;
+    float: right;
+    height: 6px;
+    padding-top: 12px;
+}
+
+.inforGridPagingButton.firstPage { background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAUCAYAAACJfM0wAAAAYUlEQVQ4y2P4//8/Ay0ww6jBKAaHRsZgw6VA3ItLjFyDQQb8B+I/QGyATYwcg5ENCMElRqrBRBlKqsFEG0qKwR5QA84gGQATIwnTzWCaBQVNI4+myY2mGYR6WXq02KSpwQD+kiqZDYLLZAAAAABJRU5ErkJggg=="); }
+.inforGridPagingButton.firstPage:hover, .inforGridPagingButton.firstPage:focus { background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAUCAYAAACJfM0wAAABPElEQVQ4y7XVXUvCUBzHcV/MKrVeSxfdl+GQIrJVpN1661x3EZUPjYgo0/Ap0kuVimo9QJp3Qr2AXkH175wp/4Po3ymcBl8YPzgfGIzNpczHVZbFAklxS3XxG/fKOcxsV6TELW5yGKbDZalxswOHrqUm4K2rvoxSC8xq23EbFMLezWJPRvEd+PX98wtzO1VyoxLwRgEzCk0E1s1HchsWwh4tZxfLNxDQUg/k5pSAg5cQy70JIHlPbqOEcGCvbgONzy/QEnfgXs3gNu7Fzwp4t9aBPxgcv2UveRq3sWF2FuGp5TPQs6/42GuHN+Q2SghPLp3a6dkXhIIHdXJzSsCBE0zPPAtov0Zuw0J4Qj3uKXrxhNBspERuVAL2m31F0xakKk3HbVAIK4tHckPYl5RbF7aUhQRIrfuh/5df0x96gFOw/bA2JAAAAABJRU5ErkJggg==");}
+.inforGridPagingButton.firstPage:active { background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAUCAYAAACJfM0wAAABL0lEQVQ4y7XV0caDYBzH8SUjETF2EGOMmKgOdxGj00gmqUxX0GzrqGQ72hV0S9tN7CrG/90T+zHbszae9+FLfjwfOqlBmqa7e9d7JChm7QbswXEckiRJSMxiJoNJlmWhMbODh8Oh0AArivJSURR0Op16t3cBVlX1qc1mQ+zcbjdaLBbcjRdgTdPQdrsFEIYhd/sUYF3Xu/b7PYDVasXd+gI8Go2oLEsAURRxt28C7Pt+B5zPZ4rjmMbjMbZfD7sLOAiCbrxcLpQkCRmGge3Xw+4CnkwmVFUVXjvLMu72TYCn02lXXdeA1us1d+sL8Gw2Q03TAMrznLt9CrBpmk8dDgdAnudxN16A5/P5S8fjkdq27d3eBdiyLKEBtm1baA/4ulwuyXVdITHr8aH/l1/TH2xJUYWycE9DAAAAAElFTkSuQmCC");}
+.inforGridPagingButton.firstPage[disabled] {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAUCAYAAACJfM0wAAAAYUlEQVQ4y2P4//8/Ay0ww6jBKAaHRsZgw9ZA7I5LjFyDQQY0AHEdEEtgEyPHYGQDtHCJkWowUYaSajDRhpJisArUgDQkA2BiJGG6GUyzoKBp5NE0udE0g1AvS48WmzQ1GABwTQM9Jzs8FwAAAABJRU5ErkJggg=="); }
+
+.inforGridPagingButton.lastPage {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAUCAYAAACJfM0wAAAAZklEQVQ4y2P4//8/Ay0ww6jBRBscGhkDwr1AXApl4xMDY2INNgDiP0D8H8kgbGIkGwzCIVgMCsFlOCkGk2Q4qQYTbTiKwVAJUrEHkuFnYGL0MZhmQTFQkUeT5EbTDEL9LD1abFKMAS7oKplHzTHpAAAAAElFTkSuQmCC"); }
+.inforGridPagingButton.lastPage:hover, .inforGridPagingButton.lastPage:focus {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAUCAYAAACJfM0wAAABNUlEQVQ4y7XVz0oCURTHcR9mMvvzLC3a94cGKaTpVpRt21q2k6j80xARZRamRrlUqahGCxprF9QD+ATVyWvOObM5MyK3C18YfnA/MJuZgDaR1NtZ7UBR0tID8iEUOYHRtbKSpCVNCcNI9Fpp0vyDV6+URvDKpWdm5R3ipTffzQnh4eUi2/hWBb6+f0CeePGV3dwRvFTwbNF8JKjQZDcnhIdE3jeReUBo88JmNxnBxnlPifQ9QfkXdkM4NJ+Dfk54u9a5K1J3YH+2cCM4ku0PTlQ7d0XyFuyPFm4ID84d99TC3g2+9sbZM7shHJw98s3YrbmAJ3aTERw+9MzYqRKQa7CbE8ID+gHb2HoJgdhpnd3cETxjepYpNyGWtXw3J4S16X21ITyVVlsXtrTJFCit+6H/l1/TLwCKU7AWlSz7AAAAAElFTkSuQmCC"); }
+.inforGridPagingButton.lastPage:active {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAUCAYAAACJfM0wAAABKElEQVQ4y7XV0caDYBzH8SWRiIgOIkZERnXYRYydRiZJZbqC0uqopI52BbuluoldRTzvnuhvJ0/NPO/Dl/x4PnRShyRJ7u9e7xClsHU/4AfbthHDMFTCFjYxjFiWpRo2F5jjOKoBzPP8Zo/HA+V5vrutASwIAjHXddE8zwifoiiI22cAi6K42fV6BagsS+K2BrAkSbsFQQBQVVXEDQewLMtfFYYhQHVdEzeAFUVBvxzP85a7URShcRxhA1hV1Z9g3/eXu3Eco2maYANY07SvStMUXrtpGuIG8PF43O12uwHQti1xwwGs6/pmWZYB0HUdcVsD2DAMYpfLBYC+74nbZwCbprnZ8/lEwzDsbmsAn04nqgFsWRbVVvh1Pp+R4zhUwtb6of+XX9MfZf9RhQl3A+8AAAAASUVORK5CYII="); }
+.inforGridPagingButton.lastPage[disabled] { background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAUCAYAAACJfM0wAAAAZklEQVQ4y2P4//8/Ay0ww6jBRBscGhkDwu5AbA1l4xMDY2INlgDiOiBuQDIImxjJBoOwFhaDtHAZTorBJBlOqsFEG45iMFSCVKyCZHgaTIw+BtMsKAYq8miS3GiaQaifpUeLTYoxAHeSAz3JWnsgAAAAAElFTkSuQmCC");}
+
+.inforGridPagingButton.nextPage  { background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAUCAYAAACJfM0wAAAAaElEQVQ4y2P8//8/Ay0A46jBJBscFhULonqB+AUQd6PLr1q2mGyDDYDUGSBmBuIydMMpMRhEhQDxCmyGU2owTsOpYTBWwwkaDDSAnGTiCTR4x8AYTLOgGKjIo0lyo2kGoX6WHi02yQYASWl32QqUY7EAAAAASUVORK5CYII=");}
+.inforGridPagingButton.nextPage:hover, .inforGridPagingButton.nextPage:focus {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAUCAYAAACJfM0wAAABHElEQVQ4y2NQiZ2dDMRngPg/lTDIrGQGEEMja+V/nfKdVMEgs0Bmggz+r122g6oYZCbE4NLtVMUIg0u2EoUXHLz3v2fLdYLq4AZrFW0miIN6D/7/8/fffxDo2XwNr1qEwYWbiMIFC04jDN90Fac6uMGa+RuIxvnzTsEN7954BasahMG560jC+XNPIgzfcBlDHm6wRs4aOCYHpE47jGIGwuCsVXBMlsFTDqGYATdYPWMFSThv1lF4UHStvYAhDzdYLX0Z0Th35mEkQ89jVYMwOHUJUTh3xiGEoWvO4VQHN1g1eRFB7NewBW5o5+qzeNUiDE5aQBSet/Pq/85VZwiqgxuskjCfuhhucPxc6mKowWdU4ub8pyqGFvQ0qZoAgLYhZ0OlPW0AAAAASUVORK5CYII="); }
+.inforGridPagingButton.nextPage:active {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAUCAYAAACJfM0wAAABE0lEQVQ4y7XVz8aEUBzG8UkiEREtIiIiUS27iGgbSdqUdAWlqVVJrbqC7m6uIs4752V+jPnTmXHm8CXO47NoUac8z8/XLtcQpbB1PuEH13URwzBUwhY2MYxYlqUaNv9hjuOoBjDP80St64rquj7cASwIwmG+76N93xE+TdO83QIsiiJRSZIA3rbtyx3AkiQRl6Yp4F3XPd0ALMvyR2VZBnjf9w/3ACuKAn1zoii6MwBWVRX65sRxfGcArGnaRxVFAa9iGIaHe4B1XSeuLEtAx3F8ugHYMAyiqqoCdJqmlzuATdM8LAxDQOd5frsF2LIsorZtQ8uyHO4Atm2bagA7jkO1G3wJggB5nkclbN0+9D/5Nf0BzMcDrMtjmzgAAAAASUVORK5CYII="); }
+.inforGridPagingButton.nextPage[disabled] { background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAUCAYAAACJfM0wAAAAaUlEQVQ4y2P8//8/Ay0A46jBJBscFhULotyB+AsQH0WXX7VsMdkGSwCpNCBmAuLd6IZTYjCI0gLiEGyGU2owTsOpYTBWwwkaDDSggYxEsARo8J2BMZhmQTFQkUeT5EbTDEL9LD1abJINAOUSd9nCVK9iAAAAAElFTkSuQmCC");}
+
+.inforGridPagingButton.previousPage {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAUCAYAAACJfM0wAAAAV0lEQVQ4y2P4//8/Ay0ww6jBOA0OjYzBhkuBuBfEpqbBIEP/A/EfIDaglsHIhoZQy8UYhlLDYKyGUmqwB9RQkvCAGkyzoKBp5NE0udE0g1AvS48Wm1THAHg1guN76vzlAAAAAElFTkSuQmCC"); }
+.inforGridPagingButton.previousPage:hover, .inforGridPagingButton.previousPage:focus  {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAUCAYAAACJfM0wAAABLUlEQVQ4y7XVzUoCURjGcS9mMrOupYV7SxyGRFIrSrdtHaddRJraEBHlR5gfmEuVFtWogZo7ryR79ZDzHnXmzICcDvxg4Dz8F7OYcQjeG3FGmwFOSEt0kAdX8Al2Yg0uSIs0SRi2o69ckeZf+KzOFQ2f1iwp1RGozbHtTodh90mFSal8Azk/k1/wXDQttzoaPi6bUspDjB6pn8zdKgxvRUoGiZcBRiPZD9MNCw2HnpckSn0azbwb7u1g2HVYQNJVG9Y5iw0aDuaQdNlaL7zQwPBm4HGJXPzCVxFOvRnu7WDYefBgIBd7GA8l26YbFhqW7k3JhS6NX7eYu1UY3hDvmOL5DsZ3z6uWWx0N+1VL8ZwG2cbQdqfDsOC75QvD+xm+5mFN2EsDV/MP/b/8mqY6SyFnCJ3F9wAAAABJRU5ErkJggg=="); }
+.inforGridPagingButton.previousPage:active {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAUCAYAAACJfM0wAAABHklEQVQ4y7XVwcaEUByH4UkiEUO0iIiIRLWci4i2kaRNSVfQaGpV0qy6gu5uriLON+ejv5mpU4wzh4c4P++iRZ3SNL09PZ4QJbh1O+EHx3EQwzBU4BZu4jBiWZYq3PwPcxxHFYR5nt9VliUax/Fwt4CwIAhE1+sV4TPPM7pcLrvbBYRFUdxUVRVEoygi7j5B+Hw+r9R1DdE4jjc3JBCWJOlN0zQQTZJkdX8EwrIsgyAI0DfntQFhRVFAGIZfhV8bEFZV9U3btvAqsixb3R+BsKZpK13XQTzP880NCYR1Xd/U9z3Ei6Ig7j5B2DAMomEYIO77/u52AWHTNHfd73c0TdPhbgFhy7KogrBt21Qt4Yfnech1XSpwa/nQ/+TX9AcEygOscVIzUQAAAABJRU5ErkJggg=="); }
+.inforGridPagingButton.previousPage[disabled] {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAUCAYAAACJfM0wAAAAV0lEQVQ4y2P4//8/Ay0ww6jBOA0OjYzBhq2B2B3EpqbBIEMbgLgOiCWoZTCyoVrUcjGGodQwGKuhlBqsAjWUJDygBtMsKGgaeTRNbjTNINTL0qPFJtUxAA0nadH8bA/qAAAAAElFTkSuQmCC"); }
+
+.inforGridFooterButton {
+	border: medium none;
+    height: 14px;
+    margin-left: 5px;
+    outline: medium none;
+    width: 14px;
+	margin-top: 6px;
+	background-color: transparent;
+	background-repeat: no-repeat;
+}
+
+.inforGridFooterButton.export, .inforMenuOptions LI.export A  { background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAA6klEQVQoz6WRywqCQBSGe8YgegKFdBFGVFJUFCm0qAh6jIjQUdtHl31EG924Uwjf4I8ZGM0bdDnwM8w55+M/Z6ZS+SeqtTo+USHY6Q8wns6wXG+gDkdo9VRMZjrmixWrlYI/O4ZBgOPpwhqeUYQwDLDd7cFrpaDv+zEoiiJTtk+SZZYXeO19HNOyY1gQEphDVM7hkICe5zFHejdIAtOz3VVjyHYcFD4OzxmmlRqbQbaN3I7U8XZ/xAXXdSE3FRBC0nuVfQfPNSSJAZqmJbCQgc/XK7ioM4cURYGu60wcLnrtlFNW73DO+Zt4AfQYII9osOxdAAAAAElFTkSuQmCC"); }
+.inforGridFooterButton.export:hover, .inforGridFooterButton.export:focus { background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAi0lEQVQoz82STQqAIBCFvf9dIqJsdB/97CPa6MadQniDiQRtYZrQpoHZvDcfbwYl5GNhYf8BNFrjMM5u4LAWjdFY1Q16LwkqpQKYSYi8IHQ9pOCgMc5vUErpE0lLIXknMIbZFdqujyGAaH2XuG57MIQQbphSWvwckZaEp2VB31fy021vydnPUAK/1gkPIraD+Y89kQAAAABJRU5ErkJggg==");}
+.inforGridFooterButton.export:active { background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAlElEQVQoz2NgoARo+RX/JwYPEo2vX736f+TYCbCCdx8+/H/9+tX/tes3/ofJ4dT4+PFjuEZcNmDIIQts2bYdq2ZksR07dyI03rt3D2wjiL9563ac/ty+Y8d/3E4Aad6yDVPT9u3/MdwOsvHKtRtwibt374IVb926lbjowCaGU/Pxkyf/wzDIZmx+w2szocRAUDMxAABUDAsGaqv7uQAAAABJRU5ErkJggg==");}
+
+.slick-nonselectable-row .slick-cell {
+    color: #7F7F7F !important;	
+}
+.slick-nonselectable-row .slick-cell .inforCheckbox  {
+    opacity: .70;
+	filter:alpha(opacity=70);
+}
+
+.slick-cell .multiline-cell{
+	overflow: auto; 
+	line-height: 14px;
+	word-wrap:break-word;
+	white-space: pre-wrap; 
+	margin-right: -4px;
+    margin-top: -1px;
+}
+
+.slick-cell-range-select {
+	background-color: #5292F7;
+    border: 1px solid black;
+    opacity: 0.1;
+	filter: alpha(opacity=10);
+	z-index: 1000;
+}
+
+.slick-cell .bullet {
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAlUlEQVQY022MsQqGIBhFv5fsoQoaElxcmloEh8BGwU2aEid1dCl6ie/nugX/cOByDlwyxgz7vntrLR/H0cGGQyOtta+18vu+H+DQaNs2vu+bn+f5AIdG67pya+0vaKSU6nelFM45d7Dh0EhKySkljjHydV0dbDg0EkJ45xyf58khhA42HBotyzLM8+ynaeJxHDvYcGg/k8HLA4JxGokAAAAASUVORK5CYII=");
+	background-repeat: no-repeat;
+    background-position: 10px 6px;
+    margin-left: -4px;
+    padding-left: 4px;
+	display: inline-block;
+    height: 15px;
+    margin-right: 3px;
+    width: 14px;
+}
+
+/*Card Stack Styling*/
+.inforCardstackHeading {
+	color: #003366;
+	font-size: 15px;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+.inforCardstackCell {
+	padding: 10px;
+}
+.inforCardstackValue {
+	font-weight: bold;
+	padding-left: 0;
+	text-align: left;
+	width: auto;
+	float: left;
+	color: #555555;
+	padding: 0 8px;
+}
+.inforCardstackLabel {
+	float: left;
+	color: #555555;
+	padding: 0 0 8px;
+}
+.inforCardstackLabel:after
+{
+	content:":";
+}
+.inforCardstackCell .indent {
+	margin-left: -27px;
+}
+.floatRight {
+	float: right;
+}
+.inforCardStackHeader {
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAkCAIAAADHFsdbAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAAFdJREFUGFdFw0kKwCAQBMD+/7M8efQkuI/7+IsMBpKCglIKWmsYY2CthXMO3vtvCAExxjuldGdZcr6pFBARqmy1orf27h1DTrnGeM+JvdbN8uz9Z8ZhfgDvg14He+hVOgAAAABJRU5ErkJggg==") repeat-x scroll center bottom transparent;
+	background-repeat: repeat;
+	border-radius: 5px 5px 0 0;
+	border: 1px solid #BFBFBF;
+}
+.inforCardStackHeader .inforLabel{
+	padding-top: 1px;
+	width: auto;
+}
+.inforSearchResultHeader {
+	width: auto;
+	padding: 0px 10px;
+	color: #414141;
+	height: 25px;
+	margin-top:5px;
+}

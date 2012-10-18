@@ -8,3 +8,8 @@ E:\Projects\ClinicalPortal\ClinicalPortalDemo\Src\ClinicalPortal\bin\ClinicalPor
 E:\Projects\ClinicalPortal\ClinicalPortalDemo\Src\ClinicalPortal\obj\Debug\ResolveAssemblyReference.cache
 E:\Projects\ClinicalPortal\ClinicalPortalDemo\Src\ClinicalPortal\obj\Debug\ClinicalPortal.dll
 E:\Projects\ClinicalPortal\ClinicalPortalDemo\Src\ClinicalPortal\obj\Debug\ClinicalPortal.pdb
+E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortal\bin\ClinicalPortal.dll
+E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortal\bin\ClinicalPortal.pdb
+E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortal\obj\Debug\ResolveAssemblyReference.cache
+E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortal\obj\Debug\ClinicalPortal.dll
+E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortal\obj\Debug\ClinicalPortal.pdb
