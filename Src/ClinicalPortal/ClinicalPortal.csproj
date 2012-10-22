@@ -54,6 +54,7 @@
     <Content Include="PatientSearch.html" />
     <Content Include="PatientSummary.html" />
     <Content Include="Resources\clinicalPortal.js" />
+    <Content Include="Resources\clinicalPortalFramework.js" />
     <Content Include="Resources\clinicalPortalMenu.js" />
     <Content Include="Resources\Images\about_600x400_blank.png" />
     <Content Include="Resources\Images\ajax-loader-inforAppNav.gif" />
