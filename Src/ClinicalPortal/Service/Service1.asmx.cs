@@ -113,8 +113,8 @@ namespace ClinicalPortalService
         private string[] GetUserRoles()
         {
             List<string> roles = new List<string>();
-            string userId = this.Context.Request.Cookies["inforSignInDialog:userId"].Value;
-            if (string.Compare(userId, "admin", true) == 0)
+            HttpCookie userIdCookie = this.Context.Request.Cookies["inforSignInDialog:userId"];
+            if (userIdCookie != null && (string.Compare(userIdCookie.Value, "admin", true) == 0))
             {
                 roles.Add("admin");
             }

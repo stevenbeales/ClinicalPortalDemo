@@ -21,17 +21,19 @@
     <script type="text/javascript" src="Resources/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="Resources/jquery-ui-1.8.14.custom.min.js"></script>
     <script type="text/javascript" src="Resources/inforControlsCombined-1.3.js"></script>
-    <script type="text/javascript" src="Resources/clinicalPortal.js"></script>
+    <script type="text/javascript" src="Resources/clinicalPortalFramework.js"></script>
     <script type="text/javascript" src="Resources/inforDataGrid.js"></script>
-    <script type="text/javascript" src="Resources/sampleData.js"></script>
+    <script type="text/javascript" src="Resources/home.js"></script>
 </head>
 <body>
     <div id="homeMsgNumber">
-        <div style="margin-bottom: 10px;">Secure Messages:</div>
+        <div style="margin-bottom: 10px;">
+            Secure Messages:</div>
     </div>
     <br />
-    <div id="homeCriticalMsg" style="margin-top: 35px;margin-right:15px;">
-        <div style="margin-bottom: 10px;">Critical Secure Messages:</div>
+    <div id="homeCriticalMsg" style="margin-top: 35px; margin-right: 15px;">
+        <div style="margin-bottom: 10px;">
+            Critical Secure Messages:</div>
         <div id="msgGrid">
         </div>
     </div>
@@ -42,68 +44,9 @@
             b</div>
     </div>
     <script type="text/javascript">
-
-        // get message count
-        requestJson("Service/Service1.asmx/GetMessageNumber", showMessageCount);
-        requestJson("Service/Service1.asmx/GetMessageList", showMessageList);
-
-        function showMessageCount(data) {
-            var msgCounts = $.parseJSON(data.d);
-            for (propName in msgCounts) {
-                if (msgCounts.hasOwnProperty(propName)) {
-                    var msgCount = msgCounts[propName];
-                    var msgCountDiv = $("<div></div>").attr("style", "float: left;margin-left: 5px;");
-                    msgCountDiv.append($("<a></a>").attr("href", "#").text(propName));
-                    msgCountDiv.append(" ");
-                    msgCountDiv.append($("<span></span>").text("(" + msgCount + ")"));
-                    $("#homeMsgNumber").append(msgCountDiv);
-                }
-            }
-        }
-
-        function showMessageList(data) {
-            //var grid;
-            var columns = [];
-
-            //Define Columns for the Grid.
-            columns.push({ id: "msgId", name: "message Id", field: "msgId", width: 40, sortable: true, formatter: UneditableColumnFormatter, hidden: true });
-            columns.push({ id: "Sent", name: "Sent", field: "sent", width: 150, sortable: true });
-            columns.push({ id: "From", name: "From", field: "from", width: 150, reorderable: false });
-            columns.push({ id: "Patient", name: "Patient", field: "patient", width: 150 });
-            columns.push({ id: "Topic", name: "Topic", field: "topic", width: 350 });
-
-            // This Sample uses a flat JS Sample Data file. Ajax could also be used. See other samples.
-            var messages = $.parseJSON(data.d);
-
-            var options = {
-                columns: columns,
-                idProperty: 'msgId',
-                dataset: messages,
-                showFilter: false,
-                editable: false,
-                autoEdit: true,
-                pageSize: 5,
-                pagingMode: PagingModes.PagerClientSide,
-                showCheckboxes: false,
-                showDrillDown: false,
-                //fillHeight:false,
-                autoHeightToPageSize: true,
-                showFooter: true,
-                showGridSettings: false,
-                drilldown: function (currentRow) {
-                    alert('Drill Down on ' + currentRow.officeId)
-                },
-                drillDownTooltip: "Display Details About this Office",
-                forceFitColumns: true,
-                savePersonalization: false,
-                autoCellEditCommit: false,
-                enableCellRangeSelection: false,
-                enableObjectSupport: true
-            };
-            //grid = $("#msgGrid").inforDataGrid(options);
-            $("#msgGrid").inforDataGrid(options);
-        }
-        
+        cp.home.init("homeMsgNumber", "msgGrid");
+        cp.home.loadMessageCount();
+        cp.home.loadMessageList();
     </script>
 </body>
 </html>

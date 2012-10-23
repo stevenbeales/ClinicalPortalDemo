@@ -1,47 +1,29 @@
 ﻿
-(function ($) {
-    var cp = {
+(function ($, cp) {
+    var menuCtrlId;
+    var contentCtrlId;
 
-        "initPage": function () {
+    var buildMenu = function (menuData, menuCtrlId, contentCtrlId) {
+        $("#" + menuCtrlId).inforTree({ "json_data": menuData })
+                    .bind("click", function (e, data) {
+                        cp.loadPageAsyn(contentCtrlId, e.target.href);
+                    });
+    }
+
+    cp.menu = {
+        "init": function (menuContainerId, contentContainerId) {
+            menuCtrlId = menuContainerId;
+            contentCtrlId = contentContainerId;
+
             $(".inforSplitter").inforSplitter();
             $(".inforSplitBarVertical").remove();
-
-            $("#menu").inforTree({ "json_data": getMenuJson() })
-                      .bind("select_node.jstree", function (e, data) {
-                          var pageUrl = $.data(data.rslt.obj[0], "href");
-                          this.loadPage(pageUrl);
-                      });
         },
-
-        "loadPage": function (url) {
-            $("#content").load(url);
+        "load": function () {
+            cp.ajaxJson("POST", "Service/Service1.asmx", "GetMenu", null, this.buildMenuTree);
         },
-
-        "loadPageAsyn": function (url) {
-            $.ajax(
-                { "type": "GET",
-                    "url": url,
-                    "success": function (msg) {
-                        $("#content").html(msg);
-                    }
-                })
-        },
-        "callHelloWorld": function () {
-            $.ajax({
-                "type": "POST",
-                "url": "Service/Service1.asmx/HelloWorld",
-                "contentType": "application/json; charset=utf-8",
-                //"data": {},
-                "datatype": "json",
-                "success": function (msg) {
-                    //alert(msg);
-                    $("#content").html(msg.d);
-                }
-            });
+        "buildMenuTree": function (menuData) {
+            buildMenu(menuData, menuCtrlId, contentCtrlId);
         }
     };
 
-    return cp;
-
-})(jQuery).initPage();
-
+} (jQuery, cp));

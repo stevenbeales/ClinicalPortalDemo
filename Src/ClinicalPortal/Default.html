@@ -5,26 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link rel="Stylesheet" type="text/css" href="Resources/inforControlsCombined-1.3.css"
         media="all" />
-        <link rel="Stylesheet" type="text/css" href="Resources/inforDataGrid.css" media="all" />
+    <link rel="Stylesheet" type="text/css" href="Resources/inforDataGrid.css" media="all" />
     <script type="text/javascript" src="Resources/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="Resources/jquery-ui-1.8.14.custom.min.js"></script>
     <script type="text/javascript" src="Resources/inforControlsCombined-1.3.js"></script>
     <script type="text/javascript" src="Resources/inforTree.js"></script>
-    <script type="text/javascript" src="Resources/clinicalPortal.js"></script>
-        
+    <script type="text/javascript" src="Resources/clinicalPortalFramework.js"></script>
+    <script type="text/javascript" src="Resources/clinicalPortalMenu.js"></script>
     <script type="text/javascript">
-
-        $(function () {
-            if (!checkUser()) {
-                window.open("Login.html", "_self");
-                return;
-            }
-            $(".inforSplitter").inforSplitter();
-            $(".inforSplitBarVertical").remove();
-
-            requestMenuJson();
-        });
-
+        cp.menu.init("menu", "content");
+        cp.menu.load();
     </script>
 </head>
 <body>
@@ -39,8 +29,10 @@
                 <span>welcome: </span><a id="userId" style="color: White" href="#"></a>
             </div>
         </div>
-        <div class="headerDivider inforModuleContainer"></div>
-        <div id="loadIndicator"></div>
+        <div class="headerDivider inforModuleContainer">
+        </div>
+        <div id="loadIndicator">
+        </div>
         <div id="body" class="inforModuleContentArea">
             <div class="inforSplitter">
                 <div id="leftPane">
