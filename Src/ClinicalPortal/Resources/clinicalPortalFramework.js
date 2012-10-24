@@ -1,6 +1,34 @@
 ﻿
 var cp = (function () {
 
+    var resourceUrls = [];
+
+    // to do
+    var isSameResource = function (url1, url2) {
+        if (url1.toLowerCase() === url2.toLowerCase()) {
+            return true;
+        }
+        return false;
+    }
+
+    var isExist = function (resourceUrl) {
+        var i = 0;
+        if (resourceUrl) {
+            for (i; i < resourceUrls.length; i++) {
+                if (isSameResource(resourceUrls[i], resourceUrl)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    var addResourceUrl = function (url) {
+        if (!isExist(url)) {
+            resourceUrls.push(url);
+        }
+    }
+
     var parseUrl = function (url, method) {
         return url + "/" + method;
     }
@@ -18,17 +46,6 @@ var cp = (function () {
     }
 
     var cpObj = {
-
-        transmitMethod: function (targetObj) {
-            var prop;
-            if (targetObj) {
-                for (prop in this) {
-                    if (this.hasOwnProperty(prop)) {
-                        targetObj[prop] = this[prop];
-                    }
-                }
-            }
-        },
         checkUser: function () {
             var userId = $.cookie("inforSignInDialog:userId");
             if (userId == null) {
@@ -45,9 +62,8 @@ var cp = (function () {
                 "url": parseUrl(url, method),
                 "contentType": "application/json; charset=utf-8",
                 "datatype": "json",
-                "data": data || {},
+                "data": data,
                 "success": function (data, textStatus, jqXHR) {
-                    responseResult.success = { "textStatus": textStatus };
                     if (successFn) {
                         successFn($.parseJSON(data.d));
                     }
@@ -56,7 +72,6 @@ var cp = (function () {
                     responseResult.error = { "textStatus": textStatus, "errorThrown": errorThrown };
                 },
                 "complete": function (jqXHR, textStatus) {
-                    responseResult.complete = { "textStatus": textStatus };
                     if (completeStatusFn) {
                         completeStatusFn(responseResult);
                     }
@@ -79,20 +94,54 @@ var cp = (function () {
         },
 
         loadPageAsyn: function (controlId, url) {
+            var thisObj = this;
             if (checkUrl(url)) {
                 $.ajax(
                 { "type": "GET",
                     "url": url,
                     "beforeSend": function () {
-                        //showIndicator();
+                        thisObj.showIndicator();
                     },
                     "success": function (msg) {
                         $("#" + controlId).html(msg);
                     },
                     "complete": function () {
-                        //hideIndicator();
+                        thisObj.hideIndicator();
                     }
                 });
+            }
+        },
+
+        loadJS: function (url, alwaysServer) {
+            if (alwaysServer || !isExist(url)) {
+                $.ajax(
+                {
+                    "type": "GET",
+                    "url": url,
+                    "datatype": "script",
+                    "async": false,
+                    "cache": !alwaysServer,
+                    "success": function () {
+                        addResourceUrl(url);
+                    }
+                });
+            }
+        },
+        // bad method
+        loadCss: function (url, alwaysServer) {
+            if (alwaysServer || !isExist(url)) {
+                $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', url));
+//                $.ajax(
+//                {
+//                    "type": "GET",
+//                    "url": url,
+//                    "datatype": "text/css",
+//                    "async": false,
+//                    "cache": !alwaysServer,
+//                    "success": function () {
+//                        addResourceUrl(url);
+//                    }
+//                });
             }
         }
     };

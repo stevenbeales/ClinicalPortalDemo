@@ -63,13 +63,13 @@
             msgGridCtrlId = msgGridContainerId;
         },
         "loadMessageCount": function () {
-            cp.ajaxJson("POST", "Service/Service1.asmx", "GetMessageNumber", null, this.showMessageCount);
+            cp.ajaxJson("POST", "Service/Service1.asmx", "GetMessageNumber", undefined, this.showMessageCount);
         },
         "showMessageCount": function (msgCounts) {
             showCount(msgCounts, msgNumberCtrlId);
         },
         "loadMessageList": function () {
-            cp.ajaxJson("POST", "Service/Service1.asmx", "GetMessageList", null, this.showMessageList);
+            cp.ajaxJson("POST", "Service/Service1.asmx", "GetMessageList", undefined, this.showMessageList);
         },
         "showMessageList": function (messages) {
             showList(messages, msgGridCtrlId);

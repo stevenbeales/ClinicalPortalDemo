@@ -2,6 +2,7 @@
 (function ($, cp) {
     var menuCtrlId;
     var contentCtrlId;
+    var menuJsonData;
 
     var buildMenu = function (menuData, menuCtrlId, contentCtrlId) {
         $("#" + menuCtrlId).inforTree({ "json_data": menuData })
@@ -19,10 +20,14 @@
             $(".inforSplitBarVertical").remove();
         },
         "load": function () {
-            cp.ajaxJson("POST", "Service/Service1.asmx", "GetMenu", null, this.buildMenuTree);
+            cp.ajaxJson("POST", "Service/Service1.asmx", "GetMenu", undefined, this.buildMenuTree);
         },
         "buildMenuTree": function (menuData) {
+            menuJsonData = menuData;
             buildMenu(menuData, menuCtrlId, contentCtrlId);
+        },
+        "getMenuData": function () {
+            return menuJsonData;
         }
     };
 

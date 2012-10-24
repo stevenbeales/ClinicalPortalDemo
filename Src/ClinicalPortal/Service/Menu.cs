@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace ClinicalPortal.Service
 {
@@ -10,7 +11,8 @@ namespace ClinicalPortal.Service
     {
         private IList<MenuItem> _menuItems;
 
-        internal IList<MenuItem> MenuItems
+        [JsonProperty("data")]
+        public IList<MenuItem> MenuItems
         {
             get { return _menuItems; }
             set { _menuItems = value; }
@@ -67,54 +69,28 @@ namespace ClinicalPortal.Service
                 toolsMenu.AppendAttr("href", "Tools.html");
                 MenuItems.Add(toolsMenu);
             }
-            
         }
-        /* json sample
-             {
-        "data": [
-                    { "data":
-                        {
-                            "title": "Patient Data",
-                            "attr": { "id": "patientData" },
-                            "icon": "folder"
-                        },
-                        "children":
-                        [
-                            { "data": { "title": "Patient Search", "icon": "leaf"} },
-                            { "data": { "title": "Patient Summary", "icon": "leaf"} }
-                        ]
-                    },
-                    { "data":
-                        {
-                            "title": "Tools",
-                            "attr": { "id": "tools" },
-                            "icon": "folder"
-                        },
-                        "children": []
-                    }
-                ]
-    };
-             */
-        public string ToJson()
-        {
-            StringBuilder json = new StringBuilder();
-            json.Append("{");
-            JsonHelper.QuotationString(json, "data");
-            json.Append(":");
-            json.Append("[");
-            for (int i = 0; i < MenuItems.Count; i++)
-            {
-                if (i >= 1)
-                {
-                    json.Append(",");
-                }
-                json.Append(MenuItems[i].ToJson());
-            }
-            json.Append("]");
-            json.Append("}");
+        
+        //public string ToJson()
+        //{
+        //    StringBuilder json = new StringBuilder();
+        //    json.Append("{");
+        //    JsonHelper.QuotationString(json, "data");
+        //    json.Append(":");
+        //    json.Append("[");
+        //    for (int i = 0; i < MenuItems.Count; i++)
+        //    {
+        //        if (i >= 1)
+        //        {
+        //            json.Append(",");
+        //        }
+        //        json.Append(MenuItems[i].ToJson());
+        //    }
+        //    json.Append("]");
+        //    json.Append("}");
 
-            return json.ToString();
-        }
+        //    return json.ToString();
+        //}
 
         private bool HasRole(string role, string[] roles)
         {

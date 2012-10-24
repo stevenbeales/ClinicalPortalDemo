@@ -6,6 +6,7 @@ using System.Web.Script.Services;
 using ClinicalPortal.Service;
 using System.Text;
 using System.Collections;
+using Newtonsoft.Json;
 
 namespace ClinicalPortalService
 {
@@ -106,8 +107,38 @@ namespace ClinicalPortalService
             string[] roles = GetUserRoles();
             Menu menu = new Menu();
             menu.BuildMenu(roles);
-            return menu.ToJson();
+            return JsonConvert.SerializeObject(menu);
+            //return menu.ToJson();
             //return "{\"data\": [{ \"data\":{\"title\": \"Home Page\",\"attr\": { \"id\": \"homePage\" },\"icon\": \"leaf\"},\"metadata\": { \"href\": \"Home.html\" }},{ \"data\":{\"title\": \"Message Center\",\"attr\": { \"id\": \"messageCenter\" },\"icon\": \"leaf\"},\"metadata\": {\"href\": \"#\"}},{ \"data\":{\"title\": \"Patient Data\",\"attr\": { \"id\": \"patientData\" },\"icon\": \"folder\"},\"children\":[{ \"data\": { \"title\": \"Patient Search\", \"icon\": \"leaf\"} },{ \"data\": { \"title\": \"Patient Summary\", \"icon\": \"leaf\"} }]},{ \"data\":{\"title\": \"Tools\",\"attr\": { \"id\": \"tools\" },\"icon\": \"folder\"},\"children\": []}};";
+        }
+
+        [WebMethod]
+        public string ChangeMenuCase(string menuJson)
+        {
+            Menu menu = JsonConvert.DeserializeObject<Menu>(menuJson);
+            foreach (MenuItem menuItem in menu.MenuItems)
+            {
+                ChangeMenuNameOppositeCase(menuItem);
+            }
+            return JsonConvert.SerializeObject(menu);
+        }
+
+        private void ChangeMenuNameOppositeCase(MenuItem menuItem)
+        {
+            if (menuItem != null)
+            {
+                string nameCase = "lower";
+                menuItem.MetaData.TryGetValue("nameCase", out nameCase);
+                nameCase = nameCase == "lower" ? "upper" : "lower";
+
+                menuItem.Title = nameCase == "lower" ? menuItem.Title.ToLower() : menuItem.Title.ToUpper();
+                menuItem.AppendMetaData("nameCase", nameCase);
+
+                foreach (MenuItem subMenuItem in menuItem.Children)
+                {
+                    ChangeMenuNameOppositeCase(subMenuItem);
+                }
+            }
         }
 
         private string[] GetUserRoles()
