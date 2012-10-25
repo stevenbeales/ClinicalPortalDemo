@@ -5,6 +5,7 @@
     var menuJsonData;
 
     var buildMenu = function (menuData, menuCtrlId, contentCtrlId) {
+        $("#" + menuCtrlId).unbind("click");
         $("#" + menuCtrlId).inforTree({ "json_data": menuData })
                     .bind("click", function (e, data) {
                         cp.loadPageAsyn(contentCtrlId, e.target.href);
