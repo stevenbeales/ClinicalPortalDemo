@@ -4,20 +4,24 @@
     <title>Clinical Portal Demo</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     
+    <link rel="Stylesheet" type="text/css" href="Resources/inforControlsCombined-1.3.css" media="all" />
+    <link rel="Stylesheet" type="text/css" href="Resources/inforDataGrid.css" media="all" />
+
     <script type="text/javascript" src="Resources/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="Resources/jquery-ui-1.8.14.custom.min.js"></script>
     <script type="text/javascript" src="Resources/clinicalPortalFramework.js"></script>
-    <script type="text/javascript">
-        cp.loadJS("Resources/json2.js");
-        cp.loadCss("Resources/inforControlsCombined-1.3.css");
-        cp.loadCss("Resources/inforDataGrid.css");
-        cp.loadJS("Resources/inforControlsCombined-1.3.js");
-        cp.loadJS("Resources/inforTree.js");
-        cp.loadJS("Resources/clinicalPortalMenu.js");
-    </script>
+    <script type="text/javascript" src="Resources/clinicalPortalHistory.js"></script>
+    <script type="text/javascript" src="Resources/json2.js"></script>
+    <script type="text/javascript" src="Resources/inforControlsCombined-1.3.js"></script>
+    <script type="text/javascript" src="Resources/inforTree.js"></script>
+    <script type="text/javascript" src="Resources/clinicalPortalMenu.js"></script>
+    
     <script type="text/javascript">
         cp.menu.init("menu", "content");
         cp.menu.load();
+        $(document).ready(function () {
+            cp.historyMark.initialize();
+        });
     </script>
 </head>
 <body>

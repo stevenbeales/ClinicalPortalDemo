@@ -61,8 +61,10 @@
     <Content Include="MessageCenter.html" />
     <Content Include="PatientSearch.html" />
     <Content Include="PatientSummary.html" />
+    <Content Include="Resources\clinicalPortalHistory.js" />
     <Content Include="Resources\clinicalPortalFramework.js" />
     <Content Include="Resources\clinicalPortalMenu.js" />
+    <Content Include="Resources\history.js" />
     <Content Include="Resources\home.js" />
     <Content Include="Resources\Images\about_600x400_blank.png" />
     <Content Include="Resources\Images\ajax-loader-inforAppNav.gif" />

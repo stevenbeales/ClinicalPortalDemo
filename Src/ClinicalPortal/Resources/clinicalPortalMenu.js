@@ -8,7 +8,8 @@
         $("#" + menuCtrlId).unbind("click");
         $("#" + menuCtrlId).inforTree({ "json_data": menuData })
                     .bind("click", function (e, data) {
-                        cp.loadPageAsyn(contentCtrlId, e.target.href);
+                        //cp.loadPageAsyn(contentCtrlId, e.target.href);
+                        cp.historyMark.load(contentCtrlId, e.target.href, e.target.id);
                     });
     }
 

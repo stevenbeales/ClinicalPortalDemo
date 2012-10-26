@@ -1,34 +1,6 @@
 ﻿
 var cp = (function () {
 
-    var resourceUrls = [];
-
-    // to do
-    var isSameResource = function (url1, url2) {
-        if (url1.toLowerCase() === url2.toLowerCase()) {
-            return true;
-        }
-        return false;
-    }
-
-    var isExist = function (resourceUrl) {
-        var i = 0;
-        if (resourceUrl) {
-            for (i; i < resourceUrls.length; i++) {
-                if (isSameResource(resourceUrls[i], resourceUrl)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    var addResourceUrl = function (url) {
-        if (!isExist(url)) {
-            resourceUrls.push(url);
-        }
-    }
-
     var parseUrl = function (url, method) {
         return url + "/" + method;
     }
@@ -39,7 +11,7 @@ var cp = (function () {
 
     // just temp check
     function checkUrl(url) {
-        if (url != null && url.match(/\.htm[l]$/)) {
+        if (url != null && url.match(/(\.htm[l])$|(\.aspx)$/)) {
             return true;
         }
         return false;
@@ -109,39 +81,6 @@ var cp = (function () {
                         thisObj.hideIndicator();
                     }
                 });
-            }
-        },
-
-        loadJS: function (url, alwaysServer) {
-            if (alwaysServer || !isExist(url)) {
-                $.ajax(
-                {
-                    "type": "GET",
-                    "url": url,
-                    "datatype": "script",
-                    "async": false,
-                    "cache": !alwaysServer,
-                    "success": function () {
-                        addResourceUrl(url);
-                    }
-                });
-            }
-        },
-        // bad method
-        loadCss: function (url, alwaysServer) {
-            if (alwaysServer || !isExist(url)) {
-                $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', url));
-//                $.ajax(
-//                {
-//                    "type": "GET",
-//                    "url": url,
-//                    "datatype": "text/css",
-//                    "async": false,
-//                    "cache": !alwaysServer,
-//                    "success": function () {
-//                        addResourceUrl(url);
-//                    }
-//                });
             }
         }
     };

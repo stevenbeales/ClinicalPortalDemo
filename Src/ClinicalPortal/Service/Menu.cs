@@ -51,12 +51,14 @@ namespace ClinicalPortal.Service
             MenuItem patientSearchMenu = new MenuItem();
             patientSearchMenu.Title = "Patient Search";
             patientSearchMenu.Icon = "leaf";
+            patientSearchMenu.AppendAttr("id", "patientSearch");
             patientSearchMenu.AppendAttr("href", "PatientSearch.html");
             patientMenu.AppendChildMenu(patientSearchMenu);
 
             MenuItem patientSummaryMenu = new MenuItem();
             patientSummaryMenu.Title = "Patient Summary";
             patientSummaryMenu.Icon = "leaf";
+            patientSummaryMenu.AppendAttr("id", "patientSummary");
             patientSummaryMenu.AppendAttr("href", "PatientSummary.html");
             patientMenu.AppendChildMenu(patientSummaryMenu);
             //Tools
@@ -70,7 +72,7 @@ namespace ClinicalPortal.Service
                 MenuItems.Add(toolsMenu);
             }
         }
-        
+
         //public string ToJson()
         //{
         //    StringBuilder json = new StringBuilder();
@@ -94,8 +96,9 @@ namespace ClinicalPortal.Service
 
         private bool HasRole(string role, string[] roles)
         {
-            foreach (string roleItem in roles) {
-                if (string.Compare(role ,roleItem,true)==0)
+            foreach (string roleItem in roles)
+            {
+                if (string.Compare(role, roleItem, true) == 0)
                 {
                     return true;
                 }
