@@ -61,7 +61,7 @@
                         }
                         if (historyHash && historyUrl && historyCtrlId) {
                             lasthash = historyHash;
-                            cp.historyMark.load(historyCtrlId, historyUrl, "");
+                            cp.historyMark.load(historyUrl, "", historyCtrlId);
                         }
                     }
                 }
@@ -87,7 +87,8 @@
                 }
             }
         },
-        load: function (controlId, url, hash) {
+        load: function (url, hash, controlId) {
+            controlId = controlId || cp.getContentControlId();
             cp.loadPageAsyn(controlId, url);
             if (hash && (typeof hash === "string")) {
                 if (hash.slice(0, 1) !== "#") {

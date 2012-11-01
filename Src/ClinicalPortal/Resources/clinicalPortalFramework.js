@@ -1,54 +1,101 @@
-﻿
-var cp = (function () {
+﻿(function (window, $) {
+
+    var cpSetting = {
+        contentCtrlId: "content",
+        enableHistory: true
+    };
 
     var parseUrl = function (url, method) {
         return url + "/" + method;
-    }
+    };
 
-    var getControlID = function (controlId) {
+    var getControlId = function (controlId) {
         return "#" + controlId;
-    }
+    };
 
     // just temp check
     function checkUrl(url) {
-        if (url != null && url.match(/(\.htm[l])$|(\.aspx)$/)) {
-            return true;
+        if (url && typeof url === "string") {
+            if (url.indexOf(".html") >= 0) {
+                return true;
+            }
+            if (url.indexOf(".htm") >= 0) {
+                return true;
+            }
+            if (url.indexOf(".aspx") >= 0) {
+                return true;
+            }
         }
         return false;
     }
 
-    var cpObj = {
+    var urlReg = /(^|\s)((https?:\/\/)?[\w-]+(\.[\w-]+)+\.?(:\d+)?(\/\S*)?)/gi;
+
+    var getLocalhostUrlHash = function (url) {
+        //http://localhost:64235/Home.html
+        var localhostIndex = url.indexOf("localhost");
+        var startIndex = -1;
+        if (localhostIndex >= 0) {
+            startIndex = url.indexOf("/", localhostIndex);
+            if (startIndex >= 0) {
+                return url.slice(startIndex + 1);
+            }
+        }
+        return "";
+    };
+
+    var createHash = function (url) {
+        var matched = urlReg.exec(url);
+        var hash = (matched && matched[0]) || getLocalhostUrlHash(url);
+        if (hash && (typeof hash === "string")) {
+            if (hash.slice(0, 1) !== "#") {
+                return "#" + hash;
+            }
+        }
+    };
+
+    var setHistory = function (url, controlId, storeInHistory) {
+        if (cpSetting.enableHistory && storeInHistory !== false) {
+            cp.historyMark.sethash(createHash(url), url, controlId);
+        }
+    };
+
+    var getContentCtrlId = function(controlId) {
+        return controlId || cpSetting.contentCtrlId;
+    };
+
+    var cp = {
+        init: function (setting) {
+            $.extend(cpSetting, setting);
+            if (cpSetting.enableHistory) {
+                setInterval(cp.historyMark.checkhash, 400);
+            }
+        },
+
         checkUser: function () {
             var userId = $.cookie("inforSignInDialog:userId");
             if (userId == null) {
                 return false;
             }
-            $(getControlID("userId")).html(userId);
+            $(getControlId("userId")).html(userId);
             return true;
         },
 
-        ajaxJson: function (requestType, url, method, data, successFn, completeStatusFn) {
-            var responseResult = {};
-            $.ajax({
+        ajaxJson: function (requestType, url, method, data, successFn,async) {
+            var defaultSettings = {
                 "type": requestType,
                 "url": parseUrl(url, method),
                 "contentType": "application/json; charset=utf-8",
                 "datatype": "json",
                 "data": data,
-                "success": function (data, textStatus, jqXHR) {
+                "async": (async === undefined) || async,
+                "success": function (responseData, textStatus, jqXHR) {
                     if (successFn) {
-                        successFn($.parseJSON(data.d));
-                    }
-                },
-                "error": function (jqXHR, textStatus, errorThrown) {
-                    responseResult.error = { "textStatus": textStatus, "errorThrown": errorThrown };
-                },
-                "complete": function (jqXHR, textStatus) {
-                    if (completeStatusFn) {
-                        completeStatusFn(responseResult);
+                        successFn($.parseJSON(responseData.d));
                     }
                 }
-            });
+            };
+            $.ajax(defaultSettings);
         },
 
         showIndicator: function () {
@@ -59,14 +106,9 @@ var cp = (function () {
 
         },
 
-        loadPage: function (controlId, url) {
-            if (checkUrl(url)) {
-                $(getControlID(controlId)).load(url);
-            }
-        },
-
-        loadPageAsyn: function (controlId, url) {
+        loadPageAsyn: function (url, controlId, storeInHistory) {
             var thisObj = this;
+            controlId = getContentCtrlId(controlId);
             if (checkUrl(url)) {
                 $.ajax(
                 { "type": "GET",
@@ -75,6 +117,7 @@ var cp = (function () {
                         thisObj.showIndicator();
                     },
                     "success": function (msg) {
+                        setHistory(url, controlId, storeInHistory);
                         $("#" + controlId).html(msg);
                     },
                     "complete": function () {
@@ -82,8 +125,119 @@ var cp = (function () {
                     }
                 });
             }
+        },
+
+        ready: function (callbackFn) {
+            if (callbackFn) {
+                $.ready(callbackFn);
+            }
         }
     };
 
-    return cpObj;
-} ());
+    // history
+    (function (window) {
+
+        var lasthash = '';
+        var isie = false;
+        var iecount = 0;
+        var ieVersion = 0;
+        var historyMarked = [];
+
+        var isValidHash = function (hash) {
+            return typeof hash === "string";
+        };
+
+        var supportHistory = function () {
+            return cpSetting.enableHistory && true;
+        };
+
+        var historyMark = {
+            initialize: function () {
+                var quirks = document.compatMode;
+                if (document.all) {
+                    if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)) { ieVersion = new Number(RegExp.$1); }
+                    if (ieVersion >= 8 && quirks == 'BackCompat' || ieVersion < 8) {
+                        this.iframe();
+                        isie = true;
+                    }
+                }
+                //setInterval(cp.historyMark.checkhash, 400);
+            },
+            sethash: function (hash, url, controlId) {
+                if (supportHistory() && isValidHash(hash)) {
+                    if (isie) { iecount++; }
+                    var str = hash + ',' + url + ',' + controlId + ',' + iecount;
+                    var num = '';
+                    var partof = false;
+                    lasthash = hash;
+                    window.location.href = hash;
+                    for (var i = 0; i < historyMarked.length; i++) {
+                        var bookmarkInfo = historyMarked[i].split(",");
+                        if (bookmarkInfo[0] == hash) {
+                            partof = true;
+                            num = bookmarkInfo[3];
+                        }
+                    }
+                    if (isie) {
+                        if (!partof) {
+                            this.setiframe(hash, iecount);
+                        } else {
+                            this.setiframe(hash, num);
+                        }
+                    }
+                    if (!partof) {
+                        historyMarked.push(str);
+                    }
+                }
+            },
+            checkhash: function () {
+                if (supportHistory()) {
+                    var currentHash = window.location.hash;
+                    var historyUrl, historyCtrlId, historyHash;
+                    if (currentHash !== lasthash) {
+                        if (lasthash !== undefined) {
+                            for (var i = 0; i < historyMarked.length; i++) {
+                                var bookmarkInfo = historyMarked[i].split(",");
+                                if (bookmarkInfo[0] === currentHash) {
+                                    historyHash = bookmarkInfo[0]; historyUrl = bookmarkInfo[1]; historyCtrlId = bookmarkInfo[2];
+                                    break;
+                                }
+                            }
+                            if (historyHash && historyUrl && historyCtrlId) {
+                                lasthash = historyHash;
+                                cp.loadPageAsyn(historyUrl, historyCtrlId);
+                            }
+                        }
+                    }
+
+                }
+            },
+            iframe: function () {
+                var hiddenFrame = document.createElement("iframe");
+                hiddenFrame.id = 'hiddenFrame';
+                hiddenFrame.style.width = '100px';
+                hiddenFrame.style.height = '100px';
+                hiddenFrame.style.display = 'none';
+                document.body.appendChild(hiddenFrame);
+            },
+            setiframe: function (hash, num) {
+                document.getElementById('hiddenFrame').src = 'default.html?' + num + hash;
+            },
+            fixiframe: function (hash) {
+                var currentHash = window.location.hash;
+                if (hash) {
+                    if (hash !== currentHash) {
+                        window.location.href = hash;
+                    }
+                }
+            }
+        };
+
+        historyMark.initialize();
+        cp.historyMark = historyMark;
+
+    })(window);
+
+    window.cp = cp;
+
+})(window, jQuery);

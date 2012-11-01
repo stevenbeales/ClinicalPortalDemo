@@ -59,13 +59,14 @@
     <Content Include="lib\Newtonsoft.Json.dll" />
     <Content Include="Login.html" />
     <Content Include="MessageCenter.html" />
+    <Content Include="MessageDetail.html" />
     <Content Include="PatientSearch.html" />
     <Content Include="PatientSummary.html" />
-    <Content Include="Resources\clinicalPortalHistory.js" />
     <Content Include="Resources\clinicalPortalFramework.js" />
     <Content Include="Resources\clinicalPortalMenu.js" />
-    <Content Include="Resources\history.js" />
-    <Content Include="Resources\home.js" />
+    <Content Include="Resources\clinicalPortalMessage.js" />
+    <Content Include="Resources\inforHistory.js" />
+    <Content Include="Resources\clinicalPortalHome.js" />
     <Content Include="Resources\Images\about_600x400_blank.png" />
     <Content Include="Resources\Images\ajax-loader-inforAppNav.gif" />
     <Content Include="Resources\Images\arrow-menu_appNav_scrollbgrnd_1x19.png" />
@@ -143,14 +144,18 @@
     <Content Include="Resources\Images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Resources\inforDataGrid.css" />
     <Content Include="Resources\inforDataGrid.js" />
+    <Content Include="Resources\jquery-1.8.2.js" />
     <Content Include="Resources\json2.js" />
+    <Content Include="Resources\Service\serviceOperation.js" />
+    <Content Include="Resources\Service\serviceProxy.js" />
+    <Content Include="Resources\Service\serviceResolver.js" />
     <Content Include="Resources\signInDialog.js" />
     <Content Include="Resources\inforControlsCombined-1.3.css" />
     <Content Include="Resources\inforControlsCombined-1.3.js" />
     <Content Include="Resources\inforTree.js" />
     <Content Include="Resources\inforWebPartControlsCombined-1.3.css" />
-    <Content Include="Resources\jquery-1.7.1.min.js" />
     <Content Include="Resources\jquery-ui-1.8.14.custom.min.js" />
+    <Content Include="ServiceProxyTest.html" />
     <Content Include="Service\Service1.asmx" />
     <Content Include="Tools.html" />
     <Content Include="Web.config" />
@@ -167,6 +172,10 @@
     <Compile Include="Service\Menu.cs" />
     <Compile Include="Service\MenuItemCoreData.cs" />
     <Compile Include="Service\MenuItem.cs" />
+    <Compile Include="Service\MessageItem.cs" />
+    <Compile Include="Service\MessageCenter.cs" />
+    <Compile Include="Service\MessageItemPropertyResolver.cs" />
+    <Compile Include="Service\MessageJsonConverter.cs" />
     <Compile Include="Service\Service1.asmx.cs">
       <DependentUpon>Service1.asmx</DependentUpon>
       <SubType>Component</SubType>

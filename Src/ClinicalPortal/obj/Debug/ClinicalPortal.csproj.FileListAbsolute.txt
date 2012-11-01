@@ -10,7 +10,7 @@ E:\Projects\ClinicalPortal\ClinicalPortalDemo\Src\ClinicalPortal\obj\Debug\Clini
 E:\Projects\ClinicalPortal\ClinicalPortalDemo\Src\ClinicalPortal\obj\Debug\ClinicalPortal.pdb
 E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortal\bin\ClinicalPortal.dll
 E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortal\bin\ClinicalPortal.pdb
+E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortal\bin\Newtonsoft.Json.dll
 E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortal\obj\Debug\ResolveAssemblyReference.cache
 E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortal\obj\Debug\ClinicalPortal.dll
 E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortal\obj\Debug\ClinicalPortal.pdb
-E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortal\bin\Newtonsoft.Json.dll

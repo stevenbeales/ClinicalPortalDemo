@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Web;
-using System.Web.Services;
-using System.Web.Script.Services;
-using ClinicalPortal.Service;
-using System.Text;
 using System.Collections;
+using System.Collections.Generic;
+using System.Text;
+using System.Web;
+using System.Web.Script.Services;
+using System.Web.Services;
+using ClinicalPortal.Service;
 using Newtonsoft.Json;
+using System.Reflection;
 
 namespace ClinicalPortalService
 {
@@ -19,33 +20,70 @@ namespace ClinicalPortalService
     [System.Web.Script.Services.ScriptService]
     public class Service1 : System.Web.Services.WebService
     {
+        private MessageCenter _messageCenter = new MessageCenter();
+
         [WebMethod]
-        public string HelloWorld()
+        public string GetMethodList()
         {
-            return "Hello World";
+            StringBuilder methodsJson = new StringBuilder();
+            methodsJson.Append("[");
+            MethodInfo[] methods = this.GetType().GetMethods();
+            int number = 0;
+            foreach (MethodInfo method in methods)
+            {
+                if (method.IsPublic && method.GetCustomAttributes(typeof(WebMethodAttribute), false).Length > 0)
+                {
+                    if (number > 0)
+                    {
+                        methodsJson.Append(",");
+                    }
+                    methodsJson.Append(GetMethodJson(method));
+                    number += 1;
+                }
+            }
+            methodsJson.Append("]");
+            return methodsJson.ToString();
+        }
+
+        private string GetMethodJson(MethodInfo webMethod)
+        {
+            if (webMethod != null)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("{")
+                  .Append("\"methodName\":").Append("\"" + webMethod.Name + "\"")
+                  .Append(",").Append("\"returnType\":").Append("\"" + webMethod.ReturnType.Name + "\"");
+
+                // parameters
+                sb.Append(",").Append("\"parameters\":")
+                  .Append("[");
+                ParameterInfo[] paras = webMethod.GetParameters();
+                for (int i = 0; i < paras.Length; i++)
+                {
+                    if (i > 0)
+                    {
+                        sb.Append(",");
+                    }
+                    sb.Append("{").Append("\"paraName\":").Append("\"" + paras[i].Name + "\"")
+                      .Append(",")
+                      .Append("\"paraType\":").Append("\"" + paras[i].ParameterType.Name + "\"")
+                      .Append("}");
+                }
+                sb.Append("]");
+                // end parameters
+                sb.Append("}");
+                return sb.ToString();
+            }
+            return null;
         }
 
         [WebMethod]
         public string GetMessageList()
         {
-            StringBuilder json = new StringBuilder();
-            json.Append("[");
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.ContractResolver = new MessageItemPropertyResolver();
+            return JsonConvert.SerializeObject(_messageCenter.GetMessages(), settings);
 
-            json.Append(GetMessageJson("3", "Greensboro", "6538227668", "", "78 Rocky Second St."));
-            json.Append(",");
-            json.Append(GetMessageJson("4", "Greensboro", "845-9216316", "452 East Milton Way", "452 East Milton Way"));
-            json.Append(",");
-            json.Append(GetMessageJson("5", "Memphis", "8678333362", "364 East White Hague Boulevard", "706 Green Old Parkway"));
-            json.Append(",");
-            json.Append(GetMessageJson("6", "Memphis", "406-4415713", "64 White Old Parkway", "91 Cowley St."));
-            json.Append(",");
-            json.Append(GetMessageJson("7", "Memphis", "527-962-1875", "132 Clarendon St.", "44 Rocky Fabien Parkway"));
-            json.Append(",");
-            json.Append(GetMessageJson("8", "Memphis", "9265837916", "897 Green Hague Road", "98 Old Street"));
-
-            json.Append("]");
-
-            return json.ToString();
             /*
              var data = [];
              data.push({ msgId: 3, sent: "Greensboro", from: "6538227668", patient: "", topic: "78 Rocky Second St."});
@@ -57,19 +95,15 @@ namespace ClinicalPortalService
              */
         }
 
-        private string GetMessageJson(string msgId, string sent, string from, string patient, string topic)
+        [WebMethod]
+        public string GetMessageItem(string msgId)
         {
-            IDictionary<string, string> message = new Dictionary<string, string>();
-            message["msgId"] = msgId;
-            message["sent"] = sent;
-            message["from"] = from;
-            message["patient"] = patient;
-            message["topic"] = topic;
-            return JsonHelper.ObjectLiteral(string.Empty, message);
+            MessageItem msgItem = _messageCenter.GetMessage(msgId);
+            return JsonConvert.SerializeObject(msgItem);
         }
 
         [WebMethod]
-        public string GetMessageNumber()
+        public string GetMessageCount()
         {
             StringBuilder json = new StringBuilder();
             json.Append("{");

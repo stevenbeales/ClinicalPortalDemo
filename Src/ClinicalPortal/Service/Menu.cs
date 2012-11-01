@@ -40,6 +40,14 @@ namespace ClinicalPortal.Service
             msgMenu.AppendAttr("id", "messageCenter");
             msgMenu.AppendAttr("href", "MessageCenter.html");
             MenuItems.Add(msgMenu);
+            
+            // Service Proxy
+            MenuItem serviceProxy = new MenuItem();
+            serviceProxy.Title = "Service Proxy";
+            serviceProxy.Icon = "leaf";
+            serviceProxy.AppendAttr("id", "serviceProxy");
+            serviceProxy.AppendAttr("href", "ServiceProxyTest.html");
+            MenuItems.Add(serviceProxy);
 
             //Patient Data
             MenuItem patientMenu = new MenuItem();
@@ -72,27 +80,6 @@ namespace ClinicalPortal.Service
                 MenuItems.Add(toolsMenu);
             }
         }
-
-        //public string ToJson()
-        //{
-        //    StringBuilder json = new StringBuilder();
-        //    json.Append("{");
-        //    JsonHelper.QuotationString(json, "data");
-        //    json.Append(":");
-        //    json.Append("[");
-        //    for (int i = 0; i < MenuItems.Count; i++)
-        //    {
-        //        if (i >= 1)
-        //        {
-        //            json.Append(",");
-        //        }
-        //        json.Append(MenuItems[i].ToJson());
-        //    }
-        //    json.Append("]");
-        //    json.Append("}");
-
-        //    return json.ToString();
-        //}
 
         private bool HasRole(string role, string[] roles)
         {

@@ -1,22 +1,19 @@
 ﻿
 (function ($, cp) {
     var menuCtrlId;
-    var contentCtrlId;
     var menuJsonData;
 
-    var buildMenu = function (menuData, menuCtrlId, contentCtrlId) {
+    var buildMenu = function (menuData) {
         $("#" + menuCtrlId).unbind("click");
         $("#" + menuCtrlId).inforTree({ "json_data": menuData })
                     .bind("click", function (e, data) {
-                        //cp.loadPageAsyn(contentCtrlId, e.target.href);
-                        cp.historyMark.load(contentCtrlId, e.target.href, e.target.id);
+                        cp.loadPageAsyn(e.target.href);
                     });
     }
 
     cp.menu = {
-        "init": function (menuContainerId, contentContainerId) {
+        "init": function (menuContainerId) {
             menuCtrlId = menuContainerId;
-            contentCtrlId = contentContainerId;
 
             $(".inforSplitter").inforSplitter();
             $(".inforSplitBarVertical").remove();
@@ -26,11 +23,11 @@
         },
         "buildMenuTree": function (menuData) {
             menuJsonData = menuData;
-            buildMenu(menuData, menuCtrlId, contentCtrlId);
+            buildMenu(menuData);
         },
         "getMenuData": function () {
             return menuJsonData;
         }
     };
 
-} (jQuery, cp));
+})(jQuery, cp);

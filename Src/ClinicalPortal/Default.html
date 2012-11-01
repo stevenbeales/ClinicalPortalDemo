@@ -7,22 +7,40 @@
     <link rel="Stylesheet" type="text/css" href="Resources/inforControlsCombined-1.3.css" media="all" />
     <link rel="Stylesheet" type="text/css" href="Resources/inforDataGrid.css" media="all" />
 
-    <script type="text/javascript" src="Resources/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="Resources/jquery-1.8.2.js"></script>
     <script type="text/javascript" src="Resources/jquery-ui-1.8.14.custom.min.js"></script>
     <script type="text/javascript" src="Resources/clinicalPortalFramework.js"></script>
-    <script type="text/javascript" src="Resources/clinicalPortalHistory.js"></script>
     <script type="text/javascript" src="Resources/json2.js"></script>
     <script type="text/javascript" src="Resources/inforControlsCombined-1.3.js"></script>
     <script type="text/javascript" src="Resources/inforTree.js"></script>
     <script type="text/javascript" src="Resources/clinicalPortalMenu.js"></script>
     
     <script type="text/javascript">
-        cp.menu.init("menu", "content");
+        cp.init({contentCtrlId: "content",enableHistory:true});
+        cp.menu.init("menu");
         cp.menu.load();
-        $(document).ready(function () {
-            cp.historyMark.initialize();
-        });
+        cp.loadPageAsyn("Home.html");
     </script>
+    
+    <script type="text/javascript" src="Resources/Service/serviceOperation.js"></script>
+    <script type="text/javascript" src="Resources/Service/serviceResolver.js"></script>
+    <script type="text/javascript" src="Resources/Service/serviceProxy.js"></script>
+    <script type="text/javascript">
+        var service1;
+        function getService() {
+            service1 = cp.serviceProxy.getService("Service/Service1.asmx");
+            for (var methodProp in service1) {
+                if (service1.hasOwnProperty(methodProp)) {
+                    // create button
+                    var methodBtn = $("<input />").attr("type", "button");
+                    methodBtn.attr("onclick", "service1." + methodProp + "();");
+                    methodBtn.attr("value", methodProp);
+                    $("#methodsButtons").append(methodBtn);
+                }
+            }
+        }
+    </script>
+
 </head>
 <body>
     <div class="inforModuleContainer">

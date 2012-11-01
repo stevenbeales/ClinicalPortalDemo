@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicalPortal", "ClinicalPortal\ClinicalPortal.csproj", "{B11E64F6-509D-45D0-B85D-ECA2FC4482DD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicalPortalTest", "ClinicalPortalTest\ClinicalPortalTest.csproj", "{959EBB8E-B9AD-46F3-A48D-BD2A29DF6B56}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{B11E64F6-509D-45D0-B85D-ECA2FC4482DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B11E64F6-509D-45D0-B85D-ECA2FC4482DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B11E64F6-509D-45D0-B85D-ECA2FC4482DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{959EBB8E-B9AD-46F3-A48D-BD2A29DF6B56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{959EBB8E-B9AD-46F3-A48D-BD2A29DF6B56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{959EBB8E-B9AD-46F3-A48D-BD2A29DF6B56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{959EBB8E-B9AD-46F3-A48D-BD2A29DF6B56}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

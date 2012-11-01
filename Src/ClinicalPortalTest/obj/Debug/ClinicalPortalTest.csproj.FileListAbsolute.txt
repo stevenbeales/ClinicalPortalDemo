@@ -1,0 +1,9 @@
+E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortalTest\bin\Debug\ClinicalPortalTest.dll
+E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortalTest\bin\Debug\ClinicalPortalTest.pdb
+E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortalTest\bin\Debug\ClinicalPortal.dll
+E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortalTest\bin\Debug\nunit.framework.dll
+E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortalTest\bin\Debug\Newtonsoft.Json.dll
+E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortalTest\bin\Debug\ClinicalPortal.pdb
+E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortalTest\obj\Debug\ResolveAssemblyReference.cache
+E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortalTest\obj\Debug\ClinicalPortalTest.dll
+E:\CPAjaxDemo\ClinicalPortalDemo\Src\ClinicalPortalTest\obj\Debug\ClinicalPortalTest.pdb
