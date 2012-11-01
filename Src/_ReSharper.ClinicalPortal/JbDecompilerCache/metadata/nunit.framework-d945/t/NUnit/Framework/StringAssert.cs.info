@@ -1,6 +1,0 @@
-﻿Code version: 6.1.1000.82
-Assembly name nunit.framework, Version=2.4.3.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77 mvid {f266df1c-b265-4130-a432-30adbf3436b4}
-* ref mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-  mvid {1f25840d-e954-480e-bd56-3a80b0e38989}
-* ref System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-  mvid {a88ad4d1-97fe-4396-8361-799f800d8bb6}

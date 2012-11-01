@@ -1,6 +1,0 @@
-<Modules>
-  <Module PersistentId="959EBB8E-B9AD-46F3-A48D-BD2A29DF6B56" ModuleId="ClinicalPortalTest" />
-  <Module PersistentId="B11E64F6-509D-45D0-B85D-ECA2FC4482DD" ModuleId="ClinicalPortal" />
-  <Module PersistentId="nunit.framework, Version=2.4.3.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" ModuleId="nunit.framework" />
-  <Module PersistentId="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" ModuleId="mscorlib" />
-</Modules>
