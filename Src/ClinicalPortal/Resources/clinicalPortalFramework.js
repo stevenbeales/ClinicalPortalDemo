@@ -64,6 +64,17 @@
         return controlId || cpSetting.contentCtrlId;
     };
 
+    var xhr = (function () {
+        try {
+            if (window.ActiveXObject) {
+                return new window.ActiveXObject("Microsoft.XMLHTTP");
+            }
+            return new window.XMLHttpRequest();
+        }
+        catch (e) { }
+        return undefined;
+    });
+
     var cp = {
         init: function (setting) {
             $.extend(cpSetting, setting);
@@ -106,7 +117,11 @@
 
         },
 
-        loadPageAsyn: function (url, controlId, storeInHistory) {
+        createElement: function (tagName) {
+            return $("<" + tagName + "/>");
+        },
+
+        loadPageAsyn: function (url, controlId, storeInHistory, successFn) {
             var thisObj = this;
             controlId = getContentCtrlId(controlId);
             if (checkUrl(url)) {
@@ -118,6 +133,9 @@
                     },
                     "success": function (msg) {
                         setHistory(url, controlId, storeInHistory);
+                        if (successFn) {
+                            successFn(msg);
+                        }
                         $("#" + controlId).html(msg);
                     },
                     "complete": function () {
@@ -242,7 +260,7 @@
     (function (cp) {
 
         var serviceUrl;
-        
+
         // get web service class operations
         var serviceResolver = (function (cp) {
 
@@ -300,6 +318,85 @@
         };
 
         cp.serviceProxy = serviceProxy;
+
+    })(cp);
+
+    // js loader
+    (function (cp) {
+
+        var resourceUrls = [];
+
+        var isSameResource = function (url1, url2) {
+            if (url1.toLowerCase() === url2.toLowerCase()) {
+                return true;
+            }
+            return false;
+        };
+
+        var isExist = function (resourceUrl) {
+            if (resourceUrl) {
+                for (var i = 0; i < resourceUrls.length; i++) {
+                    if (isSameResource(resourceUrls[i], resourceUrl)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+
+        var addResourceUrl = function (url) {
+            if (url && typeof url === "string") {
+                if (!isExist(url)) {
+                    resourceUrls.push(url);
+                }
+            }
+        };
+
+        var httpRequest = (function () {
+
+            var createStandard = function () {
+                try {
+                    return new window.XMLHttpRequest();
+                }
+                catch (e) { }
+            };
+
+            var createActive = function () {
+                try {
+                    return new window.ActiveXObject("Microsoft.XMLHTTP");
+                }
+                catch (e) { }
+            };
+
+            return createStandard() || createActive();
+        } ());
+
+        var jsCssLoader = {
+
+            loadJS: function (url, alwaysServer) {
+                if (alwaysServer || !isExist(url)) {
+                    $.ajax(
+                {
+                    "type": "GET",
+                    "url": url,
+                    "datatype": "script",
+                    "async": false,
+                    "cache": !alwaysServer,
+                    "success": function () {
+                        addResourceUrl(url);
+                    }
+                });
+                }
+            },
+
+            loadCss: function (url, alwaysServer) {
+                if (alwaysServer || !isExist(url)) {
+                    $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', url));
+                }
+            }
+        };
+
+        cp.jsCssLoader = jsCssLoader;
 
     })(cp);
 
