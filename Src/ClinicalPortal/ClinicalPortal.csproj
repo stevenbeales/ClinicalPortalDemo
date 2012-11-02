@@ -180,6 +180,8 @@
       <DependentUpon>Service1.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Service\WebMethodInfo.cs" />
+    <Compile Include="Service\WebServiceInfo.cs" />
     <Compile Include="SetExpireModule.cs" />
   </ItemGroup>
   <ItemGroup>

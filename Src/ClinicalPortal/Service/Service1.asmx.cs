@@ -25,57 +25,60 @@ namespace ClinicalPortalService
         [WebMethod]
         public string GetMethodList()
         {
-            StringBuilder methodsJson = new StringBuilder();
-            methodsJson.Append("[");
-            MethodInfo[] methods = this.GetType().GetMethods();
-            int number = 0;
-            foreach (MethodInfo method in methods)
-            {
-                if (method.IsPublic && method.GetCustomAttributes(typeof(WebMethodAttribute), false).Length > 0)
-                {
-                    if (number > 0)
-                    {
-                        methodsJson.Append(",");
-                    }
-                    methodsJson.Append(GetMethodJson(method));
-                    number += 1;
-                }
-            }
-            methodsJson.Append("]");
-            return methodsJson.ToString();
+            WebServiceInfo serviceInfo = new WebServiceInfo(this.GetType());
+
+            return JsonConvert.SerializeObject(serviceInfo.WebMethods);
+            //StringBuilder methodsJson = new StringBuilder();
+            //methodsJson.Append("[");
+            //MethodInfo[] methods = this.GetType().GetMethods();
+            //int number = 0;
+            //foreach (MethodInfo method in methods)
+            //{
+            //    if (method.IsPublic && method.GetCustomAttributes(typeof(WebMethodAttribute), false).Length > 0)
+            //    {
+            //        if (number > 0)
+            //        {
+            //            methodsJson.Append(",");
+            //        }
+            //        methodsJson.Append(GetMethodJson(method));
+            //        number += 1;
+            //    }
+            //}
+            //methodsJson.Append("]");
+            //return methodsJson.ToString();
         }
 
-        private string GetMethodJson(MethodInfo webMethod)
-        {
-            if (webMethod != null)
-            {
-                StringBuilder sb = new StringBuilder();
-                sb.Append("{")
-                  .Append("\"methodName\":").Append("\"" + webMethod.Name + "\"")
-                  .Append(",").Append("\"returnType\":").Append("\"" + webMethod.ReturnType.Name + "\"");
+        //private string GetMethodJson(MethodInfo webMethod)
+        //{
+        //    if (webMethod != null)
+        //    {
+        //        StringBuilder sb = new StringBuilder();
+        //        sb.Append("{")
+        //          .Append("\"methodName\":").Append("\"" + webMethod.Name + "\"")
+        //          .Append(",").Append("\"returnType\":").Append("\"" + webMethod.ReturnType.Name + "\"");
 
-                // parameters
-                sb.Append(",").Append("\"parameters\":")
-                  .Append("[");
-                ParameterInfo[] paras = webMethod.GetParameters();
-                for (int i = 0; i < paras.Length; i++)
-                {
-                    if (i > 0)
-                    {
-                        sb.Append(",");
-                    }
-                    sb.Append("{").Append("\"paraName\":").Append("\"" + paras[i].Name + "\"")
-                      .Append(",")
-                      .Append("\"paraType\":").Append("\"" + paras[i].ParameterType.Name + "\"")
-                      .Append("}");
-                }
-                sb.Append("]");
-                // end parameters
-                sb.Append("}");
-                return sb.ToString();
-            }
-            return null;
-        }
+        //        // parameters
+        //        sb.Append(",").Append("\"parameters\":")
+        //          .Append("[");
+        //        ParameterInfo[] paras = webMethod.GetParameters();
+        //        for (int i = 0; i < paras.Length; i++)
+        //        {
+        //            if (i > 0)
+        //            {
+        //                sb.Append(",");
+        //            }
+        //            sb.Append("{").Append("\"paraName\":").Append("\"" + paras[i].Name + "\"")
+        //              .Append(",")
+        //              .Append("\"paraType\":").Append("\"" + paras[i].ParameterType.Name + "\"")
+        //              .Append("}");
+        //        }
+        //        sb.Append("]");
+        //        // end parameters
+        //        sb.Append("}");
+        //        return sb.ToString();
+        //    }
+        //    return null;
+        //}
 
         [WebMethod]
         public string GetMessageList()
@@ -142,7 +145,6 @@ namespace ClinicalPortalService
             Menu menu = new Menu();
             menu.BuildMenu(roles);
             return JsonConvert.SerializeObject(menu);
-            //return menu.ToJson();
             //return "{\"data\": [{ \"data\":{\"title\": \"Home Page\",\"attr\": { \"id\": \"homePage\" },\"icon\": \"leaf\"},\"metadata\": { \"href\": \"Home.html\" }},{ \"data\":{\"title\": \"Message Center\",\"attr\": { \"id\": \"messageCenter\" },\"icon\": \"leaf\"},\"metadata\": {\"href\": \"#\"}},{ \"data\":{\"title\": \"Patient Data\",\"attr\": { \"id\": \"patientData\" },\"icon\": \"folder\"},\"children\":[{ \"data\": { \"title\": \"Patient Search\", \"icon\": \"leaf\"} },{ \"data\": { \"title\": \"Patient Summary\", \"icon\": \"leaf\"} }]},{ \"data\":{\"title\": \"Tools\",\"attr\": { \"id\": \"tools\" },\"icon\": \"folder\"},\"children\": []}};";
         }
 
@@ -150,18 +152,22 @@ namespace ClinicalPortalService
         public string ChangeMenuCase(string menuJson)
         {
             Menu menu = JsonConvert.DeserializeObject<Menu>(menuJson);
-            foreach (MenuItem menuItem in menu.MenuItems)
+            if (menu != null)
             {
-                ChangeMenuNameOppositeCase(menuItem);
+                foreach (MenuItem menuItem in menu.MenuItems)
+                {
+                    ChangeMenuNameOppositeCase(menuItem);
+                }
+                return JsonConvert.SerializeObject(menu);
             }
-            return JsonConvert.SerializeObject(menu);
+            return menuJson;
         }
 
         private void ChangeMenuNameOppositeCase(MenuItem menuItem)
         {
             if (menuItem != null)
             {
-                string nameCase = "lower";
+                string nameCase = string.Empty;
                 menuItem.MetaData.TryGetValue("nameCase", out nameCase);
                 nameCase = nameCase == "lower" ? "upper" : "lower";
 

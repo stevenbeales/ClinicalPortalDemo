@@ -17,23 +17,27 @@
     var serviceResolver = cp.serviceResolver;
 
     var createMethod = function (methodItem) {
-        // var returnValue = service.mathodA(arg1,arg2);
-        // var returnValue = cp.ajaxJson("POST/GET",serviceUrl,methodA,args,successFn);
-        return function () {
-            // encapsulate args to jsonData
-            var parasJson = "";
+        // encapsulate args to jsonData
+        var getParasJson = function (parasArray) {
+            parasArray = parasArray || [];
+            var parasJson = "{";
             var methodParas = methodItem.parameters;
             for (var i = 0; i < methodParas.length; i++) {
                 if (i > 0) {
                     parasJson += ",";
                 }
-                parasJson += "\"" + methodParas[i].paraName + "\":\'" + (arguments[i] || "") + "\'";
+                parasJson += "\"" + methodParas[i].paraName + "\":\'" + (parasArray[i] || "") + "\'";
             }
-            // request to service
+            parasJson += "}";
+            return parasJson;
+        };
+
+        return (function () {
+            var parasJson = getParasJson(arguments);
             cp.ajaxJson("POST", serviceUrl, methodItem.methodName, parasJson, function (jsonData) {
                 alert(JSON.stringify(jsonData));
             });
-        };
+        });
     };
 
     var serviceProxy = {

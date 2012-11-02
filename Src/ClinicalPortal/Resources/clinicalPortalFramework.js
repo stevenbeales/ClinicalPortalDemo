@@ -60,7 +60,7 @@
         }
     };
 
-    var getContentCtrlId = function(controlId) {
+    var getContentCtrlId = function (controlId) {
         return controlId || cpSetting.contentCtrlId;
     };
 
@@ -81,7 +81,7 @@
             return true;
         },
 
-        ajaxJson: function (requestType, url, method, data, successFn,async) {
+        ajaxJson: function (requestType, url, method, data, successFn, async) {
             var defaultSettings = {
                 "type": requestType,
                 "url": parseUrl(url, method),
@@ -237,6 +237,71 @@
         cp.historyMark = historyMark;
 
     })(window);
+
+    // create js object mirror to the web service class
+    (function (cp) {
+
+        var serviceUrl;
+        
+        // get web service class operations
+        var serviceResolver = (function (cp) {
+
+            var serviceMethods;
+
+            var setMethods = function (methodsArray) {
+                serviceMethods = methodsArray;
+            };
+
+            return {
+                "getMethods": function (webServiceUrl) {
+                    cp.ajaxJson("POST", webServiceUrl, "GetMethodList", undefined, setMethods, false);
+                    return serviceMethods;
+                }
+            };
+
+        })(cp);
+
+        var createMethod = function (methodItem) {
+            // encapsulate args to jsonData
+            var getParasJson = function (parasArray) {
+                parasArray = parasArray || [];
+                var parasJson = "{";
+                var methodParas = methodItem.parameters;
+                for (var i = 0; i < methodParas.length; i++) {
+                    if (i > 0) {
+                        parasJson += ",";
+                    }
+                    parasJson += "\"" + methodParas[i].paraName + "\":\'" + (parasArray[i] || "") + "\'";
+                }
+                parasJson += "}";
+                return parasJson;
+            };
+
+            return (function () {
+                var parasJson = getParasJson(arguments);
+                cp.ajaxJson("POST", serviceUrl, methodItem.methodName, parasJson, function (jsonData) {
+                    alert(JSON.stringify(jsonData));
+                });
+            });
+        };
+
+        var serviceProxy = {
+            "getService": function (webServiceUrl) {
+                serviceUrl = webServiceUrl;
+                var serviceMethods = serviceResolver.getMethods(serviceUrl);
+                var methodItem;
+                var serviceObj = {};
+                for (var i = 0; i < serviceMethods.length; i++) {
+                    methodItem = serviceMethods[i];
+                    serviceObj[methodItem.methodName] = createMethod(methodItem);
+                }
+                return serviceObj;
+            }
+        };
+
+        cp.serviceProxy = serviceProxy;
+
+    })(cp);
 
     window.cp = cp;
 
