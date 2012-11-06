@@ -5,7 +5,7 @@
     <script type="text/javascript">
         var service1;
         function getService() {
-            service1 = cp.serviceProxy.getService("Service/Service1.asmx");
+            service1 = cp.getService("Service/Service1.asmx");
             for (var methodProp in service1) {
                 if (service1.hasOwnProperty(methodProp)) {
                     // create button

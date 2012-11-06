@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>User Info</title>
+    <script type="text/javascript">
+        function searchUser() {
+            var service1Obj = cp.getService("Service/Service1.asmx");
+            var userInfo = service1Obj.GetUser($("#userNameSearch").value);
+            alert(userInfo);
+        }
+
+        function newUser() {
+
+        }
+    </script>
+</head>
+<body>
+    <div id="userTabContainer" style="margin: 10px">
+        <ul class="inforTabset">
+            <li><a href="#tabSearchUser">User Search</a></li>
+            <li><a href="#tabAddUser">Add User</a></li>
+        </ul>
+        <div id="tabSearchUser">
+            <div style="margin-top: 10px;">
+                <span>User Name: </span>
+                <input type="text" id="userNameSearch" />
+                <input type="button" value="Search" onclick="searchUser();" />
+            </div>
+        </div>
+        <div id="tabAddUser">
+            <div style="margin-top: 10px;">
+                <span>User Name: </span>
+                <input type="text" id="userNameNew" />
+                <span>Password: </span>
+                <input type="text" id="passwordNew" />
+                <input type="button" value="Register" onclick="newUser();" />
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $('#userTabContainer').inforTabset();
+    </script>
+</body>
+</html>

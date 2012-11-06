@@ -21,6 +21,7 @@ namespace ClinicalPortalService
     public class Service1 : System.Web.Services.WebService
     {
         private MessageCenter _messageCenter = new MessageCenter();
+        private UserInfoDB _userDB = new UserInfoDB();
 
         [WebMethod]
         public string GetMethodList()
@@ -185,11 +186,31 @@ namespace ClinicalPortalService
         {
             List<string> roles = new List<string>();
             HttpCookie userIdCookie = this.Context.Request.Cookies["inforSignInDialog:userId"];
-            if (userIdCookie != null && (string.Compare(userIdCookie.Value, "admin", true) == 0))
+            if (userIdCookie != null && (string.Compare(userIdCookie.Value, "admin", StringComparison.OrdinalIgnoreCase) == 0))
             {
                 roles.Add("admin");
             }
             return roles.ToArray();
         }
+
+        [WebMethod]
+        public string GetUser(string userName)
+        {
+            UserInfo user = _userDB.GetUser(userName);
+            return JsonConvert.SerializeObject(user);
+        }
+
+        [WebMethod]
+        public string SayHello()
+        {
+            return "Hello, world";
+        }
+
+        [WebMethod]
+        public string SayHello2(string name)
+        {
+            return "{Hello: " + name + "}";
+        }
+
     }
 }

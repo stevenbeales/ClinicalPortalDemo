@@ -9,7 +9,7 @@
                     .bind("click", function (e, data) {
                         cp.loadPageAsyn(e.target.href);
                     });
-    }
+    };
 
     cp.menu = {
         "init": function (menuContainerId) {
@@ -19,11 +19,13 @@
             $(".inforSplitBarVertical").remove();
         },
         "load": function () {
-            cp.ajaxJson("POST", "Service/Service1.asmx", "GetMenu", undefined, this.buildMenuTree);
+            var service1Obj = cp.getService("Service/Service1.asmx");
+            var menuData = service1Obj.GetMenu();
+            this.buildMenuTree(cp.parseJSON(menuData));
         },
         "buildMenuTree": function (menuData) {
             menuJsonData = menuData;
-            buildMenu(menuData);
+            buildMenu(menuJsonData);
         },
         "getMenuData": function () {
             return menuJsonData;

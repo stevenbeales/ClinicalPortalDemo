@@ -14,23 +14,18 @@
 -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
     <title>Home Page</title>
-    <link rel="Stylesheet" type="text/css" href="Resources/inforDataGrid.css" media="all" />
-    <script type="text/javascript" src="Resources/inforDataGrid.js"></script>
     <script type="text/javascript" src="Resources/clinicalPortalHome.js"></script>
-    <script type="text/javascript">
-//        cp.jsCssLoader.loadJS("Resources/inforDataGrid.js");
-//        cp.jsCssLoader.loadJS("Resources/clinicalPortalHome.js");
-    </script>
     <script type="text/javascript">
         (function () {
             cp.testJson = {
                 "changeMenu": function () {
                     var menuData = cp.menu.getMenuData();
-                    var menuJsonString = "{menuJson: '" + JSON.stringify(menuData) + "'}";
-                    cp.ajaxJson("POST", "Service/Service1.asmx", "ChangeMenuCase", menuJsonString, cp.menu.buildMenuTree);
+                    var service1Obj = cp.getService("Service/Service1.asmx");
+                    var changedMenuData = cp.parseJSON(service1Obj.ChangeMenuCase(JSON.stringify(menuData)));
+                    cp.menu.buildMenuTree(changedMenuData);
                 }
             };
         } ());
@@ -59,9 +54,11 @@
             b</div>
     </div>
     <script type="text/javascript">
-        cp.home.init("homeMsgNumber", "msgGrid");
-        cp.home.loadMessageCount();
-        cp.home.message.loadMessageList();
+        setTimeout(function () {
+            cp.home.init("homeMsgNumber", "msgGrid");
+            cp.home.loadMessageCount();
+            cp.home.message.loadMessageList();
+        }, 300);
     </script>
 </body>
 </html>

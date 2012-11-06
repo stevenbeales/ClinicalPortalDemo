@@ -6,7 +6,7 @@
 
     cp.home = (function () {
         var showCount = function (msgCounts, msgNumberCtrlId) {
-            for (propName in msgCounts) {
+            for (var propName in msgCounts) {
                 if (msgCounts.hasOwnProperty(propName)) {
                     var msgCount = msgCounts[propName];
                     var msgCountDiv = $("<div></div>").attr("style", "float: left;margin-left: 5px;");
@@ -16,7 +16,7 @@
                     $("#" + msgNumberCtrlId).append(msgCountDiv);
                 }
             }
-        }
+        };
 
         var homeObj = {
             "init": function (msgNumberContainerId, msgGridContainerId) {
@@ -24,7 +24,9 @@
                 msgGridCtrlId = msgGridContainerId;
             },
             "loadMessageCount": function () {
-                cp.ajaxJson("POST", "Service/Service1.asmx", "GetMessageCount", undefined, this.showMessageCount);
+                var service1Obj = cp.getService("Service/Service1.asmx");
+                var msgCount = service1Obj.GetMessageCount();
+                this.showMessageCount(cp.parseJSON(msgCount));
             },
             "showMessageCount": function (msgCounts) {
                 showCount(msgCounts, msgNumberCtrlId);
@@ -40,16 +42,15 @@
         var handleGridClick = function (e, target) {
             var msgGrid = target.grid;
             var dataItem = msgGrid.getDataItem(target.row);
-            //cp.historyMark.load("http://localhost:64235/MessageDetail.html?msgId=" + dataItem.msgId, "msgId" + dataItem.msgId);
-            cp.loadPageAsyn("http://localhost:64235/MessageDetail.html?msgId=" + dataItem.msgId);
-        }
+            cp.loadPageAsyn("MessageDetail.html?msgId=" + dataItem.msgId);
+        };
 
         var showList = function (messages, msgGridCtrlId) {
             //var grid;
             var columns = [];
 
             //Define Columns for the Grid.
-            columns.push({ id: "msgId", name: "message Id", field: "msgId", width: 40, sortable: true, formatter: UneditableColumnFormatter, hidden: true });
+            columns.push({ id: "msgId", name: "message Id", field: "msgId", width: 40, hidden: true });
             columns.push({ id: "Sent", name: "Sent", field: "sent", width: 150, sortable: true });
             columns.push({ id: "From", name: "From", field: "from", width: 150, reorderable: false });
             columns.push({ id: "Patient", name: "Patient", field: "patient", width: 150 });
@@ -71,7 +72,7 @@
                 showFooter: true,
                 showGridSettings: false,
                 drilldown: function (currentRow) {
-                    alert('Drill Down on ' + currentRow.officeId)
+                    alert('Drill Down on ' + currentRow.officeId);
                 },
                 drillDownTooltip: "Display Details About this Office",
                 forceFitColumns: true,
@@ -83,11 +84,13 @@
 
             msgGrid = $("#" + msgGridCtrlId).inforDataGrid(options);
             msgGrid.onClick.subscribe(handleGridClick);
-        }
+        };
 
         return {
             "loadMessageList": function () {
-                cp.ajaxJson("POST", "Service/Service1.asmx", "GetMessageList", undefined, this.showMessageList);
+                var service1Obj = cp.getService("Service/Service1.asmx");
+                var msgList = service1Obj.GetMessageList();
+                this.showMessageList(cp.parseJSON(msgList));
             },
             "showMessageList": function (messages) {
                 showList(messages, msgGridCtrlId);
@@ -99,4 +102,4 @@
 
     } ());
 
-}) (jQuery, cp)
+})(jQuery, cp)

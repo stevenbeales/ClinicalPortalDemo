@@ -27,10 +27,14 @@
 
     cp.message = {
         "loadMessage": function () {
-            var msgIdPara = getParameterByName("msgId");
-            msgIdPara = msgIdPara || "5";
-            if (msgIdPara) {
-                cp.ajaxJson("POST", "Service/Service1.asmx", "GetMessageItem", "{msgId:'" + msgIdPara + "'}", showMessage);
+            var service1Obj;
+            var msgId = getParameterByName("msgId");
+            msgId = msgId || "5";
+            if (msgId) {
+                service1Obj = cp.getService("Service/Service1.asmx");
+                var msg = service1Obj.GetMessageItem(msgId);
+                showMessage(cp.parseJSON(msg));
+                //cp.ajaxJson("POST", "Service/Service1.asmx", "GetMessageItem", "{msgId:'" + msgId + "'}", showMessage);
             }
         }
     };

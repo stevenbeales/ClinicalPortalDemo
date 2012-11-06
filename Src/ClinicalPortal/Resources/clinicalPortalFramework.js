@@ -64,23 +64,72 @@
         return controlId || cpSetting.contentCtrlId;
     };
 
-    var xhr = (function () {
+    var xhr;
+
+    var createStandardXhr = function () {
         try {
-            if (window.ActiveXObject) {
-                return new window.ActiveXObject("Microsoft.XMLHTTP");
-            }
             return new window.XMLHttpRequest();
         }
         catch (e) { }
-        return undefined;
-    });
+    };
+
+    var createActiveXhr = function () {
+        try {
+            return new window.ActiveXObject("Microsoft.XMLHTTP");
+        }
+        catch (e) { }
+    };
+
+    var getxhr = function () {
+        if (!xhr) {
+            xhr = createStandardXhr() || createActiveXhr();
+        }
+        return xhr;
+    };
+
+    var loadXml = function (xmlData) {
+        return $.parseXML(xmlData);
+    };
+
+    var parseHtmlScript = function (htmlString) {
+        try {
+            var htmlDoc = loadXml(htmlString);
+            var scriptTags = htmlDoc.getElementsByTagName("script");
+            var scriptTag;
+            var srcUrl;
+            var innerScript;
+            for (var i = 0; i < scriptTags.length; i++) {
+                scriptTag = scriptTags[i];
+                srcUrl = scriptTag.getAttribute("src");
+                if (srcUrl) {
+                    innerScript = "cp.jsCssLoader.loadJS(\"" + srcUrl + "\");";
+                    scriptTag.removeAttribute("src");
+                    scriptTag.appendChild(htmlDoc.createTextNode(innerScript));
+                }
+            }
+            var rootElement = htmlDoc.documentElement;
+            return rootElement.xml || (new XMLSerializer()).serializeToString(rootElement);
+        }
+        catch (e) { }
+        return htmlString;
+    };
+
+    var resolveUrl = function (url) {
+        try {
+            var tempAnchor = document.createElement("a");
+            tempAnchor.href = url;
+            return tempAnchor.href;
+        }
+        catch (e) { }
+        return url;
+    };
 
     var cp = {
         init: function (setting) {
             $.extend(cpSetting, setting);
-            if (cpSetting.enableHistory) {
-                setInterval(cp.historyMark.checkhash, 400);
-            }
+            //            if (cpSetting.enableHistory) {
+            //                setInterval(cp.historyMark.checkhash, 400);
+            //            }
         },
 
         checkUser: function () {
@@ -90,6 +139,14 @@
             }
             $(getControlId("userId")).html(userId);
             return true;
+        },
+
+        loadXml: function (xmlString) {
+            return loadXml(xmlString);
+        },
+
+        parseJSON: function (jsonString) {
+            return $.parseJSON(jsonString);
         },
 
         ajaxJson: function (requestType, url, method, data, successFn, async) {
@@ -102,7 +159,7 @@
                 "async": (async === undefined) || async,
                 "success": function (responseData, textStatus, jqXHR) {
                     if (successFn) {
-                        successFn($.parseJSON(responseData.d));
+                        successFn(responseData.d);
                     }
                 }
             };
@@ -124,15 +181,17 @@
         loadPageAsyn: function (url, controlId, storeInHistory, successFn) {
             var thisObj = this;
             controlId = getContentCtrlId(controlId);
-            if (checkUrl(url)) {
+            var resolvedUrl = resolveUrl(url);
+            if (checkUrl(resolvedUrl)) {
                 $.ajax(
                 { "type": "GET",
-                    "url": url,
+                    "url": resolvedUrl,
                     "beforeSend": function () {
                         thisObj.showIndicator();
                     },
-                    "success": function (msg) {
-                        setHistory(url, controlId, storeInHistory);
+                    "success": function (msg, textStatus, jqXHR) {
+                        setHistory(resolvedUrl, controlId, storeInHistory);
+                        msg = parseHtmlScript(msg);
                         if (successFn) {
                             successFn(msg);
                         }
@@ -179,7 +238,7 @@
                         isie = true;
                     }
                 }
-                //setInterval(cp.historyMark.checkhash, 400);
+                setInterval(cp.historyMark.checkhash, 400);
             },
             sethash: function (hash, url, controlId) {
                 if (supportHistory() && isValidHash(hash)) {
@@ -251,15 +310,30 @@
             }
         };
 
-        historyMark.initialize();
         cp.historyMark = historyMark;
+        historyMark.initialize();
 
     })(window);
 
     // create js object mirror to the web service class
     (function (cp) {
 
-        var serviceUrl;
+        var services = [];
+
+        var tryGetService = function (serviceUrl) {
+            for (var i = 0; i < services.length; i++) {
+                var serviceItem = services[i];
+                if (serviceItem[0].toLowerCase() === serviceUrl.toLowerCase()) {
+                    return serviceItem[1];
+                }
+            }
+            return null;
+        };
+
+        var addService = function (serviceUrl, serviceObj) {
+            var serviceItem = [serviceUrl, serviceObj];
+            services.push(serviceItem);
+        };
 
         // get web service class operations
         var serviceResolver = (function (cp) {
@@ -267,7 +341,7 @@
             var serviceMethods;
 
             var setMethods = function (methodsArray) {
-                serviceMethods = methodsArray;
+                serviceMethods = cp.parseJSON(methodsArray);
             };
 
             return {
@@ -279,7 +353,7 @@
 
         })(cp);
 
-        var createMethod = function (methodItem) {
+        var createMethod = function (serviceUrl, methodItem) {
             // encapsulate args to jsonData
             var getParasJson = function (parasArray) {
                 parasArray = parasArray || [];
@@ -295,29 +369,43 @@
                 return parasJson;
             };
 
+            var returnValue;
+
+            var setReturnValue = function (returnData) {
+                returnValue = returnData;
+            };
+
             return (function () {
                 var parasJson = getParasJson(arguments);
-                cp.ajaxJson("POST", serviceUrl, methodItem.methodName, parasJson, function (jsonData) {
-                    alert(JSON.stringify(jsonData));
-                });
+                cp.ajaxJson("POST", serviceUrl, methodItem.methodName, parasJson, setReturnValue, false);
+                return returnValue;
             });
+        };
+
+        var createService = function (serviceUrl) {
+            var serviceMethods = serviceResolver.getMethods(serviceUrl);
+            var methodItem;
+            var serviceObj = {};
+            for (var i = 0; i < serviceMethods.length; i++) {
+                methodItem = serviceMethods[i];
+                serviceObj[methodItem.methodName] = createMethod(serviceUrl, methodItem);
+            }
+            return serviceObj;
         };
 
         var serviceProxy = {
             "getService": function (webServiceUrl) {
-                serviceUrl = webServiceUrl;
-                var serviceMethods = serviceResolver.getMethods(serviceUrl);
-                var methodItem;
-                var serviceObj = {};
-                for (var i = 0; i < serviceMethods.length; i++) {
-                    methodItem = serviceMethods[i];
-                    serviceObj[methodItem.methodName] = createMethod(methodItem);
+                var serviceObj = tryGetService(webServiceUrl);
+                if (serviceObj) {
+                    return serviceObj;
                 }
+                serviceObj = createService(webServiceUrl);
+                addService(webServiceUrl, serviceObj);
                 return serviceObj;
             }
         };
-
-        cp.serviceProxy = serviceProxy;
+        
+        cp.getService = serviceProxy.getService;
 
     })(cp);
 
@@ -347,45 +435,26 @@
         var addResourceUrl = function (url) {
             if (url && typeof url === "string") {
                 if (!isExist(url)) {
-                    resourceUrls.push(url);
+                    resourceUrls.push(url.toLowerCase());
                 }
             }
         };
-
-        var httpRequest = (function () {
-
-            var createStandard = function () {
-                try {
-                    return new window.XMLHttpRequest();
-                }
-                catch (e) { }
-            };
-
-            var createActive = function () {
-                try {
-                    return new window.ActiveXObject("Microsoft.XMLHTTP");
-                }
-                catch (e) { }
-            };
-
-            return createStandard() || createActive();
-        } ());
 
         var jsCssLoader = {
 
             loadJS: function (url, alwaysServer) {
                 if (alwaysServer || !isExist(url)) {
                     $.ajax(
-                {
-                    "type": "GET",
-                    "url": url,
-                    "datatype": "script",
-                    "async": false,
-                    "cache": !alwaysServer,
-                    "success": function () {
-                        addResourceUrl(url);
-                    }
-                });
+                        {
+                            "type": "GET",
+                            "url": url,
+                            "datatype": "script",
+                            "async": false,
+                            "cache": !alwaysServer,
+                            "success": function () {
+                                addResourceUrl(url);
+                            }
+                        });
                 }
             },
 

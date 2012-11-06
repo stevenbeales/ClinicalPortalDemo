@@ -69,6 +69,12 @@ namespace ClinicalPortal.Service
             patientSummaryMenu.AppendAttr("id", "patientSummary");
             patientSummaryMenu.AppendAttr("href", "PatientSummary.html");
             patientMenu.AppendChildMenu(patientSummaryMenu);
+
+            MenuItem userMenu = new MenuItem() { Title = "User Info", Icon = "leaf" };
+            userMenu.AppendAttr("id", "userInfo");
+            userMenu.AppendAttr("href", "User.html");
+            MenuItems.Add(userMenu);
+
             //Tools
             if (HasRole("admin", roles))
             {
