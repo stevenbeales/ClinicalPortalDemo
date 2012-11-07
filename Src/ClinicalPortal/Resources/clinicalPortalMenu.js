@@ -15,8 +15,8 @@
         "init": function (menuContainerId) {
             menuCtrlId = menuContainerId;
 
-            $(".inforSplitter").inforSplitter();
-            $(".inforSplitBarVertical").remove();
+            $("#menuSplitter").inforSplitter();
+            //$(".inforSplitBarVertical").remove();
         },
         "load": function () {
             var service1Obj = cp.getService("Service/Service1.asmx");

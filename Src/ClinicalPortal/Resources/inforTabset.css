@@ -1,0 +1,315 @@
+/* Infor TabSet
+----------------------------------*/
+.inforTabContainer { 
+   height: 100%;
+   overflow: hidden; 
+   display:inline;
+}
+
+.ui-tabs, .inforTabset  {
+   overflow:hidden;
+}
+
+.inforTabset { 
+   list-style: none;
+   margin: 0px; 
+   padding: 0px;
+   border-bottom: 1px solid #b3b3b3;
+   height: 24px;
+   position:relative;
+   overflow: hidden;
+   width:10000px
+}
+
+/*The Divider Between the Tabs */
+.inforTabset li {
+    color: #666666;
+    display: inline-block;
+    height: 25px;
+    min-width: 45px;
+    padding-top: 3px;
+	border-radius: 3px;
+	border: 1px solid transparent;
+}
+
+.inforTabset li:first-child { 
+	 margin-left: 0 !important;
+}
+
+/*The Unfocused Tabs*/
+.inforTabset a {
+   float: left;
+   padding:  0px 10px 0px;  
+   color: #666666;
+   text-decoration: none;
+   white-space: nowrap;
+   margin-top: 1px;
+   cursor: default; 
+   font-size: 1.2em;
+}
+
+.inforTabset li:hover { 
+    cursor: default; 
+   	background-color: rgba(104, 107, 115, 0.20);
+	-moz-transition-timing-function: ease;
+	-moz-transition-duration: 150ms;
+	-moz-transition-property: background-color;
+	border-radius: 3px 3px 0px 0;
+}
+
+.inforTabset li:hover a{
+	color: #13A3F7;
+}
+
+.inforTabset li.ui-state-focus{
+	border: 1px solid #13A3F7;
+}
+
+.inforTabset li.ui-state-focus a {
+	color: #13A3F7;
+}
+
+.inforModuleHeaderRight:hover {
+   	background-color: transparent !important;
+}
+
+.inforTabset a:focus {
+	height: 24px;
+    margin-top: -3px;
+    padding-top: 4px;
+	border-radius: 3px;
+}
+
+/*UnFocus and Selected Tab*/
+.ui-tabs-selected, .ui-tabs-selected:hover  { 
+	background-color: #13A3F7 !important;
+    cursor: default;
+}
+
+.ui-tabs-selected a{
+ color: white !important; 
+}
+
+/* The Hidden Tabs*/
+.ui-tabs-hide { 
+   display: none; 
+   background-color: #fff 
+}
+
+.ui-state-disabled {
+	opacity: 0.6;
+	filter:alpha(opacity=60); 
+}
+
+/* The Tab Panel Area*/
+.ui-tabs-panel {
+   height: 100%;
+   background: #ffffff;
+   padding: 1px 7px;
+}
+
+/* Tab Overflow Button */
+.inforTabButton {
+	background: none repeat scroll 0 0 white;
+    float: right;
+    left: 0;
+    margin-top: -26px;
+    position: relative;
+    top: 0;
+	border-bottom: 1px solid #B3B3B3;
+	padding-left: 10px;
+}
+
+.inforMoreButton{
+	background-color: white;
+    border: medium none;
+    color: #666666;
+    height: 25px;
+    width: auto;
+	border-radius: 3px 3px 0 0;
+	padding: 1px 10px 0;
+}
+
+.inforMoreButton:hover{
+	color: #13A3F7;
+	background-color: rgba(104, 107, 115, 0.20);
+}
+
+/* Tab Close Button */
+.inforTabCloseButton {
+    visibility: hidden;
+	opacity: 0;
+	float: right;
+    height: 11px;
+    left: -1px;
+    margin-top: 6px;
+    padding-left: 6px;
+    width: 11px;
+	transition: opacity 1s linear;
+	-moz-transition: opacity 1s linear;
+}
+
+.inforNormalTabs > li.ui-state-active > .inforTabCloseButton {
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAN0lEQVQY02P4//8/AzGYgRyF6kDsgMR3gIphKARJNEAl1aFsB1xWwxQ0IJtGtkKirSbaM9QJRwAqODK4Un8IXAAAAABJRU5ErkJggg==")  no-repeat scroll 0 2px transparent;
+}
+
+.inforNormalTabs > li.ui-state-active > .inforTabCloseButton:hover {
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAZklEQVQY02P4//8/AxAzAnEMEK8G4mdQvBoqBpJjgClq+I8bgOQYGaC6/u94/Pd/58XfcFkQGyQGBTEMUCvAEsKLv4MlQRjERtK4mgHqnv8wU0EKYBqQwDOSFBJtNdGeITp4iApwANLMY5zrqGg4AAAAAElFTkSuQmCC")  no-repeat scroll 0 2px transparent;
+}
+
+.inforNormalTabs > li.ui-state-active > .inforTabCloseButton:active {
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAZklEQVQY02P4//8/AxAzAnEMEK8G4mdQvBoqBpJjgClq+I8bgOQYGaC6/u94/Pd/58XfcFkQGyQGBTEMUCvAEsKLv4MlQRjERtK4mgHqnv8wU0EKYBqQwDOSFBJtNdGeITp4iApwANLMY5zrqGg4AAAAAElFTkSuQmCC")  no-repeat scroll 0 2px transparent;
+}
+
+.ui-state-hover .inforTabCloseButton{
+	opacity: 1;
+	visibility: visible;
+	transition: visibility 0s, opacity 1s linear;
+	-moz-transition: visibility 0s, opacity 1s linear;
+}
+
+.ui-tabs-selected .inforTabCloseButton{
+	opacity: 1;
+	visibility: visible;
+}
+
+.inforAddTabButton{
+   background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAbCAYAAACN1PRVAAAC2UlEQVRIx72S21ITQRCGJ++ym4TdPBJFIKCCIgHd4C0PkkgQg0AUiArhNUhyL4eqXAn4Bm13z8zO9GxS3rlVH//f511AAYD6X/CPuN4uIYtIP1pqT1EJsERWl4pxnvO8YYpx3+wt8bGo3ilFS529uN4BIjLKnodJdZ40FnXPexoV5tt7SEnFy53FyLxttGwalzX8BdZ7OdfbdnlLvSP22B0YL6po5WMfAYYGrTexzYX5OOj3NfbnWTnuKyxMqVhuEPug/X4+5OekN4sbrhb2BDpV5UZ3Wm4cgE+80p0Rd2fmmYbMa8Jcd6riVTSrn4DUeg3GjYPcS5X9tk/HRWxelddweO0QE6SWQ9bYoOMQNxd7M5zz5vReXVOVF5/B0ZuhPfB7xrdPhsdCTcY9PCBrqvISG2ZQnqOjX7+BHtLKq6Ng7kj0higeMJQNlQA/N761xx4LfXKmV9ihyutfoLJ+rNk4BopFLmBy98THJvfPHM/qnTevqnigunECC69PWB3HzAj/NmM8QFjPX2Y8Hb1BTy/h5nx1u1T1zSlo+iD8Zp/1xvza/vXQUTvjOBVeVTe/QvXtN6iQzoC/CBfRstH9k/wyzNF/5Yi+nI7hnnzWelLj1QIaItk6A+vnkSB0lJ4xHhY1nE9Mj46L82qBjmydA2nSREVY87xkbI6N7p7zOdHT1Jo0w9kzPLZ9AURC2vTI43NPz2Hy8Ed/Geqs/sTTcKdKdgZgD2ow5txA5kgxP3l45kN8bHvgcWHmLrz5gctt87HvkL77Ab5K/0PU0x3XY+vh7DxUQk0e6fufQufVQs9xMOPvIK+SDBsz02hIs0tIMj+W9Zys6Iuzl7nHY1eQtjTkE99n0tu6IAt8Pjcs7FNpNoRaywPjFAvOaxU9LZNvuV6hmdvl71X0BkRtV2NjehubY+b2+bkrkeMdLTevarvXUPtwDWmuwzy2vrbr4mLfEOwON+d67AzpX6/kvCAFXZuXAAAAAElFTkSuQmCC");
+   height: 27px;
+   width: 27px; 
+   border-width: 0px;
+   position: relative;
+   top: 0px;
+}
+
+.inforAddTabButton:hover {
+  background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAbCAYAAACN1PRVAAAB9UlEQVRIx71WS3bDIAxU7oFPhg6TpX0WnyZx963T97Jqkt6AIsfYIEYkq+Y9gm0+o9FngEII9F+NOt+T8/0h9tzxMMbna/dsYWvcB6fezX5/lj3GuGfctz8ksEN8ORYb6U1Uq4DVfJfPexp6FEK0MMoWOf8aDAJmHijHhjTGFP/GaiIrIN4XOQ3MwIAEUK4fSccHWVwZwcCoCOCsfZ7vV1oSYqdasSqszdhBL2xGDHVMY8JQEVS2E8BVwMClKHHWudJTvsjlDBjHpWu5s+EZ6QlO5NL6fMH0dV/bLU/tOr4gzlQVLcjEfNH58yfIT3rNwLU84RNYUQ9DaZmK0w52qzfPkgipC5lWraB6bJrvC5j02hOQWRYKwKx0wTnGRjaWJs8fl8cGltpJvsfetfRyYZbcxjWofD/Pt/DOT8CsctiYwfrK2C2MIhthdIrPiVliuTCXPrnV2/pKyMe69vIU32J2uQckCFVBe5UgGgAq/DpnWpmd5gdQeFDYBTOdTYz9nb4nMHFtJbxKefS4rY2M9W6JT2zT9y80Bh2kCZRQLTlQCnZcgDwZBhOUJV/Ll3Wk5C502p3qvKN3LDZVnRvHCzixqXmOKbc6b2Qst7JxUKoPBNeyHonzy2tfpfrInY17CLoYOXSeZevweebN+5+RlYNR2CXzP+XGJG6juTSWAAAAAElFTkSuQmCC");
+}
+
+.inforModuleContentArea > .inforTabContainer
+{
+	margin-top: 0px;
+}
+
+.inforHiddenTab{
+	display:none !important;
+}
+
+
+html[dir="rtl"] .inforTabset li {
+	float: right;
+}
+
+html[dir="rtl"] .inforTabButton {
+	float:left;
+}
+
+html[dir="rtl"] .ui-tabs-paging-next { 
+   float: left !important;
+}
+
+html[dir="rtl"] .ui-tabs-paging-prev { 
+   float: right !important;
+}
+
+html[dir="rtl"] .inforModuleTabs .inforModuleHeaderRight {
+	padding: 14px 1px;
+}
+
+/*Session aka Module Tabs*/
+ul.inforModuleTabs { 
+	height: 33px;
+}
+
+.inforModuleTabs > li a {
+	font-size: 1.6em;
+	font-family:  Helvetica, Arial, sans-serif;
+	color: #b3b3b3 !important;
+	padding-top: 5px;
+}
+
+.inforModuleTabs > li.ui-tabs-selected a {
+	font-size: 1.6em;
+	padding-top: 5px;
+}
+
+.inforModuleTabs > li > a:focus {
+    height: 33px;
+    margin-top: 0;
+    padding-top: 6px;
+}
+
+.inforModuleTabs > .ui-tabs-selected a {
+	color: #13a3f7 !important;
+}
+
+.inforModuleTabs > .ui-tabs-selected a:focus {
+	height: 100%;
+    margin: 0;
+	padding-top: 6px;
+}
+
+.inforModuleTabs > .inforTabset li:hover, .inforModuleTabs > .inforTabset li.ui-state-focus {
+	background-color: transparent !important;
+	border-bottom: 3px solid #686B73;
+}
+
+.inforModuleTabs > .inforTabset li:hover a, .inforModuleTabs > .inforTabset li.ui-state-focus a {
+	color: #686B73 !important;
+}
+
+.inforModuleTabs > .ui-tabs-selected, .inforModuleTabs > .ui-tabs-selected:hover  { 
+	background-color: transparent !important;
+	border-bottom: 3px solid #13a3f7 !important;
+	border-radius: 0px;
+}
+
+.inforModuleTabs > .inforTabset li.ui-tabs-selected:hover a, .inforModuleTabs > .inforTabset li.ui-tabs-selected.ui-state-focus a {
+	color: #13A3F7 !important;
+}
+
+.inforModuleTabs > ul > li {
+	border-bottom: 3px solid transparent;
+    height: 30px;
+    padding: 0;
+	padding-right: 4px;
+}
+
+.inforTabCloseButton {
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAO0lEQVQY02P4//8/AzGYgWSFGzdv9QDiAiR+AUgMm0KQxAGoBg8ouwCr1UgKDiCbRp5Coq0m2jNUC0cAJzoe1HfuZSMAAAAASUVORK5CYII=")   no-repeat scroll 0 2px transparent;
+	height: 12px;
+    padding-left: 0;
+    width: 12px;
+    position: relative;
+    left: -6px;
+    margin-left: -1px;
+    margin-right: -4px;
+	top: -7px;
+}
+
+.inforModuleTabs .inforTabCloseButton{
+	left: -3px;
+    top: 3px;
+	margin-left: -3px;
+    margin-right: -4px;
+}
+
+.inforTabCloseButton:hover, .inforTabCloseButton:active, .inforTabCloseButton:focus {
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAaklEQVQY05WQ0Q2AIAxEy54M4z79MsZZ1AXAGfg5e6QYfkzqx0tK78pBBYCs256MbKhRHPVeomeYFgMfUEviUzjOC7Xer4E1e37O4hFdaK11kbCeBlX8PRi30jAGpvjyyxiODn8mtp7owh8h7jNc5SYZNAAAAABJRU5ErkJggg==")   no-repeat scroll 0 2px transparent;
+}
+
+.inforModuleTabs .inforTabHeaderEditor {
+	display: inline;
+    left: 5px;
+    top: 5px;
+	margin-left: -2px;
+}
+
+.inforModuleTabs .inforModuleHeaderRight {
+	 padding: 3px 1px;
+}
+
+.inforModuleTabs .inforTabButton {
+	margin-top: -27px;
+}
+

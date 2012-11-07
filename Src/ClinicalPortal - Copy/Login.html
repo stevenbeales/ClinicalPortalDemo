@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta charset="utf-8" />
+		
+		<title>Sign In Dialog</title>
+		<link rel="Stylesheet" type="text/css" href="Resources/inforControlsCombined.css" media="all" />
+
+        <script type="text/javascript" src="Resources/jquery-1.8.2.js"></script>
+        <script type="text/javascript" src="Resources/jquery-ui-1.8.14.custom.min.js"></script>
+        <script type="text/javascript" src="Resources/inforControlsCombined.js"></script>
+        <script type="text/javascript" src="Resources/clinicalPortalFramework.js"></script>
+        <script type="text/javascript" src="Resources/json2.js"></script>
+        
+		<!--<script type="text/javascript" src="Resources/signInDialog.js"></script>-->
+		
+    <script type="text/javascript">
+        $(function () {
+
+            $('#inforSignInDialog').inforSignInDialog(
+                { login: function (userId, password, rememberPassword) {
+                    //Do something to login - just faking things here...
+                    var loginOk = false;
+
+                    var service1Obj = cp.getService("Service/Service1.asmx");
+                    var result = service1Obj.CheckUser(userId, password);
+
+                    loginOk = (result === "true");
+					    
+                    if (loginOk) {
+                        //Go to the page you want...return true hides the dialog false does not...
+                        return true;
+                    }
+                    else {
+                        //Show an error in the status area.
+                        if ($("#userId").val() == "")
+                            $('#inforSignInDialog').inforSignInDialog("showError", "The entered User ID is not valid.");
+                        else
+                            $('#inforSignInDialog').inforSignInDialog("showError", "The password you entered is incorrect.");
+                        return false; //false does not hide the dialog
+                    }
+                },
+                    success: function (userId) {
+                        var expireDate = new Date();
+                        expireDate.setHours(expireDate.getHours() + 1);
+                        $.cookie("inforSignInDialog:userId", userId, { "expires": expireDate });
+
+                        window.open("Default.html", "_self");
+                    },
+                    buttons: [{ text: Globalize.localize("SignIn"),
+                        click: function () {
+                            $('#inforSignInDialog').inforSignInDialog("login");
+                        },
+                        isDefault: true
+                    }]
+                });
+
+            //optionally add and position lost password link...
+            $(".inforFormButton").after('<br><a class="inforHyperlink" style="top:7px;position:relative" id="forgotPassword" href="http://www.forgot.com">' + Globalize.localize("ForgotPassword") + '</a>');
+            $(".inforSignInButtonSet").css("margin-top", "52px");
+
+            if ($.browser.msie) {
+                $("input[type=password]").bind("focus", function (e) {
+                    $(this).select();
+                });
+            }
+        });
+    </script>
+    <script type="text/javascript">
+
+        $(function () {
+            //Globalize.culture("ar-SA");
+            $('.inforDropDownList').inforDropDownList({ selectFirst: false, typeAheadSearch: false });
+
+            $('#inforSignInDialog').inforSignInDialog(
+					{ login: function (userId, password, rememberPassword) {
+					    
+					    //Do something to login - just faking things here...
+					    var loginOk = false;
+					    var service1Obj = cp.getService("Service/Service1.asmx");
+					    var result = service1Obj.CheckUser(userId, password);
+
+					    loginOk = (result === "true");
+
+					    if (loginOk) {
+					        //Go to the page you want...return true hides the dialog false does not...
+					        return true;
+					    }
+					    else {
+					        //Show an error in the status area.
+					        var userId = $("#userId");
+					        if (userId.val() == "")
+					            $('#inforSignInDialog').inforSignInDialog("showError", "The user id is not valid.", userId);
+					        else
+					            $('#inforSignInDialog').inforSignInDialog("showError", "The password is incorrect.", $("#password"));
+					        return false; //false does not hide the dialog
+					    }
+					},
+					    buttons: [{ title: Globalize.localize("SignIn"),
+					        click: function () {
+					            $('#inforSignInDialog').inforSignInDialog("login");
+					        },
+					        isDefault: true
+					    }]
+					});
+
+        });
+		
+    </script>
+	</head>
+	
+	<body>
+		<div id="inforSignInDialog" style="display:none">
+			<p>Clinical Portal</p>
+			<div class="inforLogo"></div>
+			
+			<div class="inforSignInControls">	
+					<label for="userId" class="inforLabel" data-localizedText="UserID">UserId</label>
+					<input type="text" name="userId" id="userId" autocomplete="on" class="inforTextbox"/>
+					<br>
+					<label for="password" class="inforLabel" data-localizedText="Password">Password</label>
+					<input type="password" name="password" id="password" autocomplete="on" onFocus="focus" class="inforTextbox"/>
+					<br>
+					<label class="inforLabel noColon"></label><input type="checkbox" class="inforCheckbox" id="rememberPassword" /><label for="rememberPassword" class="inforCheckboxLabel" data-localizedText="RememberMe"></label><br>
+			</div>
+		</div>
+	</body>
+</html>

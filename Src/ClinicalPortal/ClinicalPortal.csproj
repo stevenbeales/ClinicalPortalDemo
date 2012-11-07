@@ -54,18 +54,24 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Config.html" />
     <Content Include="Default.html" />
+    <Content Include="Default2.html" />
     <Content Include="Home.html" />
     <Content Include="lib\Newtonsoft.Json.dll" />
     <Content Include="Login.html" />
+    <Content Include="Master.html" />
     <Content Include="MessageCenter.html" />
     <Content Include="MessageDetail.html" />
     <Content Include="PatientSearch.html" />
     <Content Include="PatientSummary.html" />
+    <Content Include="Portal.html" />
     <Content Include="Resources\clinicalPortalFramework.js" />
     <Content Include="Resources\clinicalPortalHome.js" />
     <Content Include="Resources\clinicalPortalMenu.js" />
     <Content Include="Resources\clinicalPortalMessage.js" />
+    <Content Include="Resources\config.js" />
+    <Content Include="Resources\default.js" />
     <Content Include="Resources\Images\about_600x400_blank.png" />
     <Content Include="Resources\Images\ajax-loader-inforAppNav.gif" />
     <Content Include="Resources\Images\arrow-menu_appNav_scrollbgrnd_1x19.png" />
@@ -141,15 +147,19 @@
     <Content Include="Resources\Images\topbanner_right_pixel_1x28.png" />
     <Content Include="Resources\Images\topbanner_softbrands_120x28.png" />
     <Content Include="Resources\Images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Resources\infor-companyon-client.js" />
     <Content Include="Resources\inforControlsCombined.css" />
     <Content Include="Resources\inforControlsCombined.js" />
     <Content Include="Resources\inforHistory.js" />
+    <Content Include="Resources\inforTabset.css" />
     <Content Include="Resources\inforTree.js" />
     <Content Include="Resources\inforWebPartControlsCombined.css" />
     <Content Include="Resources\jquery-1.8.2.js" />
-    <Content Include="Resources\jquery-ui-1.8.14.custom.min.js" />
+    <Content Include="Resources\jquery-ui-1.9.0.custom.min.js" />
+    <Content Include="Resources\jquery.json-2.2.js" />
     <Content Include="Resources\json2.js" />
     <Content Include="Resources\signInDialog.js" />
+    <Content Include="Resources\user.js" />
     <Content Include="ServiceProxyTest.html" />
     <Content Include="Service\Service1.asmx" />
     <Content Include="Tools.html" />

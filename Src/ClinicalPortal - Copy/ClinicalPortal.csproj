@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B11E64F6-509D-45D0-B85D-ECA2FC4482DD}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ClinicalPortal</RootNamespace>
+    <AssemblyName>ClinicalPortal</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.Mobile" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Default.html" />
+    <Content Include="Home.html" />
+    <Content Include="lib\Newtonsoft.Json.dll" />
+    <Content Include="Login.html" />
+    <Content Include="MessageCenter.html" />
+    <Content Include="MessageDetail.html" />
+    <Content Include="PatientSearch.html" />
+    <Content Include="PatientSummary.html" />
+    <Content Include="Resources\clinicalPortalFramework.js" />
+    <Content Include="Resources\clinicalPortalHome.js" />
+    <Content Include="Resources\clinicalPortalMenu.js" />
+    <Content Include="Resources\clinicalPortalMessage.js" />
+    <Content Include="Resources\Images\about_600x400_blank.png" />
+    <Content Include="Resources\Images\ajax-loader-inforAppNav.gif" />
+    <Content Include="Resources\Images\arrow-menu_appNav_scrollbgrnd_1x19.png" />
+    <Content Include="Resources\Images\arrow-menu_appNav_scrollbgrnd_over_1x19.png" />
+    <Content Include="Resources\Images\arrow-menu_appNav_scrolldown.png" />
+    <Content Include="Resources\Images\arrow-menu_appNav_scrolldown_disabled.png" />
+    <Content Include="Resources\Images\arrow-menu_appNav_scrolldown_over.png" />
+    <Content Include="Resources\Images\arrow-menu_appNav_scrollup.png" />
+    <Content Include="Resources\Images\arrow-menu_appNav_scrollup_disabled.png" />
+    <Content Include="Resources\Images\arrow-menu_appNav_scrollup_over.png" />
+    <Content Include="Resources\Images\bg_appNav_ctr_over_1x28.png" />
+    <Content Include="Resources\Images\btn_datepicker_sprite.png" />
+    <Content Include="Resources\Images\btn_dropdownlist_sprite.png" />
+    <Content Include="Resources\Images\btn_tabChevron_sprite.png" />
+    <Content Include="Resources\Images\btn_tabClose_sprite.png" />
+    <Content Include="Resources\Images\btn_tabScroll_sprite.png" />
+    <Content Include="Resources\Images\datagrid_bgrnd.png" />
+    <Content Include="Resources\Images\datagrid_filtericons_sprite.png" />
+    <Content Include="Resources\Images\default-profile-picture-small.png" />
+    <Content Include="Resources\Images\default-profile-picture.png" />
+    <Content Include="Resources\Images\divider_appNav_1x18.png" />
+    <Content Include="Resources\Images\drilldown_sprite.png" />
+    <Content Include="Resources\Images\field_regular-center-focus.png" />
+    <Content Include="Resources\Images\field_regular-center.png" />
+    <Content Include="Resources\Images\field_regular-left-focus.png" />
+    <Content Include="Resources\Images\field_regular-left.png" />
+    <Content Include="Resources\Images\field_regular-right-focus.png" />
+    <Content Include="Resources\Images\field_regular-right.png" />
+    <Content Include="Resources\Images\filter-gradient-bg.png" />
+    <Content Include="Resources\Images\icn_checkbox_sprite.png" />
+    <Content Include="Resources\Images\icn_error-field.png" />
+    <Content Include="Resources\Images\iconButton_icons_sprite.png" />
+    <Content Include="Resources\Images\indicator_indefinate.gif" />
+    <Content Include="Resources\Images\indicator_repeats_sprite.png" />
+    <Content Include="Resources\Images\infor-logo.png" />
+    <Content Include="Resources\Images\inforFormButton_repeats.png" />
+    <Content Include="Resources\Images\inforFormButton_sides.png" />
+    <Content Include="Resources\Images\inforSplitButton_icons.png" />
+    <Content Include="Resources\Images\inforSplitButton_repeats.png" />
+    <Content Include="Resources\Images\inforSplitButton_sides.png" />
+    <Content Include="Resources\Images\inforSplitter_sprite.png" />
+    <Content Include="Resources\Images\infortextbox_top_bgrnd.png" />
+    <Content Include="Resources\Images\infor_ajax-loader_16x16.gif" />
+    <Content Include="Resources\Images\infor_ajax-loader_32x32.gif" />
+    <Content Include="Resources\Images\infor_ajax-loader_393939_16x16.gif" />
+    <Content Include="Resources\Images\infor_ajax-loader_lite_24x24.gif" />
+    <Content Include="Resources\Images\infor_ajax-loader_white_16x16.gif" />
+    <Content Include="Resources\Images\logo-signIn_Infor_126x54.png" />
+    <Content Include="Resources\Images\message_dialog_icons_sprite.png" />
+    <Content Include="Resources\Images\module_header_center_1x27.png" />
+    <Content Include="Resources\Images\module_header_icons.png" />
+    <Content Include="Resources\Images\shadow_listbox_ctr_btm_1x5.png" />
+    <Content Include="Resources\Images\shadow_listbox_lft_5x1.png" />
+    <Content Include="Resources\Images\shadow_listbox_lft_btm_corner_5x5.png" />
+    <Content Include="Resources\Images\shadow_listbox_rt_5x1.png" />
+    <Content Include="Resources\Images\shadow_listbox_rt_btm_corner_5x5.png" />
+    <Content Include="Resources\Images\signin_blank_withShadow.png" />
+    <Content Include="Resources\Images\sort_indicators_sprite.png" />
+    <Content Include="Resources\Images\splash_blank_shadow_noLogo.png" />
+    <Content Include="Resources\Images\splitter_bar_6x6_enabled.png" />
+    <Content Include="Resources\Images\splitter_bar_6x6_horiz_enabled.png" />
+    <Content Include="Resources\Images\splitter_bar_6x6_horiz_over.png" />
+    <Content Include="Resources\Images\splitter_bar_6x6_over.png" />
+    <Content Include="Resources\Images\sprite_arrow_down_appNav_7x4.png" />
+    <Content Include="Resources\Images\sprite_btn_gridMenuOptions.png" />
+    <Content Include="Resources\Images\sprite_overflowAppNav_24x28.png" />
+    <Content Include="Resources\Images\sprite_scrollAppNav_24x28.png" />
+    <Content Include="Resources\Images\status-icons_sprite.png" />
+    <Content Include="Resources\Images\topbanner_approva_120x28.png" />
+    <Content Include="Resources\Images\topbanner_infor_120x28.png" />
+    <Content Include="Resources\Images\topbanner_lawson_120x28.png" />
+    <Content Include="Resources\Images\topbanner_left_pixel_1x28.png" />
+    <Content Include="Resources\Images\topbanner_right_pixel_1x28.png" />
+    <Content Include="Resources\Images\topbanner_softbrands_120x28.png" />
+    <Content Include="Resources\Images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Resources\inforControlsCombined.css" />
+    <Content Include="Resources\inforControlsCombined.js" />
+    <Content Include="Resources\inforHistory.js" />
+    <Content Include="Resources\inforTree.js" />
+    <Content Include="Resources\inforWebPartControlsCombined.css" />
+    <Content Include="Resources\jquery-1.8.2.js" />
+    <Content Include="Resources\jquery-ui-1.8.14.custom.min.js" />
+    <Content Include="Resources\json2.js" />
+    <Content Include="Resources\signInDialog.js" />
+    <Content Include="ServiceProxyTest.html" />
+    <Content Include="Service\Service1.asmx" />
+    <Content Include="Tools.html" />
+    <Content Include="User.html" />
+    <Content Include="Web.config" />
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\JsonHelper.cs" />
+    <Compile Include="Service\Menu.cs" />
+    <Compile Include="Service\MenuItemCoreData.cs" />
+    <Compile Include="Service\MenuItem.cs" />
+    <Compile Include="Service\MessageItem.cs" />
+    <Compile Include="Service\MessageCenter.cs" />
+    <Compile Include="Service\MessageItemPropertyResolver.cs" />
+    <Compile Include="Service\MessageJsonConverter.cs" />
+    <Compile Include="Service\Service1.asmx.cs">
+      <DependentUpon>Service1.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Service\UserInfo.cs" />
+    <Compile Include="Service\UserInfoDB.cs" />
+    <Compile Include="Service\WebMethodInfo.cs" />
+    <Compile Include="Service\WebServiceInfo.cs" />
+    <Compile Include="SetExpireModule.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>64235</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

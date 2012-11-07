@@ -2,7 +2,8 @@
 
     var cpSetting = {
         contentCtrlId: "content",
-        enableHistory: true
+        enableHistory: true,
+        logInPage: "Login.html"
     };
 
     var parseUrl = function (url, method) {
@@ -137,8 +138,32 @@
             if (userId == null) {
                 return false;
             }
-            $(getControlId("userId")).html(userId);
+            //$(getControlId("userId")).html(userId);
             return true;
+        },
+
+        getUser: function () {
+            return $.cookie("inforSignInDialog:userId");
+        },
+
+        logOut: function () {
+            $.cookie("inforSignInDialog:userId", null);
+            window.open(cpSetting.logInPage, "_self");
+        },
+
+        serializeForm: function (formId) {
+            var formJson = {};
+            var formObj = $("#" + formId);
+            var formData = formObj.serializeArray();
+            var itemName, itemValue;
+            for (var i = 0; i < formData.length; i++) {
+                itemName = formData[i].name;
+                itemValue = formData[i].value;
+                if (itemName && itemValue) {
+                    formJson[formData[i].name] = formData[i].value;
+                }
+            }
+            return formJson;
         },
 
         loadXml: function (xmlString) {
@@ -147,6 +172,13 @@
 
         parseJSON: function (jsonString) {
             return $.parseJSON(jsonString);
+        },
+
+        ajax: function (settings) {
+            if (!this.checkUser()) {
+                this.logOut();
+            }
+            $.ajax(settings);
         },
 
         ajaxJson: function (requestType, url, method, data, successFn, async) {
@@ -163,7 +195,7 @@
                     }
                 }
             };
-            $.ajax(defaultSettings);
+            this.ajax(defaultSettings);
         },
 
         showIndicator: function () {
@@ -182,9 +214,10 @@
             var thisObj = this;
             controlId = getContentCtrlId(controlId);
             var resolvedUrl = resolveUrl(url);
+            var settings;
             if (checkUrl(resolvedUrl)) {
-                $.ajax(
-                { "type": "GET",
+                settings = {
+                    "type": "GET",
                     "url": resolvedUrl,
                     "beforeSend": function () {
                         thisObj.showIndicator();
@@ -200,7 +233,8 @@
                     "complete": function () {
                         thisObj.hideIndicator();
                     }
-                });
+                };
+                this.ajax(settings);
             }
         },
 
@@ -404,7 +438,7 @@
                 return serviceObj;
             }
         };
-        
+
         cp.getService = serviceProxy.getService;
 
     })(cp);

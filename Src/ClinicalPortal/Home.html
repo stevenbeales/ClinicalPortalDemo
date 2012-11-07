@@ -32,10 +32,6 @@
     </script>
 </head>
 <body>
-    <div id="testPostJson">
-        <input type="button" value="Click me to post json data, will change menu" onclick="cp.testJson.changeMenu();" />
-    </div>
-    <br />
     <div id="homeMsgNumber">
         <div style="margin-bottom: 10px;">
             Secure Messages:</div>
@@ -48,17 +44,15 @@
         </div>
     </div>
     <div class="infor2ColumnLayout">
-        <div id="homePatientSearch" class="column1">
-            a</div>
-        <div id="homeNews" class="column2">
-            b</div>
+        <div id="homePatientSearch" class="column1"></div>
+        <div id="homeNews" class="column2"></div>
     </div>
     <script type="text/javascript">
         setTimeout(function () {
             cp.home.init("homeMsgNumber", "msgGrid");
             cp.home.loadMessageCount();
             cp.home.message.loadMessageList();
-        }, 300);
+        }, 250);
     </script>
 </body>
 </html>

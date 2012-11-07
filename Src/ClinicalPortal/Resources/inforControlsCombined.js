@@ -1,7 +1,7 @@
 /*!
- * Infor Html Controls v2.0.1556
- * Date: 10/31/2012 3:16:43 PM
- * Rev: 2435
+ * Infor Html Controls v3.0.1573
+ * Date: 11/6/2012 1:48:33 PM
+ * Rev: 2472
  */
 /*
  * Globalize
@@ -1598,23 +1598,41 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
     $.widget("ui.inforAboutDialog", {
         options: {
 			productName: "<Product Name>",	//text for product name 
-			details: ""
+			details: null,	//controls full details text text for details text area.
+			copyRightYear: null,
+			additionalDetails: null,
+			version: "10.0.1",
+			copyRight: "Copyright &copy; @year Infor. All rights reserved. The word and design marks set forth herein are trademarks and/or registered trademarks of Infor and/or its affiliates and subsidiaries. All rights reserved. All other trademarks listed herein are the property of their respective owners. www.infor.com." //copyright text
 		},
+		widgetEventPrefix: 'about',
+		close: function() {
+			this.destroy();
+			this._trigger("close");
+		},
+		destroy: function() {
+			this.dialog.inforDialog("close");
+			$("#inforAboutDialog").remove();
+			$(document).unbind("keypress.inforabout");
+		},
+		dialog: null,
 		_init: function () {
             var self = this,
                 o = self.options,
-			    $div = $('<div id="inforAboutDialog" class="inforAboutDialog" style="display:none"></div>');
+			    $div = $('<div id="inforAboutDialog" style="display:none"></div>');
                 $productName = $('<span class="productName">'+o.productName+'</span><br>');
-                $details = $('<textarea class="inforTextArea">'+o.details +'</textarea><br>');
-                $closebutton = $('<button class="inforCloseButton"></button>');
-                $logo = $('<div class="inforLogo"></div>');
-                $okbutton = $('<button class="inforFormButton">'+Globalize.localize("Ok", Globalize.culture().name)+'</button>');
+                $logo = $('<div class="inforLogoTm"></div>');
+                $okbutton = $('<button class="inforFormButton default">'+Globalize.localize("Ok")+'</button>');
 			
-			 $div.append($closebutton,$productName,$details,$logo,$okbutton);
+			 o.copyRight = o.copyRight.replace("@year",(o.copyRightYear ? o.copyRightYear : "2012"));
+			 
+			 var details = (o.details ? o.details : o.productName + " "+ o.version + "\r\n\r\n" + o.copyRight + "\r\n\r\n" + o.additionalDetails );
+			 var $details = $('<textarea class="inforTextArea" readonly>'+details+'</textarea><br>');
+			
+             $div.append($logo,$productName,$details,$okbutton);
 			 $('body').append($div);
 			
 			//Add signIn Dialog elements to the page
-			var $dialog = $div.inforDialog({
+			this.dialog = $div.inforDialog({
 				title: "",
 				dialogType: "General",
 				minHeight: 420,
@@ -1634,35 +1652,22 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
 			});
 			
 			//remove elements from the message dialog that are not needed.
-			var root = $dialog.closest(".inforDialog");
-			
-			root.hide();
-			root.find(".dialogTop").remove();
-			root.addClass("inforAboutDialog");
-			root.removeClass("inforDialog");
+			var root = this.dialog.closest(".inforDialog");
+			root.addClass("inforAboutDialog").removeClass("inforDialog");
+			root.find(".inforDialogTitleBar").remove();
 			$('.inforOverlay').hide();
 			
 			//adjust width
-			root.css({"width":"","height":""});
-			root.show();
 			root.find(".inforCloseButton").show();
-			
-			//close button functionality
-			$closebutton.click(function(){
-				$div.remove();
-				$dialog.remove();
-			 });
 			 
-			 $okbutton.inforFormButton().focus().click(function(){
-				$div.remove();
-				$dialog.remove();
-			 });
+			$okbutton.inforFormButton().focus().click(function(){
+				self.close();
+			});
 			 
-			 //adjust to middle.
-			 if (!Globalize.culture().isRTL)
-				$okbutton.css({"left":300-($okbutton.width()/2)+"px"});
-			 else
-				$okbutton.css({"right":320-($okbutton.width()/2)+"px"});
+			$(document).bind("keypress.inforabout",function(e) {
+				if (e.which==0 || e.which==27) //esc closes..
+					self.close();
+			});
 		}
    });
 })(jQuery);
@@ -1678,8 +1683,9 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
             loadMenu: null,  //Adds the ability to refresh menu items with an ajax call.
 			showSessionMenu : false, 	//adds the session navigation menu and api.
 			onSessionMenuOpen: null,
+			sortable: true,	//sort overflow items by drag and drop
 			backgroundIFrame: false	//opens an iFrame overtop of submenus. Use this if having issues with pdf/applets in the page
-         },
+		 },
          pending: 0,
          elementId: null,
 		 resizeTimer : null,
@@ -1689,7 +1695,7 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
          /* Initial Create Function.*/
          _create: function () {
              this.elementId = this.element.attr("id");
-			 this.element.css({"height":"28px", "overflow":"hidden"});
+			 this.element.css({"height":"42px", "overflow":"hidden"});
 			 var self = this;
 			 appNavResizeTimer = null;
              appNavWindowHeight = $(window).height(), appNavWindowWidth = $(window).width();
@@ -1699,8 +1705,7 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
 			 //add the <br> at the end if its not there.
               if (!this.element.children().last().is("br"))
                  this.element.append('<br style="clear: left" />');
-
-              
+ 
              this.buildmenu(this.elementId);
              $(window).bind("smartresize.inforApplicationNav",function(){
 				self._resizeAndRender();
@@ -1727,39 +1732,20 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
              var $mainmenu = $("#" + elementId + ">ul"); //reference main menu UL
              //add some html as a placeholder for the overflowmenu
              $mainmenu.find("#overFlowMenu").remove();
-             $mainmenu.append('<li id ="overFlowMenu"><ul><li id="overFlowLi"><a href="#"></a></li></ul></li>');
+             $mainmenu.append('<li id="overFlowMenu"><a href="#">More</a><ul></ul></li>');
 
 			 if (this.options.showSessionMenu) {
 				//add some html as a placeholder for the sessionNavMenu
 				$mainmenu.find("#sessionNavMenu").remove();
-				$mainmenu.prepend('<li id ="sessionNavMenu"><ul><li id="sessionNavLi"><a href="#"></a></li></ul></li>');
+				$mainmenu.prepend('<li id ="sessionNavMenu"><a href="#"></a><ul><li id="sessionNavLi"><a href="#">Sessions</a></li></ul></li>');
 			 }
 		 	 
-             //var $headers = $mainmenu.find("ul").parent();
-             //attachSubMenus($headers);
              var $headers = $mainmenu.children("li").has('ul');
              attachSubMenus($headers);
-             
-			 /*attach hover events to top level menu items for auto open.*/
-             $mainmenu.children("li").each(function () {
-                 var $this = $(this);
-				 if ($this.find("ul").length == 0) {	//attach a blank hover intent for top level - this helps prevent the menus from closing in auto open mode.
-						$this.hoverIntent(function () {
-							}, function () {
-							});
-				}
-             });
-			 
+           
              // Add dividers
-             $(".headerDividerContainer").remove();
              $(".topNavSpacer").remove();
-             $(".inforApplicationNav>ul>li").not("#sessionNavMenu").before('<li class=\'headerDividerContainer\'></li>');
-
-             // Last item also needs an end divider
-             $(".inforApplicationNav>ul>li:last").after('<li class=\'headerDividerContainer\'></li>');
-             $(".headerDividerContainer").append('<div class=\'headerDivider\'></div>')
-             $(".headerDividerContainer:first").before('<li id=\'topNavSpacer\' class=\'topNavSpacer\'></li>');
-             
+               
 			 setApplicationNavOverflow();
 			 this._setupSessionNav();
 		 },
@@ -1768,17 +1754,13 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
          */
 		 _setupSessionNav: function () {
 			 if (!this.options.showSessionMenu)
-			 return;
+				return;
 			 
 			 var self = this;
-			 	
 			 //add a button first thing in the menu
-			 var sessionNavButton = $("<button type='button' class='sessionNavButton' title='"+Globalize.localize('SessionNavigation')+"'/>");
-			 var spacer = $(".inforApplicationNav .topNavSpacer");
-			 spacer.width(26).append(sessionNavButton);
-
-			 sessionNavButton.click(function (event) {
-			 
+			 var sessionButton = $("#sessionNavMenu");
+			 sessionButton.click(function (event) {
+				
 				 if (self.options.onSessionMenuOpen!=null) {
 						self._sessionInfo = self.options.onSessionMenuOpen(self._sessionInfo);
 				 }
@@ -1845,7 +1827,6 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
 							ul = $("<ul></ul>");
 							parent.after(ul);
 						}
-						
 						//add it..
 						ul.append(li);
 					 } else {
@@ -1856,8 +1837,8 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
 				
 				attachSubMenus($li);
 				//and then...open the session nav...
-				openMenu($li.children(":first"), $li);
-				event.stopPropagation();
+				openMenu($li.children("ul:first"), $li);
+				//event.stopPropagation();
 			 });
 		 },
          decorateMenu: function (subMenu) {
@@ -1890,30 +1871,24 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
              var $curobj = $this.css({ zIndex: Math.abs(1000 - i) });
              var $subul = $this.find('ul:eq(0)').css({ display: 'block' });
 
-             this._dimensions = { w: this.offsetWidth, h: 28, subulw: $subul.outerWidth(), subulh: $subul.outerHeight() }
+             this._dimensions = { w: this.offsetWidth, h: 42, subulw: $subul.outerWidth(), subulh: $subul.outerHeight() }
              this.istopheader = $curobj.parents("ul").length == 1 ? true : false //is top level header?
              $subul.css({ top: this.istopheader ? this._dimensions.h + "px" : 0 });
-
+			
              //add arrow images
              if (this.istopheader)
-                 $curobj.children("a:eq(0):not(.scrollDown)").css({ paddingRight: 10 }).append('<div class="downarrow" />');
+                 $curobj.children("a:eq(0):not(.scrollDown)").append('<div class="downArrow" />');
              else
-                 $curobj.children("a:eq(0):not(.scrollDown)").addClass("rightarrow");
+                 $curobj.children("a:eq(0):not(.scrollDown)").addClass("rightArrow");
 
              if (this.istopheader) {
-                 $curobj.click(function (e) {
+                 $curobj.not("#sessionNavMenu").click(function (e) {
                     if ($subul.is(":visible"))	//click when open closes the menu...
                      {
                          $curobj.removeClass("activeHeader");
                          $subul.hide(); //to speed normal animation...
-                      return;
+						 return;
                      }
-
-                     if ($curobj.attr("id") != "overFlowMenu") {
-                         $headers.removeClass("activeHeader");
-                         $curobj.addClass("activeHeader");
-                     }
-
                      openMenu($subul, $curobj);
                  });
              }
@@ -1923,7 +1898,7 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
                 $('<div></div>').addClass('transparentOverlay')
 				    .appendTo('body')
 				    .data("openMenus", [])
-				    .css({ 'width': '100%', 'height': '100%', 'top': '-28px', 'position': 'absolute', 'display': 'none', 'z-index': '-1' })
+				    .css({ 'width': '100%', 'height': '100%', 'top': '-42px', 'position': 'absolute', 'display': 'none', 'z-index': '-1' })
 				    .mousedown(function () { 		//Serves to close with click like other menus and also closes menu item when its clicked.
 				       closeOpenMenus($headers.closest('.inforApplicationNav'));
 				    }).hoverIntent(function () {
@@ -1935,7 +1910,11 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
              $curobj.hover(function () {
                  if (this.istopheader) {
                      var openMenus = $curobj.closest(".inforApplicationNav").find('ul li ul').filter(":visible");
-                     if (openMenus.length > 0 && !$subul.is(":visible")) {
+                     
+					 if ($curobj.closest(".inforApplicationNav").data("dragging"))
+						return;
+						
+					 if (openMenus.length > 0 && !$subul.is(":visible")) {
                          $headers.removeClass("activeHeader");
                          $curobj.addClass("activeHeader");
                          closeSiblingMenus($curobj);
@@ -1946,29 +1925,20 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
 
              $curobj.hoverIntent(
 				function (e) {
-				    if ($(this).attr("id") == "overFlowMenu")
-				        return;
-				    if (!this.istopheader) {
+				     if (!this.istopheader) {
 				        closeSiblingMenus($curobj);
 				        openMenu($subul, $curobj);
-				        $curobj.find('a.rightarrow:first').addClass("selected");
+				        $curobj.find('a.rightArrow:first').addClass("selected");
 				    }
 				},
 				function (e) {
 				    //We also close on a click out...closeMenu($subul,$curobj);
-				    $curobj.find('a.rightarrow:first').removeClass("selected");
+				    $curobj.find('a.rightArrow:first').removeClass("selected");
 				}
 			)//end hoverIntent
 
          }) //end $headers.each()
 
-         //add box shadow
-         var uls = $headers.closest(".inforApplicationNav").find('ul li ul');
-		 uls.addClass("boxShadow");
-		 if ($.browser.msie && $.browser.version==8) {
-			uls.addClass("ie8Effects");
-		 }
-			
          var mainMenu = $headers.closest(".inforApplicationNav ul");
          mainMenu.find("ul").css({ display: 'none', visibility: 'visible' });
 
@@ -1977,12 +1947,12 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
              var $this = $(this);
              if ($(this).children("ul").length == 0) {
                  $this.hoverIntent(
-				function () {
-				   closeSiblingMenus($(this));
-				},
-				function () { }
-				);
-             }
+					function () {
+					   closeSiblingMenus($(this));
+					},
+					function () { }
+					);
+				}
          });
          mainMenu.find("li ul");
      }
@@ -1992,12 +1962,12 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
          //find the bottom of the window 
          var winOffset = $(window).height();
          var rootDiv = $(submenu).closest(".inforApplicationNav");
-         var bottomOfNav = rootDiv.position().top + 28; //(from the top page to the top of the control)
+         var bottomOfNav = rootDiv.position().top + 42; //(from the top page to the top of the control)
          var allowableHeight = winOffset - (bottomOfNav);
          //add height of the scrollbar buttons..
          allowableHeight = allowableHeight - 46;
-         //each menu is 23 in height
-         var fittingMenus = allowableHeight / 23;
+         //each menu is 32 in height
+         var fittingMenus = allowableHeight / 32;
          var menuCounter = 1;
 
          var hiddenTopItems = [];
@@ -2023,7 +1993,7 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
          if (hiddenBottomItems.length > 0) {
              var topOfNav = rootDiv.position().top; //(from the top page to the top of the control)
              if ($(submenu).parent().position().top > topOfNav && $(submenu).parent().attr("id") != "overFlowMenu") {
-                 $(submenu).css("top", -($(submenu).offset().top - 28) + "px");
+                 $(submenu).css("top", -($(submenu).offset().top - 42) + "px");
              }
              addVerticalScrollbars($(submenu), hiddenTopItems, hiddenBottomItems, visibleSubMenus);
          }
@@ -2036,10 +2006,8 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
          removeVerticalScrollbars(submenu);
 
          var liWidth = (submenu.filter(':first').width() - 16) / 2;
-         var up = $("<li class='scrollUp' style='padding-left:" + liWidth + "px'><div class='scrollArrow'/></li>").prependTo(submenu);
-         var down = $("<li class='scrollDown roundedBottomCorners' style='padding-left:" + liWidth + "px'><div class='scrollArrow'/></li>").appendTo(submenu);
-
-         down.prev().removeClass("roundedBottomCorners");
+         var up = $("<li class='scrollUp'><div class='scrollArrow'/></li>").prependTo(submenu);
+         var down = $("<li class='scrollDown'><div class='scrollArrow'/></li>").appendTo(submenu);
 
          up.attr("disabled", "disabled");
          up.unbind('mouseenter');
@@ -2162,11 +2130,7 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
 
      /* Main code for the app overflow. Determine if there is overflow and add the scroll/overflow buttons if needed */
      function setApplicationNavOverflow() {
-		 //fix styling during resize..
-		 //var root = $(".inforApplicationNav");
-		 //root.css({"height":"28px", "overflow":"hidden"});
-		 
-         hiddenLeftItems = [];
+		 hiddenLeftItems = [];
          hiddenRightItems = [];
          visibleItems = [];
          //show all items..
@@ -2178,9 +2142,6 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
              var $this = $(this);
 
              if ($this.attr("id") == "overFlowMenu") {
-                 //Hide the seperators that were added.
-                 $this.prev().hide();
-                 $this.next().hide();
                  return;
              }
 
@@ -2213,7 +2174,6 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
              addScrollbars();
          else {
              removeScrollbars();
-             $(".headerDividerContainer:last").show();
          }
          itemCount--;
 		 
@@ -2221,9 +2181,7 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
 
      /* Remove the Horizontal Scroll buttons from the dom */
      function removeScrollbars() {
-         $("#scrollLeft").unbind('appNav click').hide().prev(".headerDividerContainer").hide();
-		 $("#scrollRight").unbind('appNav click').hide();
-         $(".overFlowButton").remove();
+         $("#overFlowMenu").hide();
      }
      
 	 /*Bump first element off of visible Items and hide it*/
@@ -2241,14 +2199,16 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
 
      /* Additional Check on the left scroll button itself is overflowing. if it is hide the last visible item.*/
      function checkButtonOverFlow() {
-         var rightbutton = $("#scrollRight");
+         //var rightbutton = $("#scrollRight");
+         //var rootDiv = rightbutton.closest(".inforApplicationNav");
+         var rightbutton =	$("#overFlowMenu");
          var rootDiv = rightbutton.closest(".inforApplicationNav");
-         var bottomOfNav = rootDiv.position().top + 28;
+         var bottomOfNav = rootDiv.position().top + 42;
 
          if (rightbutton.length > 0 && rightbutton.offset().top >= bottomOfNav)
              hideLast();
 
-         var overFlow = $(".overFlowButton");
+         var overFlow = $("#overFlowMenu");
          if (overFlow.length > 0 && overFlow.offset().top >= bottomOfNav)
              hideLast();
 
@@ -2272,52 +2232,8 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
      function addScrollbars() {
          //remove the previous ones..
          removeScrollbars();
-		 
-         var left = $("#scrollLeft");
-		 if (left.length==0) {
-			left = $("<button type='button' id='scrollLeft' type class='scrollLeft' title='"+Globalize.localize("Previous")+"'/>");
-			$("#topNavSpacer").after(left);
-			left.before('<li class="headerDividerContainer"><div class="headerDivider"></div></li>');
-		 }
-		 
-		 var right = $("#scrollRight");
-		 if (right.length==0) {
-			right = $("<button id='scrollRight' type='button' class='scrollRight' title='"+Globalize.localize("Next")+"'/>");
-			$(".inforApplicationNav>br").before(right);
-		 }
-		 
-		 left.show();
-		 left.prev(".headerDividerContainer").show();
-		 right.show();
-		 
-         $("#scrollLeft").bind('appNav click',function () {
-             moveLeft();
-         });
-
-         $("#scrollRight").bind('appNav click',function () {
-			  moveRight();
-         });
-
-         addOverflow();
+		 addOverflow();
 		 checkButtonOverFlow();
-         enableScrollBars();
-     }
-
-     /* Set the Disabled on the Scrollbars. */
-     function enableScrollBars() {
-         var left = $("#scrollLeft");
-         var right = $("#scrollRight");
-
-         if (hiddenLeftItems.length == 0)
-             left.attr("disabled", "disabled");
-         else
-             left.removeAttr("disabled");
-
-         if (hiddenRightItems.length == 0)
-             right.attr("disabled", "disabled");
-         else
-             right.removeAttr("disabled");
-
      }
 
      function enableVerticalScrollBars(submenu) {
@@ -2363,7 +2279,6 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
          visibleItems.sort(sortByIdx);
 
          checkButtonOverFlow();
-         enableScrollBars();
      }
 
      /* Scroll one element right. */
@@ -2392,7 +2307,6 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
          visibleItems.sort(sortByIdx);
 
          checkButtonOverFlow();
-         enableScrollBars();
      }
 
      /* Sort Method for the scrolling arrays. */
@@ -2404,37 +2318,38 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
 
      /* Find all of the items including those taht arent visible and add them to the overflow menu button */
      function addOverflow() {
-         var overflow = $("<button type='button' class='overFlowButton' title='"+Globalize.localize('ListAllMenuItems')+"'/>");
-         $(".inforApplicationNav>br").before(overflow);
-
-         overflow.click(function () {
-             var $li = $(".inforApplicationNav>ul").find("#overFlowMenu");
-             var $ul = $li.children("ul");
+		 var overflow = $("#overFlowMenu"),
+			 root  =  overflow.closest(".inforApplicationNav"),
+			 rootUl = overflow.closest(".inforApplicationNav>ul");
+		 
+		 overflow.show();
+		 
+         //overflow.click(function () {
+             var $ul = overflow.children("ul");
 
              if ($ul.is(":visible")) {
                  $ul.hide();
 				return;
              }
 
-             closeSiblingMenus($li);
+             closeSiblingMenus(overflow);
 
              //add the menu items
              $ul.children().remove();
 
              $(".inforApplicationNav>ul>li").each(function (index) {
                  var $this = $(this);
-
+				
                  if ($this.attr("id") == "overFlowMenu")
-                     return;
-
-                 if ($this.hasClass("headerDividerContainer"))
                      return;
 
                  var childA = $this.children("a"),
 					 html = childA.html();
 					 
                  if (html != null && html != undefined && html != "") {
-                     var li = $("<li id='overFlowLi'></li>");
+                     var li = $("<li></li>");
+					 li.data("menuItem", $this);
+					 
                      var anchor = $("<a href='#'>" + html + "</a>");
                      
 					 //copy the onclick action
@@ -2449,8 +2364,8 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
                      anchor.click(function (e) {
                          //find the element
                          var menuItem = $this;
-
-                         //scroll it into view
+						 
+						 //scroll it into view
                          while (hiddenLeftItems.length != 0 && !menuItem.is(":visible")) {
                              moveLeft();
                          }
@@ -2494,12 +2409,56 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
                      li.append(anchor);
                      $ul.append(li);
                  }
-             });
+             //});
+			 
              //Remove the down arrows..
-             $li.find(".downarrow").remove();
-             //open the menu
-             openMenu($li.children(":first"), $li);
-         });
+             overflow.find("ul .downArrow").remove();
+			 
+			 /*rootUl.addClass("connectedSortable").sortable({placeholder: 'inforApplicationNavPlaceholder',
+						   helper : "clone",
+						   axis: "x",
+						   forcePlaceholderSize: true,
+						   revert: 300,
+						   items: "li:not(#overFlowMenu)",
+						   start: function(event, ui) {
+						         ui.placeholder.width(ui.item.width());
+								 root.data("dragging",true)
+						   },
+						   stop: function(event, ui) { 
+						        root.data("dragging",false);
+						   }});*/
+			
+			var originalIndex = -1;
+			
+			$ul.sortable({placeholder: 'inforDragPlaceholder',
+						   helper : 'clone',
+						   forcePlaceholderSize: true,
+						   connectWith: 'ul',
+						   revert: 100,
+						   start: function(event, ui) {
+						        root.data("dragging",true);
+								originalIndex = ui.item.index();
+						   },
+						   change: function() {
+							
+						   },
+						   revert: function() {
+						   },
+						   stop: function(event, ui) { 
+								var elem = ui.item.data("menuItem");
+								
+								if (originalIndex==ui.item.index())
+									return;
+									
+								if (ui.originalPosition.top>ui.position.top)
+									elem.parent().children().eq(ui.item.index()).before(elem);	//dragged up
+								else
+									elem.parent().children().eq(ui.item.index()).after(elem);	//dragged down
+									
+								root.data("dragging",false);
+						   }});
+			  
+			});
      }
 
      /* Close ALL Menus by clicking the overlay. */
@@ -2509,30 +2468,34 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
          $('body').find(".transparentOverlay").css({ 'z-index': '-1', 'display': 'none' });
 		 $("#inforObjectOverlay").hide();
 		 
-		 root.css({"height":"28px", "overflow":"hidden"});
-	 }
+		 root.css({"height":"42px", "overflow":"hidden"});
+		 
+		 $(".inforBkgrndIFrame").remove();
+     }
 
      /* Close ALL Menus at the same level (no animation)... */
      function closeSiblingMenus($curobj) {
-         $curobj.siblings("li").children("ul").filter(":visible").each(function () {
+         $curobj.siblings("li").removeClass("activeHeader").children("ul").filter(":visible").each(function () {
             var $targetul = $(this);
              $targetul.hide();
              //close any child menus of these
              $targetul.children("ul").filter(":visible").hide();
+			 if ($targetul.data("iFrame"))
+				$targetul.data("iFrame").remove();
          });
 	 }
 
      /* Call back for the Ajax Call. */
      function appNavResponse($subul, $curobj) {
          //Add The content
-         var newSubmenus = $subul.find("ul").not(".boxShadow");
+         var newSubmenus = $subul.find("ul");
          if (newSubmenus.length > 0) {
              attachSubMenus(newSubmenus.parent());
          }
-         //$subul.find("ul").not(".boxShadow").parent());
-         $curobj.removeClass("inforAppNavLoading");
+          $curobj.removeClass("inforAppNavLoading");
          openMenu($subul, $curobj, true);
-     }
+		 
+	 }
 
      /* Open the Menu/Submenu. */
 	 function openMenu($subul, $curobj, isCallback) {
@@ -2596,7 +2559,7 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
 				$targetul.css({left:menuleft+"px"}).animate({height:'show',opacity:'show'}, 3, function() {
 					 //append an iFrame so it opens up over applets ect...
 					 if (rootDiv.data("backgroundIFrame")){ 
-						showHideIFrame($targetul);
+						addIFrame($targetul);
 					 }
 				});
 			else {
@@ -2606,7 +2569,7 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
 			}
 		 }
 
-         var bottomOfNav = rootDiv.position().top + 28;
+         var bottomOfNav = rootDiv.position().top + 42;
 
          if (!header.istopheader) {
 			if (Globalize.culture().isRTL) {
@@ -2628,7 +2591,7 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
 					 my: "left",
 					 at:  "right",
 					 of: $targetul.parent("li"),
-					 offset: "-1 -14",
+					 offset: "1 -15",
 					 collision: "flip"
 				 });
 				 
@@ -2644,8 +2607,8 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
 
          /*see if the elements will fit if it is scootched up */
 
-         //this is the expected height of the menu...numItems*23 (the width of each li)+10 (the bottom padding)
-         var expectedHeight = ($targetul.children("li").length * 23) + 10;
+         //this is the expected height of the menu...numItems*32 (the width of each li)+10 (the bottom padding)
+         var expectedHeight = ($targetul.children("li").length * 32) + 10;
          var offSetTop = $targetul.offset().top;
          if (offSetTop < 0)
              offSetTop = bottomOfNav;
@@ -2661,24 +2624,14 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
              {
                  $targetul.css("top", "-" + (offSetTop + expectedHeight - winHeight) + "px");
                 
-                 if ($targetul.offset().top < 28)
-                     $targetul.css("top", "28px");
+                 if ($targetul.offset().top < 42)
+                     $targetul.css("top", "42px");
 			 }
          }
 
-         // Round corners of last menu item
-         $curobj.children("ul").addClass("roundedBottomCorners").children("li:last").addClass("roundedBottomCorners");
-
-         //set the location of the menu to be under the button
-         if (header.id == "overFlowMenu") {
-             overflowButton = $(".overFlowButton");
-             $targetul.position({
-                 my: "top right",
-                 at: "bottom left",
-                 of: overflowButton,
-                 offset: "-40 14",
-                 collision: "fit"
-             });
+		 //See if it wont fit on the right and move it over.. Use offet+width+padding
+		 if ($targetul.offset().left+$targetul.width()+40>$(window).width()) {
+			$targetul.css("left", ($(window).width()-($targetul.offset().left+$targetul.width()+42))+"px");
 		 }
 		 
 		 if (header.id == "sessionNavMenu") {
@@ -2691,29 +2644,17 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
 			$targetul.parent().show();
 		 }
 		 
-     }
+		 $targetul.parent("li").addClass("activeHeader");
+	 }
 
-	function showHideIFrame(elem){
-		if (!$.browser.msie)	//only works well on msie
-			return;
-			
-		var bkgrndIFrame = $("#inforBkgrndIFrame");
-
-		if (elem.css("display")=="block") {
-		   if (bkgrndIFrame.length==0)
-			   bkgrndIFrame = $('<div style="position:absolute" id="inforBkgrndIFrame"><iframe frameborder="0" style="height:100px;width:100px;"></iframe></div>').appendTo("body");
-		
-		   bkgrndIFrame.css({"left":elem.offset().left, "top":elem.offset().top, "z-index": 1});
-		   bkgrndIFrame.children().eq(0).height(elem.height()).width(elem.width());
-		   bkgrndIFrame.show();
-		}
-		else {
-		   bkgrndIFrame.hide();
-		}
-    }
+	function addIFrame(elem){
+	   var bkgrndIFrame = $('<div style="position:absolute" class="inforBkgrndIFrame"><iframe frameborder="0" style="height:100px;width:100px;"></iframe></div>').appendTo("body");
+	   bkgrndIFrame.css({"left":elem.offset().left, "top":elem.offset().top, "z-index": 1});
+	   bkgrndIFrame.children().eq(0).height(elem.height()).width(elem.width()+38); //padding...
+	   bkgrndIFrame.show();
+	   elem.data("iFrame",bkgrndIFrame);
+	}
  })(jQuery);
-
-
 /*
  * Infor Calculator Field - Creates a Popup Calculator Input Field
  */
@@ -2988,17 +2929,23 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
 				$el.css("left","-4px");
 				
     		$el.css({'opacity':0, "position": "relative", "top": "-1px"})
-    			.focus(function(){
+    		  .focusin(function(){
 				 if ($el.attr("readonly") || $el.attr("disabled"))
 						return;
 						
-    		      div.addClass(settings.focusClass);
+    		      div.parent().addClass(settings.focusClass);
+    		  })
+			  .focusout(function(){
+				 if ($el.attr("readonly") || $el.attr("disabled"))
+						return;
+						
+						div.parent().removeClass(settings.focusClass);
     		  })
     		  .blur(function(){
     		     if ($el.attr("readonly") || $el.attr("disabled"))
 						return;
 				
-				div.removeClass(settings.focusClass);
+				div.parent().removeClass(settings.focusClass);
     		  })
     		  .click(function(){
 					if ($el.attr("readonly") || $el.attr("disabled"))
@@ -3010,7 +2957,7 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
     		      else{
     		          span.removeClass(settings.checkedClass);
     		      }
-				  div.addClass(settings.focusClass);
+				  div.parent().addClass(settings.focusClass);
     		  });
             
 			//carry over other css.
@@ -3020,12 +2967,18 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
             // check the box by default
             if($el.attr('checked')){
                 span.addClass(settings.checkedClass);
-            }
+				}
             
+			//wrap a div around for the hover states.
+			var root = $el.closest("div.inforCheckbox");
+			$(root).add(root.next(".inforCheckboxLabel")).wrapAll("<div class='inforCheckboxContainer'></div>");
+		
             // disable the checkbox if it is supposed to be
             if($el.attr('disabled') && !$el.attr('readonly')){
                 span.addClass(settings.disabledClass);
-            }
+				span.parent().addClass(settings.disabledClass);
+				span.closest(".inforCheckboxContainer").addClass(settings.disabledClass);
+			}
             
             // set readonly if the checkbox is readonly
             if($el.attr('readonly')){
@@ -3038,7 +2991,9 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
                 // the server, disabled checkboxes wouldn't be.
                 $el.attr('disabled','disabled');
                 span.addClass(settings.readOnlyClass);
-            }
+				span.parent().addClass(settings.readOnlyClass);
+            	span.closest(".inforCheckboxContainer").addClass(settings.readOnlyClass);
+			}
             
             if($el.hasClass('partial')){
                 $el.removeClass('partial');
@@ -3057,12 +3012,11 @@ Globalize.parseUtcDate = function( value, formats, culture ) {
 			if ($el.css("visibility")=="hidden") {
 				$el.closest("div.inforCheckbox");
 				$el.css("visibility","");
-				var root = $el.closest("div.inforCheckbox");
 				root.hide();
 				if (root.next().hasClass("inforCheckboxLabel"))
 					root.next().css("visibility","hidden")
 			}
-    	});
+		});
 	}
 })(jQuery);
 
@@ -3197,16 +3151,10 @@ if(jQuery)( function($) {
 			 
 			// Loop each context menu
 			self.each( function() {
-				var el = $(this);
-				var offset = el.offset();
-				var $menuElem = $('#' + o.menu);
+				var el = $(this),
+					offset = el.offset();
 				
-				// Add contextMenu class
-				if (!$menuElem.hasClass('inforMenuOptions'))	{	//already wrapped..
-					$menuElem.addClass('inforMenuOptions');
-					$('body').append('<div class="inforMenu" id="'+o.menu+'Container"><table cellspacing="0" cellpadding="0" class="" style="width: auto"><tbody><tr class="menuTop"><td class="menuTopLeft"></td><td class="menuTopCenter"></td><td class="menuTopRight"></td></tr><tr class="menuMiddle"><td class="menuMiddleLeft"></td><td class="menuMiddleCenter"><div class="menuMiddleCenterInner menuContent"></div></td><td class="menuMiddleRight"></td></tr><tr class="menuBottom"><td class="menuBottomLeft"></td><td class="menuBottomCenter"></td><td class="menuBottomRight"></td></tr></tbody> </table></div>');
-					$('#' + o.menu+"Container").find(".menuContent").append($menuElem);
-				}
+				el.wrapMenu(o);
 				
 				// Simulate a true right click
 				if (o.invokeMethod == "rightClick") {
@@ -3216,14 +3164,13 @@ if(jQuery)( function($) {
 					
 						$(this).mouseup( function(e) {
 							e.stopPropagation();
-							var srcElement = $(this);
-							$(this).off('mouseup');
-							if( evt.button == 2 ) 
-							{	
+							var elem = $(this);
+							elem.off('mouseup');
+							if( evt.button == 2 ) {	
 								if (o.beforeOpening)
 									o.beforeOpening(e,el);
 									
-								$(this).openMenu(e,o,el,callback,offset,evt,srcElement);
+								elem.openMenu(e,o,el,callback,offset,evt,elem);
 							}
 						});
 					});
@@ -3231,13 +3178,12 @@ if(jQuery)( function($) {
 					el.click( function(e) {
 						var evt = e;
 						e.stopPropagation();
-						var srcElement = $(this);
-						if( evt.button == 0 ) 
-						{	
+						var elem = $(this);
+						if( evt.button == 0 ) {	
 							if (o.beforeOpening)
 								o.beforeOpening(e,el);
 							
-							$(this).openMenu(e,o,el,callback,offset,evt,srcElement);
+							elem.openMenu(e,o,el,callback,offset,evt,elem);
 						}
 					});
 				} else if (o.invokeMethod == "submenu"){
@@ -3253,7 +3199,7 @@ if(jQuery)( function($) {
 					el.hover( function(e) {
 						var openFunc = el.data("open");
 						openFunc(e);
-					});
+						});
 					
 					$('#' + o.menu+"Container").addClass("submenu");
 					el.siblings("li:not(.arrow)").hoverIntent( function(e){
@@ -3314,7 +3260,16 @@ if(jQuery)( function($) {
 			});
 			return self;
 		},
-		
+		wrapMenu: function(o) {
+			var $menuElem = $('#' + o.menu);
+				
+			// Add contextMenu class
+			if (!$menuElem.hasClass('inforMenuOptions'))	{	//already wrapped..
+				$menuElem.addClass('inforMenuOptions');
+				$('body').append('<div class="inforMenu" id="'+o.menu+'Container"><table cellspacing="0" cellpadding="0" class="" style="width: auto"><tbody><tr class="menuTop"><td class="menuTopLeft"></td><td class="menuTopCenter"></td><td class="menuTopRight"></td></tr><tr class="menuMiddle"><td class="menuMiddleLeft"></td><td class="menuMiddleCenter"><div class="menuMiddleCenterInner menuContent"></div></td><td class="menuMiddleRight"></td></tr><tr class="menuBottom"><td class="menuBottomLeft"></td><td class="menuBottomCenter"></td><td class="menuBottomRight"></td></tr></tbody> </table></div>');
+				$('#' + o.menu+"Container").find(".menuContent").append($menuElem);
+			}
+		},
 		closeMenu: function(o,el) {
 			var $menu = $(this);
 			$(document).off('click.inforcontextmenu');
@@ -3403,7 +3358,6 @@ if(jQuery)( function($) {
 			});
 			
 			// Keyboard
-			
 			var handleKeyPress = function (e) {
 				var openSubs = $(".inforMenu.submenu:visible");
 				if (openSubs.length>0 && openSubs.attr("id")!=$menu.attr("id")) {
@@ -3460,7 +3414,7 @@ if(jQuery)( function($) {
 						$(document).trigger('click');
 					break
 				}
-			};
+			}
 			
 			$(el).off("keydown.inforcontextmenu").on("keydown.inforcontextmenu",handleKeyPress);
 			$menu.off("keydown.inforcontextmenu", "a").on("keydown.inforcontextmenu", "a", handleKeyPress);
@@ -3497,12 +3451,12 @@ if(jQuery)( function($) {
 					if (e.button==2) //right click in mozilla
 						return;
 						
-					$menu.closeMenu(o, el);
+					$menu.closeMenu(o,el);
 				});
 			},1);
 			
 			$(".inforTabset").find("a").mousedown(function (e){
-				$menu.closeMenu(o, el);
+				$menu.closeMenu(o,el);
 			});
 			
 			//Adjust the padding if there are no images
@@ -3603,6 +3557,9 @@ if(jQuery)( function($) {
 			if (o.offsetTop)
 				y=y+o.offsetTop;
 			
+			//add padding for seperators..
+			$menu.find(".separator").prev().css("margin-bottom","3px");
+			
 			if (o.position) {
 				$menu.position(o.position);
 			} else {
@@ -3622,7 +3579,7 @@ if(jQuery)( function($) {
 							
 						$menu.css({top: y , width: scrollWidth+18+"px", left: ($menu.position().left-12) +"px" });
 						content.css({ "height" : ($(window).height() - y - 23) +"px",
-							"overflow-x" : "hidden", width: scrollWidth + 10 + "px" });
+						"overflow-x" : "hidden", width: scrollWidth + 10 + "px" , "width":"100%" });
 					}
 				}
 			}
@@ -3953,7 +3910,7 @@ if(jQuery)( function($) {
 		// settings
         var defaults = {
             headerHeight: 25,
-            rowHeight: 25,
+            rowHeight: 26,
             defaultColumnWidth: 80,
             enableAddRow: false,
             leaveSpaceForNewRows: false,
@@ -4389,7 +4346,7 @@ if(jQuery)( function($) {
                     $paneTopL.width( canvasWidthL );
                     $viewportTopL.width(canvasWidthL);
 
-                    $viewportTopR.width(viewportW - canvasWidthL);
+                    $viewportTopR.width(viewportW - canvasWidthL - parseInt($paneTopR.css('border-left-width')));
 
                     $canvasTopR.width(canvasWidthR);
 
@@ -4425,9 +4382,9 @@ if(jQuery)( function($) {
 		
 		/*dynamically add the menu contents and call*/
 		function appendMenu(menuid, menuOpts) {
-			$("#"+menuid).remove();
-			var ul = $('<ul id="'+menuid+'" class="inforContextMenu"></ul>');
+			$("#"+menuid+"Container").remove();
 			
+			var ul = $('<ul id="'+menuid+'" class="inforContextMenu"></ul>');
 			for (var i = 0; i < menuOpts.length; i++) {
 				var opt = menuOpts[i];
 				if (opt.condition || opt.condition==undefined) {
@@ -4457,7 +4414,7 @@ if(jQuery)( function($) {
 		function appendFilterMenu() {
 			appendMenu("gridFilterMenu", options.filterMenuOptions);
 		}
-		
+	
 		//set the menu options as checked or unchecked depending on the current values.
 		function setMenuChecked() {
 			//set the show filter row...
@@ -4633,7 +4590,7 @@ if(jQuery)( function($) {
                     $summaryRowTarget = $summaryRowR;
 
                     idx -= options.frozenColumn + 1;
-                }
+					}
             } else {
                 $summaryRowTarget = $summaryRowL;
             }
@@ -5077,7 +5034,7 @@ if(jQuery)( function($) {
                         render();
                         trigger(self.onColumnsResized, {});
 						updateFilterRow();
-                    	trigger(self.onPersonalizationChanged, getGridPersonalizationInfo('ColumnsResized'))
+						trigger(self.onPersonalizationChanged, getGridPersonalizationInfo('ColumnsResized'))
 					});
             });
         }
@@ -5251,8 +5208,20 @@ if(jQuery)( function($) {
             $canvas.unbind("draginit dragstart dragend drag");
             $container.empty().removeClass(uid);
 			$(window).unbind("smartresize.inforDataGrid");
-        }
-
+			
+			if ($gridSettingsButton)
+				$gridSettingsButton.remove();
+			
+			if ($filterMenuButton)
+				$filterMenuButton.remove();
+				
+			$container.next(".inforGridFooter").remove();
+			$container.remove();
+			if ($(".inforDataGrid").length==0){
+				$("#gridSettingsMenuContainer").remove();
+				$("#gridFilterMenuContainer").remove();
+			}
+		}
 
         //////////////////////////////////////////////////////////////////////////////////////////////
         // General
@@ -5624,11 +5593,11 @@ if(jQuery)( function($) {
 		function restorePersonalization(gridInfo) {
 			//restore filterInResults
 			filterInResults = gridInfo.filterInResults;
+			
 			//set the page size.
 			if (options.showPageSizeSelector && gridInfo.pageSize && self.pager) {
 				self.pager.setPageSize(gridInfo.pageSize);
 			}
-			
 			//set the column sizes...
 			var currentColumns = getColumns();
 			for(var i=0; i< gridInfo.columnInfo.length; i++) {
@@ -5745,7 +5714,8 @@ if(jQuery)( function($) {
 			if (isLastPage && pageNum==-1)
 				pageNum = 99999;
 				
-			$viewport.inforLoadingIndicator("close");	//hide loading indicator
+			if ($("#inforLoadingOverlay").is("#inforLoadingOverlay"))
+				$viewport.inforLoadingIndicator("close");	//hide loading indicator
 			
 			//see if the page was loaded..Caching
 			var cachePos = $.inArray( pageNum, loadedPages );
@@ -5944,6 +5914,9 @@ if(jQuery)( function($) {
         function showHeaderRowColumns(animate) {
             options.showHeaderRow = true;
 			$headerRowScroller.show();
+			if ($filterMenuButton!=undefined)
+				$filterMenuButton.css("visibility","");
+			
 			resizeCanvas();
 			createColumnHeaders();
 			showFilterButton();
@@ -5958,7 +5931,7 @@ if(jQuery)( function($) {
             options.showHeaderRow = false;
 		
 			if ($filterMenuButton!=undefined)
-				$filterMenuButton.hide();
+				$filterMenuButton.css("visibility","hidden");
 			
 			if (animate)
 				$headerRowScroller.slideUp("fast", resizeCanvas);
@@ -6282,7 +6255,7 @@ if(jQuery)( function($) {
                 viewportH = options.rowHeight * ((options.autoHeight ? getDataLength() : getData().getPagingInfo().pageSize)
 									+ (options.enableAddRow ? 1 : 0) + (options.leaveSpaceForNewRows ? numVisibleRows - 1 : 0)) ;
 				
-				$paneTopL.css( 'position', 'relative' );
+			   //$paneTopL.css( 'position', 'relative' ); TODO - Why does this work...QTPAutomationMethods
 			   if ($container.find(".inforLookupHeader").length==1)
 					viewportH+=26;
 					
@@ -7082,7 +7055,7 @@ if(jQuery)( function($) {
             }
         }
 
-		function isCellPotentiallyEditable(row, cell) {
+        function isCellPotentiallyEditable(row, cell) {
             // is the data for this row loaded?
             if (row < getDataLength() && !getDataItem(row)) {
                 return false;
@@ -7132,8 +7105,8 @@ if(jQuery)( function($) {
 					invalidatePostProcessingResults(activeRow);
                 }
             }
-			
-			getEditorLock().deactivate(editController);
+
+            getEditorLock().deactivate(editController);
         }
 
         function makeActiveCellEditable(editor, isClick) {
@@ -7745,6 +7718,8 @@ if(jQuery)( function($) {
 							//set errors on the trigger fields.
 							$(activeCellNode).find("input").addClass("error");
 							$(activeCellNode).find(".inforTriggerButton").addClass("error");
+							if (getOptions().frozenColumn>-1)
+								$viewport.find(".slick-row[row='"+activeRow+"']").find(".indicator-icon").addClass("error-icon").attr("title",validationResults.msg);
 							
 							trigger(self.onValidationError, {
 								editor: currentEditor,
@@ -8152,7 +8127,7 @@ if(jQuery)( function($) {
 						
 						if (action=="today")
 							$.datepicker.selectToday(el.next());
-						
+							
 						el.focus();
 					});	
 			});
@@ -8160,6 +8135,26 @@ if(jQuery)( function($) {
 			return button;
 		}
 		
+		function addSelection(button, $this, isChecked) {
+			//update the selections.
+			var selections = button.data("selections"),
+				found=false;
+				
+			for (var i = 0; i < selections.length; i++) {
+				if (selections[i].id==$this.attr("id"))
+				{
+					selections[i].isChecked=isChecked;
+					found=true;
+				}
+			}
+			
+			//check for any new elements not in the previous list and add them.
+			if (!found)
+				selections.push({id: $this.attr("id"), isChecked: isChecked});
+
+			button.data("selections", selections);
+		}
+			
 		//scan the column for distinct values and add them to the list with a checkbox..and manage saving values to data.
 		function addContentsFilterMenu(col, button) {
 			var html = '<ul id="gridFilterMenuOptions" class="inforContextMenu">',
@@ -8245,26 +8240,6 @@ if(jQuery)( function($) {
 			}
 			
 			$('body').append(html);
-				
-			function addSelection(button, $this, isChecked) {
-				//update the selections.
-				var selections = button.data("selections"),
-					found=false;
-					
-				for (var i = 0; i < selections.length; i++) {
-					if (selections[i].id==$this.attr("id"))
-					{
-						selections[i].isChecked=isChecked;
-						found=true;
-					}
-				}
-				
-				//check for any new elements not in the previous list and add them.
-				if (!found)
-					selections.push({id: $this.attr("id"), isChecked: isChecked});
-
-				button.data("selections", selections);
-			}
 			
 			$("#gridFilterMenuOptions").find(".inforCheckbox").click(function(e) {
 				var $this = $(this),
@@ -8300,8 +8275,6 @@ if(jQuery)( function($) {
 				applyFilter();
 				e.stopPropagation();	//do not want the click on the checkbox to close the menu
 			});
-			
-			return false;
 		}
 		
 		/* Adds a checkbox Filter to the grid column */
@@ -8319,7 +8292,7 @@ if(jQuery)( function($) {
 			
 			$(header).css("text-align","center");
 			if ($.browser.mozilla)	//slight adjustment for firefox.
-				$button.css({top:'2px',left:'0px'})
+				$button.css({top:'0px',left:'0px'})
 			else if ($.browser.msie)
 				$button.css({left:'0px'})
 			else
@@ -8348,11 +8321,11 @@ if(jQuery)( function($) {
 			
 			$(header).css("text-align","center");
 			if ($.browser.mozilla)	//slight adjustment for firefox.
-				$button.css({top:'2px',left:'0px'})
+				$button.css({top:'-1px',left:'0px'})
 			else if ($.browser.msie)
-				$button.css({left:'0px'})
+				$button.css({left:'-1px'})
 			else
-				$button.css({top:'4px'})
+				$button.css({top:'3px'})
 			
 			if (lastFilterValue!="")//restore last value
 				$button.removeAttr("class").addClass("inforFilterButton "+lastFilterValue);
@@ -8375,7 +8348,7 @@ if(jQuery)( function($) {
 			
 			$(header).empty();
 			
-			var inputWidth = $(header).width() - 4 - 18;	//column width - margin - button size
+			var inputWidth = $(header).width() - 4 - 25;	//column width - margin - button size with padding
 			
 			var input = $("<input class='inforTextbox' type='text'>")
 				.data("columnId", column.id)
@@ -8395,7 +8368,7 @@ if(jQuery)( function($) {
 			
 			if (column.cssClass)
 				input.addClass(column.cssClass);
-			
+				
 			var $button = getFilterButton(column.id, TextFilter(), "contains", "Contains");
 			
 			if (lastFilterValue!="")//restore last value
@@ -8411,10 +8384,10 @@ if(jQuery)( function($) {
 			
 			$(header).empty();
 			
-			var inputWidth = $(header).width() - 4 - 18 - 12;	//column width - margin - button size - trigger button size.
+			var inputWidth = $(header).width() - 4 - 18 - 17;	//column width - margin - button size - trigger button size.
 			var option_str = "",
 				useCodes = false;
-			
+				
 			if (column.options) {
 				for (var i = 0; i < column.options.length; i++){
 					v = column.options[i];
@@ -8468,7 +8441,7 @@ if(jQuery)( function($) {
 				.data("columnId", column.id)
 				.data("filterType", filterType)
 				.addClass((isDecimal  ? "numericOnly" : "decimalOnly"))
-				.width($(header).width() - 4 - 18)
+				.width($(header).width() - 4 - 25)
 				.val(lastValue)
 				.appendTo(header)
 				.numericOnly(isDecimal)
@@ -8506,12 +8479,16 @@ if(jQuery)( function($) {
 			var lastValue = $(header).find(".inforDateField").val();
 			$(header).empty();
 			
+			var options = {dateFormat: column.DateShowFormat };
+			if (column.editorOptions)
+				options = column.editorOptions;
+				
 			var input = $("<input class='inforDateField' type='text'>")
 				.data("columnId", column.id)
 				.data("filterType", DateFilter())
 				.val(lastValue)
 				.appendTo(header)
-				.inforDateField({dateFormat: column.DateShowFormat })
+				.inforDateField(options)
 				.keypress(function(event) {
 					if (event.which == $.ui.keyCode.ENTER)	//Run the filter...
 					{	
@@ -8522,18 +8499,14 @@ if(jQuery)( function($) {
 					}
 				});
 				
-			input.parent().width($(header).width() - 4 - 18 - 10 + 20);	//4 pixel padding / width of the button
+			input.parent().width($(header).width() - 4 - 18 - 10);	//4 pixel padding / width of the button
 			input.width($(header).width() - 4 - 18 - 10);	//4 pixel padding / width of the button
 			var $button = getFilterButton(column.id, DateFilter(), "equals", "Equals");
-			
-			$button.css({"float":(!Globalize.culture().isRTL ? "left" : "right"), "top":"4px"});
-			input.closest(".inforTriggerField").css("margin-top","0");
 			
 			if (lastFilterValue!="")//restore last value
 				$button.removeAttr("class").addClass("inforFilterButton "+lastFilterValue);
 			
-			input.before($button);
-		
+			input.closest(".inforTriggerField").before($button);
 		}
 		
 		function showFilterRow() {
@@ -8840,7 +8813,7 @@ if(jQuery)( function($) {
 				popup = $('<div style="z-index:10000; display:none; position: absolute;" class="inforGridCommentPopup"><image class="pointer" alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAALCAYAAACZIGYHAAAAyElEQVQoz2NgIB4womGiFTP19/ctAGEgmxlNHRMSxmoAE8yApUuX/Afhvr7ehVhcwoJuOLIBzCBNIM0/fvz4//Hjx//Tp0/739vbswifV+C2V1ZWCgNdcAFmAAy8evUKbFBXV2cbNoPgBhQXF4mADNi8eROKAegGNTU1ZaF7Dex8mAG7du38jw/ADGpoqM9BdhFLa2uLCTEGoBtUV1ebBzYIaKIZ0IAPxBqAblBNTXUBA8iAq1ev/icHnDt37v+ECf3/Gf5TAQAAzpx+ghtZTxsAAAAASUVORK5CYII="></image><table style="popupTable"><tbody><tr class="menuTop"><td class="menuTopLeft"></td><td class="menuTopCenter"></td><td class="menuTopRight"></td></tr><tr class="menuMiddle"><td class="menuMiddleLeft"></td><td class="menuMiddleCenter"><div class="menuMiddleCenterInner menuContent"></div></td><td class="menuMiddleRight"></td></tr><tr class="menuBottom"><td class="menuBottomLeft"></td><td class="menuBottomCenter"></td><td class="menuBottomRight"></td></tr></tbody></table></div>')
 						.appendTo("body");
 				
-				$('<div class="closeButtonDiv"><button type="button" class="inforCloseButtonDark"></button></div>').prependTo(popup.find(".menuMiddleCenter"));
+				$('<div class="closeButtonDiv"><button type="button class="inforCancelButton"></button></div>').prependTo(popup.find(".menuMiddleCenter"));
 				var textArea = $("<textarea>").appendTo(popup.find(".menuContent")).resizable({ handles: 'se'});
 				if (!editable)
 					textArea.attr("readonly","readonly");
@@ -8897,7 +8870,7 @@ if(jQuery)( function($) {
             "getColumns": getColumns,
             "setColumns": setColumns,
             "getColumnIndex": getColumnIndex,
-            "getGridPersonalizationInfo": getGridPersonalizationInfo,
+			"getGridPersonalizationInfo": getGridPersonalizationInfo,
             "updateColumnHeader": updateColumnHeader,
             "setSortColumn": setSortColumn,
             "autosizeColumns": autosizeColumns,
@@ -9187,7 +9160,7 @@ if(jQuery)( function($) {
             } else {
 				return '<div'+(isReadonly ? ' class="uneditable"': '')+'></div>';
             }
-        }, 
+        },
 		
         DrillDownCellFormatter: function (row, cell, value, columnDef, dataContext, gridOptions) {
             var isReadonly = false;
@@ -9219,7 +9192,13 @@ if(jQuery)( function($) {
 			if (columnDef.toolTip!=null)
 				tooltip = columnDef.toolTip;
 			
-			return "<button type='button' class='" + (columnDef.buttonCssClass != undefined ? columnDef.buttonCssClass : "") + " gridButton'" + (isReadonly ? " disabled" : "") + "data-columnid='" + columnDef.id + "'" + (tooltip ? "title='"+tooltip+"'" : "") + "></button>";
+			var innerHtml = "";
+			if (columnDef.buttonCssClass=="inforFormButton" || columnDef.buttonCssClass=="inforFormButton default")
+				innerHtml = (value ? value : "&nbsp;");
+			else if (columnDef.buttonHtml)
+				innerHtml = columnDef.buttonHtml;
+				
+			return "<button type='button' class='" + (columnDef.buttonCssClass != undefined ? columnDef.buttonCssClass : "") + " gridButton'" + (isReadonly ? " disabled" : "") + " data-columnid='" + columnDef.id + "'" + (tooltip ? "title='"+tooltip+"'" : "") + ">"+innerHtml+"</button>";
 		},
 		
 		MultiLineTextCellFormatter:  function (row, cell, value, columnDef, dataContext, gridOptions) {
@@ -9264,7 +9243,7 @@ if(jQuery)( function($) {
 				}
 				columnDef.editorOptions.source("",response, dataContext);
 			}
-				
+			
 			if (!isFound)
 				value= "";
 				
@@ -9275,7 +9254,6 @@ if(jQuery)( function($) {
                 return value;
             }
 		},
-		
 		LookupCellFormatter: function (row, cell, value, columnDef, dataContext) {
 			var isReadonly = false,
 				isFound = false;
@@ -9317,6 +9295,7 @@ if(jQuery)( function($) {
                 return values;
             }
 		},
+		
 		TextCellFormatter: function (row, cell, value, columnDef, dataContext) {
             if (value == null || value == undefined) {
                 value = "";
@@ -9420,6 +9399,83 @@ if(jQuery)( function($) {
 		  }
 		},
 		
+		PercentFieldCellFormatter: function(row, cell, value, columnDef, dataContext)
+		{
+			return Globalize.format((typeof value =="string" ? parseFloat(value) : value), "p0");
+		},
+
+		ProgressBarCellFormatter: function(row, cell, value, columnDef, dataContext)
+		{
+			var formatString = function(text, rowData, fieldIdArray)
+			{
+				if (fieldIdArray != undefined)
+				{
+					for (var i = 0; i < fieldIdArray.length; i++)
+					{
+						text = text.replace("{"+i+"}", rowData[fieldIdArray[i]]);
+					}
+				}
+
+				return text;
+			}
+		
+			var rangeOrder = ["inforRed", "coral", "amber", "citrine", "coral", "jade", "emerald", "azure", "cobalt", "sapphire", "amethyst", "tourmaline", "topaz", "turquoise", "graphite"];
+			var range = columnDef.meterRange || 1.0;
+			var color = "topaz";
+	    	var start, end;
+	    	var tooltip = "";
+	    	var columnId;
+	    	var textvars;
+	    	
+			if (columnDef.ranges)
+			{
+				for (var index in rangeOrder) 
+				{
+				    if (columnDef.ranges.hasOwnProperty(rangeOrder[index]))
+				    {
+				    	if (columnDef.ranges[rangeOrder[index]]["start"] === "string")
+				    	{
+				    		columnId = columnDef.ranges[rangeOrder[index]]["start"];
+				    		start = dataContext[columnId];
+				    	}
+				    	else
+				    	{
+				    		start = columnDef.ranges[rangeOrder[index]]["start"];
+				    	}
+				    	
+				    	if (columnDef.ranges[rangeOrder[index]]["end"] === "string")
+				    	{
+				    		columnId = columnDef.ranges[rangeOrder[index]]["end"];
+				    		start = dataContext[columnId];
+				    	}
+				    	else
+				    	{
+				    		end = columnDef.ranges[rangeOrder[index]]["end"];
+				    	}
+				    	
+						if (value >= start && value <= end)
+						{
+							color = rangeOrder[index];
+							if (columnDef.ranges[color].tooltip != 'undefined')
+							{
+								textvars = columnDef.ranges[color].tooltipvars || [];
+								tooltip = formatString(columnDef.ranges[color].tooltip, dataContext, textvars);	
+							}
+							
+							break;
+						}
+				    }
+				}
+			}
+			
+			var decimalValue = (value / range),
+				progressPercentage = decimalValue * 100 + "%",
+				displayValue = PercentFieldCellFormatter(row, cell, decimalValue, columnDef, dataContext)
+			  
+			return "<div class='inforProgressBar' style='width:100%;' title='" + tooltip + "'><span class='bar inforGradient "+color +"' style='width:" + progressPercentage + "'></span><span class='text'>" + displayValue + "</span></div>";
+		},
+
+	    
 	    /*Editors*/
         TextCellEditor: function (args) {
             var $input;
@@ -9438,13 +9494,13 @@ if(jQuery)( function($) {
                     })
                     .focus()
                     .select();
-				
-				if (args.column.maxLength)
-					$input.attr("maxLength",args.column.maxLength);
 					
 				if (args.column.cssClass)
 					$input.addClass(args.column.cssClass);
 					
+				if (args.column.maxLength)
+					$input.attr("maxLength",args.column.maxLength);
+				
 				//auto commit on click out
 				$input.blur(function() {
 					args.grid.getEditController().commitCurrentEdit();
@@ -9457,8 +9513,8 @@ if(jQuery)( function($) {
                 $input.parent().removeClass("hasTextEditor");
                 $input.remove();
             };
-
-            this.focus = function () {
+			            
+			this.focus = function () {
                 $input.focus();
             };
 
@@ -9477,7 +9533,6 @@ if(jQuery)( function($) {
                 $input[0].defaultValue = defaultValue;
                 $input.select();
             };
-			
 
             this.serializeValue = function () {
                 return $input.val();
@@ -9691,11 +9746,15 @@ if(jQuery)( function($) {
                 } 
 				$input = $('<input class="inforDateField" type="text" placeholder="'+Globalize.localize("SelectDate")+'" />');
                 $input.appendTo(args.container);
-				  
+				 
+				var options = {dateFormat: showFormat};
+				if (args.column.editorOptions)
+					options = args.column.editorOptions;
+					
                 $input.focus()
 					  .select()
 					  .width($input.parent().width()-15)
-					  .inforDateField({dateFormat: showFormat})
+					  .inforDateField(options)
 					  .blur(function() {	//auto commit on click out
 							setTimeout(function() {
 								var focus = $("*:focus"),
@@ -9997,18 +10056,18 @@ if(jQuery)( function($) {
 			};
 
             this.destroy = function () {
-                $select.autocomplete("destroy").remove();
+                $select.remove();
 				$select.parent().removeClass("hasComboEditor");
+            };
+
+            this.focus = function () {
+                $select.focus();
             };
 
 			this.getValuePairs = function () {
 				return {label: $select.getValue(), value: $select.getValue(), id:$select.getCode()}
             };
 			
-            this.focus = function () {
-                $select.focus();
-            };
-
             this.loadValue = function (item) {
                 defaultValue = item[args.column.field];
 				if (isCodeList)
@@ -10069,7 +10128,7 @@ if(jQuery)( function($) {
 
 		LookupCellEditor: function (args) {
             var $lookup;
-            var defaultValue,
+             var defaultValue,
 				displayValue;
 
             this.init = function () {
@@ -10104,6 +10163,7 @@ if(jQuery)( function($) {
 						.closest("div.inforTriggerField").find(".inforTriggerButton").click(function() {
 							$lookup.val(displayValue);
 						});
+						
 				};
 
             this.destroy = function () {
@@ -10140,8 +10200,8 @@ if(jQuery)( function($) {
 				}
 				return codeList;
 			}
-			
-            this.serializeValue = function () {
+            
+			this.serializeValue = function () {
                if ($lookup.data("isChanged")) {
 					return this.getCodeList();
 				} else {
@@ -10150,12 +10210,12 @@ if(jQuery)( function($) {
 			};
 
             this.applyValue = function (item, state) {
-				item[args.column.field] = state;
+               item[args.column.field] = state;
             };
 
             this.isValueChanged = function () {
 			  return $lookup.data("isChanged");
-			};
+			}
 
             this.validate = function () {
                  if (args.column.validator) {
@@ -10182,7 +10242,7 @@ if(jQuery)( function($) {
                 $wrapper = args.grid.showCommentsPopup(args.position,"", true);
 				$input = $wrapper.find("textarea");
 				
-                $wrapper.find(".inforCloseButtonDark").on("click", this.saveAndClose);
+                $wrapper.find(".inforCancelButton").on("click", this.saveAndClose);
                 $input.on("keydown", this.handleKeyDown);
 
                 scope.position(args.position);
@@ -10556,7 +10616,7 @@ if(jQuery)( function($) {
 						filters: filters, sortColumnId: sortColumnId, sortAsc: sortAsc,
 						isLastPage: isLastPage, isFirstPage : isFirstPage};
         }
-
+		
         function sort(comparer, ascending, disableClientSort) {
             sortAsc = ascending;
             sortComparer = comparer;
@@ -11143,7 +11203,12 @@ if(jQuery)( function($) {
             }
             _selectedRowsLookup = lookup;
             _grid.render();
-
+			
+			if (!_grid.getOptions().multiSelect) {
+				_grid.updateColumnHeader(_options.columnId, '','');
+				return;
+			}
+			
             if (selectedRows.length == _grid.getSelectableLength()) {
                 _grid.updateColumnHeader(_options.columnId, '<div class="inforCheckbox selector-checkbox-header"><span class="checked"><input id="checkedCheckBox" class="inforCheckbox" type="checkbox" checked="checked" style="opacity: 0;"></span></div>'
 					, _options.toolTip);
@@ -11251,10 +11316,10 @@ if(jQuery)( function($) {
             }
         }
 
-        function getColumnDefinition() {
+        function getColumnDefinition(multiSelect) {
             return {
                 id: _options.columnId,
-                name: '<div class="inforCheckbox selector-checkbox-header"><span><input class="inforCheckbox" type="checkbox" style="opacity: 0;"></span></div>',
+                name: (!multiSelect ? '' : '<div class="inforCheckbox selector-checkbox-header"><span><input class="inforCheckbox" type="checkbox" style="opacity: 0;"></span></div>'),
                 toolTip: _options.toolTip,
                 width: 20,
                 resizable: false,
@@ -11902,7 +11967,7 @@ if(jQuery)( function($) {
 					isTreeFormatter = (formatter  ? formatter.toString().toLowerCase().indexOf("tree")>-1 : false),
 					isCheckboxFormatter = (formatter  ? formatter.toString().toLowerCase().indexOf("inforcheckbox")>-1 : false);
 					
-				if (formatter && !isTreeFormatter && !isCheckboxFormatter) {	//Ignore the tree formatter.
+				if (formatter && !isTreeFormatter && !isCheckboxFormatter) {	//Ignore the tree /checkbox formatter.
 					cellVal = formatter(from.fromCell + j, i, cellVal, column,data[from.fromRow + i],_grid.getOptions(),_grid);
 					if (typeof cellVal =="string"){
 						cellVal = $("<div/>").html(cellVal).text();
@@ -11995,18 +12060,18 @@ if(jQuery)( function($) {
 				var editable = columns[to.fromCell +j].editable;
 				if (!(editable==undefined ? true : editable))
 					continue;
-				
+					
 				// trigger the cell edit functions.
 				_grid.trigger(_grid.onBeforeEditCell, {
 					row: to.fromRow + i,
 					cell: to.fromCell + j,
 					item: _grid.getDataItem(to.fromRow + i),
 					column: columns[to.fromCell + j] });
-					
+
 				data[to.fromRow + i][columns[to.fromCell +j].field] = (cols[j]=="undefined" ? "" : cols[j]);
 				_grid.invalidateRow(to.fromRow + i);
 				
-				 // Trigger the cell change event with the new data
+				                    // Trigger the cell change event with the new data
 				_grid.trigger(_grid.onCellChange, {
 							row: to.fromRow + i,
 							cell: to.fromCell + j,
@@ -12045,7 +12110,7 @@ if(jQuery)( function($) {
 * Paging Control.
 */
 (function($) {
-    function SlickGridPager(dataView, grid, $container) {
+    function SlickGridPager(dataView, grid, $container){
         var $status;
 		var $nextButton;
 		var $prevButton;
@@ -12173,7 +12238,7 @@ if(jQuery)( function($) {
         function constructPagerUI() {
             $container.empty();
 
-             var $navLeft = $("<span class='slick-pager-nav' />").appendTo($container),
+            var $navLeft = $("<span class='slick-pager-nav' />").appendTo($container),
 				pagingMode = grid.getOptions().pagingMode,
 				showButtons = (pagingMode==PagingModes.PagerServerSide || pagingMode==PagingModes.PagerClientSide),
 				icon_prefix = "<button type='button' class='inforGridPagingButton ",
@@ -12216,7 +12281,6 @@ if(jQuery)( function($) {
 				$selectedRecords =	$("<div class='slick-records-status' />").appendTo($container);	 //show a selected count 
 				$("<span class='inforToolbarSpacer'></span>").appendTo($container);	
 			}
-			
 			$records = $("<div class='slick-record-status' />").appendTo($container);		//show number of records
 			
 			//add an optional page size selector.
@@ -12282,7 +12346,7 @@ if(jQuery)( function($) {
 				if (floor===pagingInfo.totalRows/pagingInfo.pageSize)
 					pageCount = floor;
 					
-				$status.html(Globalize.localize("Page")+" <input "+($.browser.msie ? "style='width:12px;height:17px;margin-top:1px'": "style='width:12px;height:17px'")+" class='inforTextbox' value='"+ pageNum +"'/>" + " " + Globalize.localize("Of") + " " + pageCount);
+				$status.html(Globalize.localize("Page")+" <input "+($.browser.msie ? "style='width:12px;height:14px;margin-top:1px'": "style='width:12px;height:14px'")+" class='inforTextbox' value='"+ pageNum +"'/>" + " " + Globalize.localize("Of") + " " + pageCount);
 				$status.css({"padding-top": "" ,"margin-top":""});
 				if ($.browser.msie)
 					$status.css("margin-top","-4px");
@@ -12354,7 +12418,7 @@ if(jQuery)( function($) {
 
         init();
 		
-		//Pager Api...
+		//Page Api...
 		$.extend(this, {
             "setPageSize": setPageSize
 		});
@@ -12625,7 +12689,7 @@ $.extend(true, window, {
         var node = _grid.getCellNode(cell.row, cell.cell),
 			$node = $(node);
 			
-        if ($node .innerWidth() < node.scrollWidth) {
+        if (node && ($node.innerWidth() < node.scrollWidth)) {
           var text = $.trim($node.text());
 		  
 		  //check for long text cell editor tooltip
@@ -12754,7 +12818,7 @@ $.extend(true, window, {
 			frozenColumn: o.frozenColumn,
 			selectChildren: o.selectChildren,
 			showPageSizeSelector: o.showPageSizeSelector,
-			pageSize: o.pageSize 
+			pageSize: o.pageSize
 		};
 		
 		if (o.enableObjectSupport) {
@@ -12776,10 +12840,7 @@ $.extend(true, window, {
 				return val;
 			}
 		}
-		
-		if (o.multiSelect==false)
-			o.showCheckboxes = false;
-			
+	
 		/*Setup additional stuff based on settings*/
 		var newColumns = [];
         if (o.showStatusIndicators) {
@@ -12788,7 +12849,7 @@ $.extend(true, window, {
 		
 		if (o.showCheckboxes) {
 			var checkboxSelector = new Slick.CheckboxSelectColumn({ cssClass: "slick-cell-checkboxsel" });
-		    newColumns.push(checkboxSelector.getColumnDefinition());
+		    newColumns.push(checkboxSelector.getColumnDefinition(o.multiSelect));
 		}
 		
 		if (o.showDrillDown)
@@ -12801,7 +12862,6 @@ $.extend(true, window, {
 		dataView = new Slick.Data.DataView({idProperty: o.idProperty, pagingMode: o.pagingMode });
 		gridObj =  new Slick.Grid($grid, dataView, o.columns, slickOptions);
 		$grid.data("gridInstance",gridObj);	//save a ref ro the grid so it can be accessed by selector.
-		
 		
 		// Subscribe to events to update row selection
 		dataView.onRowsChanged.subscribe(function (e, args) {
@@ -12832,19 +12892,18 @@ $.extend(true, window, {
 		//dataView.beginUpdate();
 		dataView.setItems(o.dataset);
 		dataView.setFilter(gridObj.filter);
-		
-		dataView.endUpdate();
+		//dataView.endUpdate();
 		//gridObj.invalidate();	//already calls: gridObj.render();
 	
 		if (o.pagingMode==PagingModes.ContinuousScrolling) {
 			dataView.activeReq = false;
-			var curPage = 0;
+			dataView.currentPage = 0;
 			gridObj.onViewportChanged.subscribe(function(e,args) {
                  var vp = gridObj.getViewport(),
 				     toPage = Math.floor(vp.bottom / o.pageSize);
 				
-				if (toPage>curPage && !dataView.activeReq) {
-					curPage++;
+				if (toPage>dataView.currentPage && !dataView.activeReq) {
+					dataView.currentPage++;
 					dataView.setPagingOptions({pageNum: toPage});
 				}
 			});
@@ -12859,7 +12918,8 @@ $.extend(true, window, {
 			});
 			
 			dataView.onDataLoaded.subscribe(function(e,args) {
-				$viewport.inforLoadingIndicator("close");
+				if ($("#inforLoadingOverlay").is("#inforLoadingOverlay"))
+					$viewport.inforLoadingIndicator("close");
 				$viewport.css("overflow","auto");
 			});
 		}
@@ -12886,10 +12946,13 @@ $.extend(true, window, {
 		
 		//Attach Validation Events to show validation indicator
 		gridObj.onValidationError.subscribe(function (e, args) {
-			// TODO: Style this! add red border
+			if (!args.cellNode)
+					return;
+			
 			$(args.cellNode).addClass("invalid");
 			if (o.showStatusIndicators)
 			{		
+					
 				var indicatorIcon = $(args.cellNode.parentNode).children(".status-indicator").children(".indicator-icon")
 				$(indicatorIcon).addClass("error-icon");
 				
@@ -12916,8 +12979,7 @@ $.extend(true, window, {
 				
 			sortdir = args.sortAsc ? 1 : -1;
 			sortcol = args.sortCol.field;
-			
-			dataView.sort(comparer, args.sortAsc, o.disableClientSort);
+			dataView.sort(comparer, args.sortAsc);
 		});
 		
 		//attach the click event and button events and drill down.
@@ -13234,12 +13296,6 @@ $.extend(true, window, {
 }($));
 /*
  * Infor Date Field Control.
- * 
- * Deps:
- * 		jqueryUi - Datepicker
- * 
- * Usage: 
- *      $("inforDateField").inforDateField();
  *
  */
 (function($){
@@ -13834,7 +13890,7 @@ $.extend(true, window, {
                 $.datepicker._pos[0] -= document.documentElement.scrollLeft;
                 $.datepicker._pos[1] -= document.documentElement.scrollTop;
             }
-            var offset = { left: $.datepicker._pos[0], top: $.datepicker._pos[1] };
+            var offset = { left: $.datepicker._pos[0]-2, top: $.datepicker._pos[1] };
             $.datepicker._pos = null;
 
             //to avoid flashes on Firefox
@@ -13940,7 +13996,7 @@ $.extend(true, window, {
 			var prevText  = this._get(inst, 'Previous');
 			var cancelText  = this._get(inst, 'Cancel');
 			
-			var table = $('<table cellspacing="0" cellpadding="0" class="inforDatePickerPanel"><tbody><tr><td align="left" style="vertical-align: top;"><table cellspacing="0" cellpadding="0" class="datePickerMonthYearPanel"><tbody><tr><td align="left" style="vertical-align: top;"><table class="datePickerMonthYearGrid"><colgroup><col><col class="datePickerMonthYearGridDivider"></colgroup><tbody><tr><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthFirstCol">Jan</div></td><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthSecondCol">Jul</div></td><td class="datePickerPreviousYearCell"><button type="button" tabindex="0" class="datePickerPreviousYear" title="'+prevText+'"></button></td><td class="datePickerNextYearCell"><button type="button" tabindex="0" class="datePickerNextYear" title="'+nextText+'"></button></td></tr><tr><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthFirstCol">Feb</div></td><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthSecondCol">Aug</div></td><td><div class="datePickerMonthYearYear datePickerMonthYearYearFirstCol">2007</div></td><td><div class="datePickerMonthYearYear datePickerMonthYearYearSecondCol">2012</div></td></tr><tr><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthFirstCol">Mar</div></td><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthSecondCol">Sep</div></td><td><div class="datePickerMonthYearYear datePickerMonthYearYearFirstCol">2008</div></td><td><div class="datePickerMonthYearYear datePickerMonthYearYearSecondCol">2013</div></td></tr><tr><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthFirstCol">Apr</div></td><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthSecondCol">Oct</div></td><td><div class="datePickerMonthYearYear datePickerMonthYearYearFirstCol">2009</div></td><td><div class="datePickerMonthYearYear datePickerMonthYearYearSecondCol">2014</div></td></tr><tr><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthFirstCol">May</div></td><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthSecondCol">Nov</div></td><td><div class="datePickerMonthYearYear datePickerMonthYearYearFirstCol">2010</div></td><td><div class="datePickerMonthYearYear datePickerMonthYearYearSecondCol">2015</div></td></tr><tr><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthFirstCol">Jun</div></td><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthSecondCol">Dec</div></td><td><div class="datePickerMonthYearYear datePickerMonthYearYearFirstCol">2011</div></td><td><div class="datePickerMonthYearYear datePickerMonthYearYearSecondCol">2016</div></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td align="left" style="vertical-align: top;"><div class="inforDatePickerButtonPanel inforDatePickerMonthYearButtonPanel"><button type="button" tabindex="0" class="inforFormButton" style="display: inline-block;">'+okText+'</button><button type="button" tabindex="0" class="inforFormButton" style="display: inline-block;">'+cancelText+'</button></div></td></tr></tbody></table>');
+			var table = $('<table cellspacing="0" cellpadding="0" class="inforDatePickerPanel"><tbody><tr><td align="left" style="vertical-align: top;"><table cellspacing="0" cellpadding="0" class="datePickerMonthYearPanel"><tbody><tr><td align="left" style="vertical-align: top;"><table class="datePickerMonthYearGrid"><colgroup><col><col class="datePickerMonthYearGridDivider"></colgroup><tbody><tr><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthFirstCol">Jan</div></td><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthSecondCol">Jul</div></td><td class="datePickerPreviousYearCell"><button type="button" tabindex="0" class="datePickerPreviousYear" title="'+prevText+'"></button></td><td class="datePickerNextYearCell"><button type="button" tabindex="0" class="datePickerNextYear" title="'+nextText+'"></button></td></tr><tr><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthFirstCol">Feb</div></td><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthSecondCol">Aug</div></td><td><div class="datePickerMonthYearYear datePickerMonthYearYearFirstCol">2007</div></td><td><div class="datePickerMonthYearYear datePickerMonthYearYearSecondCol">2012</div></td></tr><tr><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthFirstCol">Mar</div></td><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthSecondCol">Sep</div></td><td><div class="datePickerMonthYearYear datePickerMonthYearYearFirstCol">2008</div></td><td><div class="datePickerMonthYearYear datePickerMonthYearYearSecondCol">2013</div></td></tr><tr><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthFirstCol">Apr</div></td><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthSecondCol">Oct</div></td><td><div class="datePickerMonthYearYear datePickerMonthYearYearFirstCol">2009</div></td><td><div class="datePickerMonthYearYear datePickerMonthYearYearSecondCol">2014</div></td></tr><tr><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthFirstCol">May</div></td><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthSecondCol">Nov</div></td><td><div class="datePickerMonthYearYear datePickerMonthYearYearFirstCol">2010</div></td><td><div class="datePickerMonthYearYear datePickerMonthYearYearSecondCol">2015</div></td></tr><tr><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthFirstCol">Jun</div></td><td><div class="datePickerMonthYearMonth datePickerMonthYearMonthSecondCol">Dec</div></td><td><div class="datePickerMonthYearYear datePickerMonthYearYearFirstCol">2011</div></td><td><div class="datePickerMonthYearYear datePickerMonthYearYearSecondCol">2016</div></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td align="left" style="vertical-align: top;"><div class="inforDatePickerButtonPanel inforDatePickerMonthYearButtonPanel"><button type="button" tabindex="0" class="inforFormButton default" style="display: inline-block;">'+okText+'</button><button type="button" tabindex="0" class="inforFormButton" style="display: inline-block;">'+cancelText+'</button></div></td></tr></tbody></table>');
 			
 			var todayDate = new Date();
 			var todayYear = (todayDate).getFullYear();
@@ -14045,7 +14101,7 @@ $.extend(true, window, {
             instActive = inst; // for delegate hover events
             inst.dpDiv.empty().append(this._generateHTML(inst));
 
-			inst.dpDiv.find(".inforDatePickerPanelArrow").click(function() 
+			inst.dpDiv.find(".inforDatePickerPanelArrow").show().click(function() 
 			{
 				self._showDateMonthPanel(inst);	
 			});
@@ -14647,7 +14703,7 @@ $.extend(true, window, {
             var prev = (this._canAdjustMonth(inst, -1, drawYear, drawMonth) ?
 			'<a class="inforDatePicker-prev inforDatePicker-corner-all" onclick="DP_jQuery_' + dpuuid +
 			'.datepicker._adjustDate(\'#' + inst.id + '\', -' + stepMonths + ', \'M\');"' +
-			' title="' + prevText + '"><span class="' + (isRTL ? 'inforNextMonthButton' : 'inforPrevMonthButton') + '">' + prevText + '</span></a>' :
+			' title="' + prevText + '"><button type="button" class="' + (isRTL ? 'inforNextMonthButton' : 'inforPrevMonthButton') + '" title="' + prevText  + '"></button></a>' :
 			(hideIfNoPrevNext ? '' : '<a class="inforDatePicker-prev inforDatePicker-corner-all inforDatePicker-state-disabled" title="' + prevText + '"><span class="' + (isRTL ? 'inforNextMonthButton' : 'inforPrevMonthButton') + '">' + prevText + '</span></a>'));
             var nextText = this._get(inst, 'Next');
             nextText = (!navigationAsDateFormat ? nextText : this.formatDate(nextText,
@@ -14656,7 +14712,7 @@ $.extend(true, window, {
             var next = (this._canAdjustMonth(inst, +1, drawYear, drawMonth) ?
 			'<a class="inforDatePicker-next inforDatePicker-corner-all" onclick="DP_jQuery_' + dpuuid +
 			'.datepicker._adjustDate(\'#' + inst.id + '\', +' + stepMonths + ', \'M\');"' +
-			' title="' + nextText + '"><span class="' + (isRTL ? 'inforPrevMonthButton' : 'inforNextMonthButton') + '">' + nextText + '</span></a>' :
+			' title="' + nextText + '"><button type="button"  class="' + (isRTL ? 'inforPrevMonthButton' : 'inforNextMonthButton') + '" title="' + nextText + '"></button></a>' :
 			(hideIfNoPrevNext ? '' : '<a class="inforDatePicker-next inforDatePicker-corner-all inforDatePicker-state-disabled" title="' + nextText + '"><span class="' + (isRTL ? 'inforPrevMonthButton' : 'inforNextMonthButton') + '">' + nextText + '</span></a>'));
             var currentText = this._get(inst, 'Today');
             var gotoDate = (this._get(inst, 'gotoCurrent') && inst.currentDay ? currentDate : today);
@@ -14777,10 +14833,10 @@ $.extend(true, window, {
 						todayBar += '><span class="leftSlice"></span><span class="centerSlice">Quick Dates</span><span class="rightSlice"></span></button>';
 					
 					} else {
-						todayBar += '<button class="inforDatePickerTodayButton inforFormButton'+(!enableToday[0] ? ' disabled"': '"') +'type="button" tabindex="0" style="display: inline-block;"';
+						todayBar += '<button class="inforDatePickerTodayButton inforFormButton '+(!enableToday[0] ? ' disabled"': '"') +'type="button" tabindex="0" style="display: inline-block;"';
 						if (enableToday[0])
 							todayBar += 'onclick="DP_jQuery_' + dpuuid + '.datepicker._selectToday(\'#' +inst.id + '\');return false;")';
-						todayBar += '><span class="leftSlice"></span><span class="centerSlice">'+currentText+'</span><span class="rightSlice"></span></button>'
+						todayBar += '>'+currentText+'</button>'
 					}
 					
 					todayBar += '</div>';   
@@ -15088,7 +15144,7 @@ $.extend(true, window, {
 								title: this.title
 							};
 					}));
-				}
+					}
 			}
 
 			var input = $("<input>")
@@ -15125,7 +15181,7 @@ $.extend(true, window, {
 						select: function (e, ui) {
 					      select.data("selectedId",ui.item.id);
 						  
-						  if (self.options.displayCodeOnly)
+						   if (self.options.displayCodeOnly)
 								input.val(ui.item.id);
 								
 							//set selected icon..
@@ -15137,6 +15193,7 @@ $.extend(true, window, {
 						if (self.options.beforechange) {
 							item = self.options.beforechange(e, item);
 							input.val(item.value);
+							
 							setTimeout(function() {
 								input.val(item.value);
 							},175);
@@ -15176,6 +15233,7 @@ $.extend(true, window, {
 			if (!self.options.selectFirst)
 				select[0].selectedIndex = -1;
 			
+			
 			//use the new plugin to styling this control.
 			input.inforTriggerField();
 			input.focus(function(e) {
@@ -15194,7 +15252,7 @@ $.extend(true, window, {
 				ko.copyBinding($select, topElem, "css", false);
 			}
 	
-			var $div = input.closest(".inforTriggerFieldTable");
+			var $div = input.closest(".inforTriggerField");
 			//carry over other css.
 			if (inlineCss!=undefined) {
 				$div.attr("style",inlineCss);
@@ -15212,7 +15270,7 @@ $.extend(true, window, {
 			//create a root id off this id to use style sheet css.
 			if ($select.attr("id"))
 				input.closest('.inforTriggerField').attr("id",$select.attr("id")+"Container");
-			
+				
 			//attach button code.
 			var button = input.closest("tbody").find(".inforTriggerButton")
 				.attr("tabIndex","-1")
@@ -15251,7 +15309,7 @@ $.extend(true, window, {
 				input.attr('placeholder',$(select).attr('placeholder'));
 			
 			if ($div.css("position")=="absolute")
-				input.width(input.width()-44);
+				input.width(input.width());
 			
 			//Carry over the readonly and disabled styling
 			if (!$select.is(":enabled"))
@@ -15265,7 +15323,6 @@ $.extend(true, window, {
 				input.attr('maxlength',( self.options.maxLength ? self.options.maxLength : $(select).attr('maxlength')));
 				$(select).removeAttr('maxlength');	//not valid html really
 			}
-			
 		},
 		_setSelectedIcon: function(item,input) {
 			var cssClass=cssClass = item.cssClass; 
@@ -15277,8 +15334,8 @@ $.extend(true, window, {
 				
 				if ($img.length==0) {
 					$img = $('<div class="inforDropDownSelectedImage"></div>').addClass(cssClass);
-					input.before($img).css("text-indent","14px");
-					$img.css({"position":"absolute","height":"16px","width":"17px","margin-top":"2px","background-repeat":"no-repeat"});
+					input.before($img);
+					$img.css({"float":"left","height":"16px","width":"17px","background-repeat":"no-repeat"});
 				} else {
 					$img.attr("class","");
 					$img.addClass("inforDropDownSelectedImage "+cssClass);
@@ -15340,7 +15397,7 @@ $.widget( "ui.autocomplete", {
 			my: "left top",
 			at: "left bottom",
 			collision: "fit flip",
-			offset: "-3 -2"
+			offset: "-1 0"
 		},
 		source: null,
 		typeAheadSearch: true,
@@ -15901,13 +15958,16 @@ $.widget( "ui.autocomplete", {
 		}
 		
 		$menu.css("opacity",1).show();
-		
 		//account for scrollbar..
 		if (this.contentWidth==null && menuOpts.get(0).scrollHeight > menuOpts.innerHeight()) {
-			this.contentWidth=menuOpts.width()+(14);
+			this.contentWidth=menuOpts.width()+(15);
 			menuOpts.width(this.contentWidth);
 		}
-		
+
+		var hasImages = $menu.find(".inforDropDownImage").length>1;
+		if (hasImages)
+			$menu.css("left", (parseInt($menu.css("left"))-17) +"px");
+				
 		//scroll selected element into view
 		if (selectedElem.length>0) {
 			this.menu.activate(new $.Event("mouseover") , selectedElem);
@@ -15916,7 +15976,7 @@ $.widget( "ui.autocomplete", {
 	contentWidth: null,
 	_resizeMenu: function() {
 		var menuElem = this.menu.element.closest(".inforMenu");
-		var width = this.element.outerWidth()-3;	//make the same width as the control (input part only)//(includes margin and width of button)
+		var width = this.element.closest(".inforTriggerField").width(); //make the same width as the control
 		menuElem.css("min-width",width);
 		menuElem.find(".inforMenuOptions").css("min-width",width);
 	},
@@ -15964,7 +16024,6 @@ $.widget( "ui.autocomplete", {
 		}
 		this.menu[ direction ]( e );
 	},
-
 	widget: function() {
 		if (this.menu!=undefined)
 			return this.menu.element;
@@ -16017,8 +16076,7 @@ $.widget("ui.menu", {
 		if (id==undefined)
 			id=$.generateId();
 		
-		$('body').append('<div class="inforMenu" id="'+id+'"><table cellspacing="0" cellpadding="0" class="" ><tbody><tr class="menuTop"><td class="menuTopLeft"></td><td class="menuTopCenter"></td><td class="menuTopRight"></td></tr><tr class="menuMiddle"><td class="menuMiddleLeft"></td><td class="menuMiddleCenter"><div class="menuMiddleCenterInner menuContent"></div></td><td class="menuMiddleRight"></td></tr><tr class="menuBottom"><td class="menuBottomLeft"></td><td class="menuBottomCenter"></td><td class="menuBottomRight"></td></tr></tbody> </table></div>');
-		$('#' + id ).find(".menuContent").append(this.element);
+		$('body').append($('<div class="inforMenu" id="'+id+'"></div>').append(this.element));
 		this.element.css("display","");
 		this.refresh();
 	},
@@ -16108,7 +16166,7 @@ $.widget("ui.menu", {
 					return close < 10 && close > -10;
 				});
 
-			// TODO try to catch this earlier when scrollTop indicates the last page anyway
+			//try to catch this earlier when scrollTop indicates the last page anyway
 			if (!result.length) {
 				result = this.element.children(".contextMenuItem:last");
 			}
@@ -16120,7 +16178,7 @@ $.widget("ui.menu", {
 	},
 	previousPage: function(e) {
 		if (this.hasScroll()) {
-			// TODO merge with no-scroll-else
+			//merge with no-scroll-else
 			if (!this.active || this.first()) {
 				this.activate(e, this.element.children(".contextMenuItem:last"));
 				return;
@@ -16134,7 +16192,7 @@ $.widget("ui.menu", {
 					return close < 10 && close > -10;
 				});
 
-			// TODO try to catch this earlier when scrollTop indicates the last page anyway
+			// try to catch this earlier when scrollTop indicates the last page anyway
 			if (!result.length) {
 				result = this.element.children(".contextMenuItem:first");
 			}
@@ -16159,7 +16217,7 @@ $.widget("ui.menu", {
 	
 	/* Return the Width of the text */
 	String.prototype.textWidth = function(font) {
-		var f = font || '11px arial',
+		var f = font || '12px Helvetica,​Arial,​sans-serif',
 		  o = $('<div>' + this + '</div>')
 				.css({'position': 'absolute', 'float': 'left', 'white-space': 'nowrap', 'visibility': 'hidden', 'font': f})
 				.appendTo($('body')),
@@ -16172,7 +16230,7 @@ $.widget("ui.menu", {
 }(jQuery));
 
 /*
- * jQuery autoGrow plugin by James Padolsey
+ * jQuery autoGrowInput plugin by James Padolsey
  * See related thread: http://stackoverflow.com/questions/931207/is-there-a-jquery-autogrow-plugin-for-text-fieldss
  */
 (function($){
@@ -16221,7 +16279,7 @@ $.fn.autoGrow = function(o) {
 		$(this).bind('keydown keyup blur update', check);
 	});
 	
-		var resizeTextArea = function(elem) {
+	var resizeTextArea = function(elem) {
 		var str = elem.val(),
 		   cols = elem.attr("cols"),
 		   linecount = 0;
@@ -16242,6 +16300,7 @@ $.fn.autoGrow = function(o) {
 		resizeTextArea(elem); //initial on load*/
 	});
 	return this;
+	
 };
 })(jQuery);
 /*
@@ -16314,12 +16373,13 @@ $.fn.autoGrow = function(o) {
 				o.selectedGridOptions.columns.push({ sortable: false, id: "rowReordering", name: "", width: 40, behavior: "selectAndMove", selectable: false, resizable: false, cssClass: "cell-reorder dnd" });
 			}
 			
-			//o.selectedGridOptions.showFilter = false;
 			o.availableGridOptions.fillHeight  = false;
 			o.selectedGridOptions.fillHeight = false;
 			
 			this.availableGrid = $available.inforDataGrid(o.availableGridOptions);
 			this.selectedGrid  = $selected.inforDataGrid(o.selectedGridOptions);
+			if (o.enableRowReordering)
+				this.availableGrid.hideColumn("rowReordering");
 			
 			this.availableGrid.getData().onRowCountChanged.subscribe(function (e, args) {
 				self._setButtonStates();
@@ -16603,7 +16663,7 @@ $.fn.autoGrow = function(o) {
 }($));
 
 /*
- * Infor FieldSet Control: Turns any Div into a collapsable fieldset.
+	* Infor FieldSet Control: Turns any Div into a collapsable fieldset.
  * 
 */
 (function ($) {
@@ -16616,7 +16676,8 @@ $.fn.autoGrow = function(o) {
 		_create: function () {
            var $div = $(this.element),
 				o = this.options,
-				self = this;
+				self = this,
+				elem = $(this.element)
 				
 			//attach the click and logic to the expand button.
 			$div.find("legend")
@@ -16639,40 +16700,52 @@ $.fn.autoGrow = function(o) {
 			
 			//Hide the divider if we dont need it. Can also set in initial html
 			if (!o.divider)
-				$(this).css("borderRightWidth","0px");
+				elem.css("borderRightWidth","0px");
 			
 			//Hide the expander if we dont need it. Can also set in initial html
 			if (!o.collapsible)
-				$(this).find(".inforExpandButton").remove();
+				elem.find(".inforExpandButton").remove();
 			
-			//correct text indent
-			var firstChild = $div.children(":first")
-			if (firstChild.hasClass("inforFieldSetLabel")) {
-				if (firstChild.css("textIndent")=="0px")
-					firstChild.css("textIndent","10px");
+			if (o.collapsible && expandButton.length!=0) {
+				var label = elem.find(".inforFieldSetLabel");
+				
+				$div.find(".inforFieldSetLabel").hover(function() {
+					expandButton.addClass("hover");
+					label.addClass("hover");
+					elem.addClass("hover");
+				}, function() {
+					expandButton.removeClass("hover");
+					label.removeClass("hover");
+					elem.removeClass("hover");
+				}).click(function() {
+					if (expandButton.hasClass("open") || o.initialState=="open")
+						self.collapse(true);
+					else 
+						self.expand(true);
+				});
 			}
 		},
 		expand: function(animate) {
 			var elem = $(this.element).find(".inforExpandButton").first();
 			elem.removeClass("closed").addClass("open");
-			elem.nextAll("div.content").fadeIn((animate ? 240 :0),function() {
+			elem.nextAll("div.content").slideDown((animate ? 240 :0),function() {
 				$(this).find('.autoLabelWidth').find('.inforLabel').autoWidth();
 				$(this).find('.inforTabContainer').trigger("resize");
 				$(this).find('.inforDataGrid').each(function() {
 					if ($(this).data("gridInstance"))
 						$(this).data("gridInstance").resizeCanvas();
-				});
+						});
 			});
 		},
 		collapse: function(animate) {
 			var elem = $(this.element).find(".inforExpandButton").first();
 			elem.removeClass("open").addClass("closed");
-			elem.nextAll("div.content").fadeOut((animate ? 240 :0));
+			elem.nextAll("div.content").slideUp((animate ? 240 :0));
 		}
 	});
 })(jQuery);
 /*
-* Infor Required Indicator Plugin
+* Various Functions The handle Field states and setting field states.
 */
 (function ($)
 {
@@ -16685,10 +16758,19 @@ $.fn.autoGrow = function(o) {
 		
 		if (elem==undefined)
 			return undefined;
-			
+		
 		if (($.nodeName( elem, "select" ) && $elem.next().hasClass("inforTriggerField")) || $elem.hasClass("inforDataGridDropDownList")) {
 			//its a drop down list..
-			return $elem.next().find('input').val();
+			var api = $elem.data("inforDropDownList"),
+					retVal = $elem.next().find('input').val();
+					
+				if (api.options.displayCodeOnly) {
+					retVal =  $elem.find("option[value='" + retVal +"']").html();
+					if (!retVal)	//undefined check for empty list item
+						retVal = $elem.find("option[value='']").html();
+				}
+				
+			return retVal;
 		} 
 		
 		if ($elem.hasClass("inforCheckbox"))
@@ -16762,7 +16844,7 @@ $.fn.autoGrow = function(o) {
 					checked = (value==1 ? true: false);
 				
 				if (typeof(value)=="boolean")
-					checked = value;
+				checked = value;
 				
 				if (typeof(value)=="string")
 					checked = ((value=="1" || value=="true")  ? true: false);
@@ -16790,8 +16872,13 @@ $.fn.autoGrow = function(o) {
 		
 		if ( $.nodeName( elem, "select" ) && $elem.next().hasClass("inforTriggerField") ) {
 			//get the value - find the code in the select list and return the option = value.
-			var value = $elem.next().find('input').val();
-			
+			var api = $elem.data("inforDropDownList"),
+					value = $elem.next().find('input').val();
+					
+			if (api.options.displayCodeOnly) {
+				return value;
+			}
+				
 			var seekVal = value.replace(/&nbsp;/gi,'').replace(/&#160;/gi,'');
 				seekVal = $.trim(seekVal);
 				
@@ -16813,10 +16900,7 @@ $.fn.autoGrow = function(o) {
 	};
 	
 	/*
-	 * Infor Required Plugin. Makes any element have a required indicator
-	 *
-	 * Usage: 
-	 *      $("inforTextButtonId").required();
+	 * Infor Required Plugin. Makes any element have a required indicator icon to the top left.
 	 */
 	$.fn.required = function (options) {
 	    return this.each(function ()
@@ -16825,14 +16909,22 @@ $.fn.autoGrow = function(o) {
            
 			//extra case for drop downs
 			if ($(this).is("select"))
-				required.css("top","-1px");
+				required.css("top","-14px");
+			
+			if ($(this).is("textarea"))
+				required.css("top", "-"+$(this).height()+"px");
+			
+			if ($(this).hasClass("inforHyperlink"))
+				required.css("top", "-3px");
 			
 			//move the indicator for trigger fields.
 			var $elem = $(this),
 				$trigger = $(this).closest(".inforTriggerField");
 			
-			if ($trigger.length==1)
+			if ($trigger.length==1) {
 				$elem = $trigger;
+				required.css("top","-14px");
+			}
 				
 			$elem.attr("aria-required","true");
 			if (!Globalize.culture().isRTL) {
@@ -16899,13 +16991,15 @@ $.fn.autoGrow = function(o) {
 					$control.attr("disabled","disabled");
 				else
 					$control.attr(targetClass,targetClass);
+					
 				$control.parent().addClass(targetClass);
-				$control.parent().parent().removeClass("inforCheckboxFocus");
+				$control.parent().parent().removeClass("inforCheckboxFocus").addClass(targetClass);
+				if ($control.hasClass("inforCheckbox"))
+					$control.closest(".inforCheckboxContainer").addClass(targetClass);
 				return;
 			}
 			
-			if ($control.hasClass("inforIconButton"))
-			{
+			if ($control.hasClass("inforIconButton") && !$control.hasClass("inforSplitButton")) {
 				$control.attr(targetClass,targetClass);
 				return;
 			}
@@ -16914,68 +17008,24 @@ $.fn.autoGrow = function(o) {
 			{
 				$control.attr(targetClass,targetClass);
 				$control.addClass(targetClass);
+			}
+			
+			if ($control.hasClass("inforSplitButton")) {
+				$control.parent(".inforSplitButtonContainer").addClass(targetClass);
+				$control.addClass(targetClass).attr("tabindex","-1").attr(targetClass,"");
+				$control.next().addClass(targetClass).attr("tabindex","-1").attr(targetClass,"");
 				return;
 			}
 			
-			if ($control.hasClass("inforSplitButtonText"))
-			{
-				$control.parent().addClass(targetClass);
-				$control.next().attr(targetClass,targetClass);
-				return;
-			}
-			
-			if ($control.hasClass("inforIconSplitButton"))
-			{
-				$control.parent().addClass(targetClass);
-				$control.attr(targetClass,targetClass);
-				$control.next().attr(targetClass,targetClass);
-				$control.addClass(targetClass);
-				$control.next().addClass(targetClass);
-				return;
-			}
-			
-			if ($control.hasClass("inforSplitButton"))
-			{
-				$control.addClass(targetClass);
-				$control.find("inforSplitButtonMenu").attr(targetClass,targetClass);
-				return;
-			}
-			
-			if ($control.hasClass("inforMenuButton"))
-			{
-				$control.addClass(targetClass);
+			if ($control.hasClass("inforMenuButton")) {
+				$control.addClass(targetClass).attr(targetClass,targetClass);
 				return;
 			}
 			
 			if ($control.hasClass("inforFormButton"))
 			{
-				//allow tooltips to show on disabled buttons
-				var htmlFrag = $control.find('.centerSlice').html();
-				var title = $control.attr("title");
-				var inlineCss = $control.attr("style");
-				
-				//already wrapped.
-				if ($control.parent().hasClass("inforFormButton"))
-					return;
-				
-				//copy all the classes as well..
-				var classes= $control.attr("class").replace("inforFormButton","").replace(targetClass,"").replace("undefined","");
-				
-				$control.css("display","none");
-				$control.wrap('<div class="inforFormButton disabled '+ classes +'" type="button"></div>');
-				if (title!=undefined)
-					$control.attr("title",title);
-				
-				$control.parent().append('<span class="leftSlice"></span><span class="centerSlice">'+htmlFrag+'</span><span class="rightSlice"></span>');
-				
-				
-				var width = $control.find('.centerSlice').css("width");
-				if (width!=undefined && width!="0px")
-					$control.parent().find('.centerSlice').css("width", width);
-
-				if (inlineCss!=undefined)
-					$control.parent().attr("style",inlineCss);
-				
+				$control.attr(targetClass,targetClass);
+				$control.addClass(targetClass);
 				return;
 			}
 			
@@ -17020,6 +17070,7 @@ $.fn.autoGrow = function(o) {
 				$control.removeClass(targetClass).removeAttr(targetClass).closest(".inforTriggerField").removeClass(targetClass);
 				if ($control.hasClass("inforFileField")) {
 					var $next = $control.next();
+					$control.removeAttr("disabled");
 					$next.removeClass(targetClass).removeAttr(targetClass);
 					if ($next.data("selectOnly"))
 						$next.data("selectOnly");
@@ -17053,10 +17104,14 @@ $.fn.autoGrow = function(o) {
 					$control.removeAttr(targetClass);
 				
 				$control.parent().removeClass(targetClass);
+				$control.parent().parent().removeClass(targetClass);
+				
+				if ($control.hasClass("inforCheckbox"))
+					$control.closest(".inforCheckboxContainer").removeClass(targetClass);
 				return;
 			}
 			
-			if ($control.hasClass("inforIconButton"))
+			if ($control.hasClass("inforIconButton") && !$control.hasClass("inforSplitButton"))
 			{
 				$control.removeAttr(targetClass);
 				return;
@@ -17069,42 +17124,24 @@ $.fn.autoGrow = function(o) {
 				return;
 			} 
 			
-			if ($control.hasClass("inforSplitButtonText"))
+			if ($control.hasClass("inforSplitButton"))
 			{
+				$control.removeClass(targetClass).attr("tabindex","").removeAttr(targetClass);
+				$control.next().removeClass(targetClass).attr("tabindex","").removeAttr(targetClass);
 				$control.parent().removeClass(targetClass);
-				$control.next().removeAttr(targetClass);
-				return;
-			} 
-			
-			if ($control.hasClass("inforIconSplitButton"))
-			{
-				$control.parent().removeClass(targetClass);
-				$control.removeAttr(targetClass);
-				$control.next().removeAttr(targetClass);
-				$control.removeClass(targetClass);
-				$control.next().removeClass(targetClass);
 				return;
 			}
 			
 			if ($control.hasClass("inforMenuButton"))
 			{
-				$control.removeClass(targetClass);
+				$control.removeClass(targetClass).removeAttr(targetClass);
 				return;
 			}
 			
 			if ($control.hasClass("inforFormButton"))
 			{
+				$control.removeAttr(targetClass);
 				$control.removeClass(targetClass);
-				//unwrap the parent div and remove the siblings
-				if (!$control.parent().hasClass("inforFormButton"))
-					return;
-				
-				var isDisabled = $control.parent().css("display")=="none" && $control.parent().hasClass("inforFormButton");
-				$control.siblings().remove();
-				$control.unwrap();
-				if (!isDisabled)
-					$control.css("display","");
-				
 				return;
 			} 
 
@@ -17316,6 +17353,9 @@ $.fn.autoGrow = function(o) {
 				if (($el.attr("readonly") || $el.attr("disabled")) && !$el.hasClass("selectOnly"))
 						return;
                 
+				if ($el.hasClass("inforDropDownList"))	//change fires on the select.
+						return;
+                
 				//Handle Setting back to orginal value - the value is set at plugin initialization
 				var isChangedBack = $el.data("originalValue") === $el.getValue();
 				if ($el.is("select"))
@@ -17381,11 +17421,13 @@ $.fn.autoGrow = function(o) {
 		} 
 
 		var maxWidth = 0,
-			isCheckboxLabel = false;
+			isCheckboxLabel = false,
+			isParagraph = false,
+			filtered = this.not(".noAutoWidth");
 			
-		this.css("width","auto"); 
+		filtered.css("width","auto"); 
 		
-		this.each(function(){ 
+		filtered.each(function(){ 
 				var $this = $(this);
 				if ($this.width() > maxWidth){ 
 				  if(settings.limitWidth && maxWidth >= settings.limitWidth) { 
@@ -17397,26 +17439,10 @@ $.fn.autoGrow = function(o) {
 				if ($this.hasClass("inforCheckboxLabel"))
 					isCheckboxLabel = true;
 		});   
-
-		this.width(maxWidth + (isCheckboxLabel ? 2: 0)); 
-	}
-
-	$.fn.isVisible = function(value)  { 	
-		this.each(function(){ 
-			$control = $(this);
-			if ($control.hasClass("inforFormButton"))
-			{
-				if ($control.hasClass("disabled"))
-					$control = $control.parent();
-			}
 			
-			if (!value)
-				$control.hide();
-			else
-				$control.show();
-		});
+		filtered.width(maxWidth + (isCheckboxLabel ? 2: 0)); 
 	}
-	
+
 	$.fn.maxlength = function(value) { 	
 		if (!$.browser.msie)
 			return this;
@@ -17463,38 +17489,7 @@ $.fn.autoGrow = function(o) {
 			return false;
 		}
 	});
-	
-	
-	/* Override the jquery Function to set the centerslice text - note that this should also work on form buttons. */
-	$.fn.baseText = $.fn.text;
-	$.fn.text = function (value) { 
-		var centerslice=this.children(".centerSlice");
-		if (centerslice.length>0) {
-			var retVal = (value == undefined ? centerslice.baseText() : centerslice.baseText(value));
-				
-			var parent = this.filter(':disabled').add("button.disabled").parent();
-			parent.each(function() {
-				var elem = $(this);
-				if (elem.is("div.inforTextButton") || elem.is("div.inforFormButton")) {	//wrapped for disabled...
-					elem.find(".centerSlice").baseText(value);
-				}
-			});
-			
-			if (value != undefined ) {
-				var parent = this.each(function() {
-					var elem = $(this);
-					if (elem.is(".inforFormButton")) {	//refresh any specific widths...
-						elem.inforFormButton("refresh",value.textWidth() +16);
-					}
-				});
-			}
-			return retVal;
-		}
-		else {
-			return (value == undefined ? this.baseText() : this.baseText(value));
-		}
-	};
-	
+
 	/* Override the jquery hide function to add better behavior for controls */
 	$.fn.baseHide = $.fn.hide;
 	$.fn.hide = function (duration , easing , callback ) { 
@@ -17651,7 +17646,7 @@ $.fn.autoGrow = function(o) {
 	}
 })(jQuery);
 /*
- * Infor Form Pattern - A Control to handle Basic Form Functionality and control initialization.
+ * Infor Form Pattern - A Control to handle Basic Form Functionality.
  */
 (function($){
 	$.fn.inforForm = function( options ) {
@@ -17677,7 +17672,12 @@ $.fn.autoGrow = function(o) {
 					return;
 				}
 				
-				if ($this.hasClass("inforFormButton") && $this.children(".centerSlice").length == 0)
+				if ($this.hasClass("inforIconButton") && ($this.hasClass("disabled") || $this.attr("disabled"))) {
+					$this.disable();
+					return;
+				}
+				
+				if ($this.hasClass("inforFormButton"))
 				{
 					$this.inforFormButton();
 					return;
@@ -17709,11 +17709,6 @@ $.fn.autoGrow = function(o) {
 					$this.inforFieldSet();
 					return;
 				}
-				
-				if ($this.hasClass("inforLightFieldSet")) {
-					$this.inforFieldSet();
-					return;
-				}
 					
 				if ($this.is("select") && $this.hasClass("inforDropDownList"))
 					$this.inforDropDownList();
@@ -17722,7 +17717,7 @@ $.fn.autoGrow = function(o) {
 					$this.inforDateField();
 				
 				if ($this.hasClass("inforSearchField"))
-					$this.inforTriggerField();
+					$this.inforSearchField();
 				
 				if ($this.hasClass("inforEmailField"))
 					$this.inforTriggerField();
@@ -17772,7 +17767,7 @@ $.fn.autoGrow = function(o) {
 	$.fn.inforScrollableArea = function(  ) {
 		
 		return this.each(function() {
-			$area = $(this);
+			var $area = $(this);
 			//set the max height of this area to the bottom of the form and track any resize events...
 			handleResize($area);
 			$(window).on("smartresize.inforScrollableArea",function(){  
@@ -17820,85 +17815,21 @@ $.fn.autoGrow = function(o) {
 	};
 }(jQuery));
 /*
- * Infor Form Button - A Bluish Button To Be Used on Forms. For toolbars using InforTextButton.
-*/
+ * Infor Form Button - Infor Button To Be Used on Forms. For toolbars using InforTextButton.
+ */
 (function ($) {
     $.widget("ui.inforFormButton", {
         options: {
-			width: null,	// set the width
-			text: null,	//the text of the button - or you can inline it initially in the html
-			autoWidth: false
+			width: null, //Depricated: Use css instead to set the width. Used by s3.
 		},
 		_create: function () {
-            var	o = this.options, //Extend the options if any provided
-				$button = $(this.element),
-				buttonText = $button.html(),
-				isDisabled = (($button.attr("disabled")!=undefined && $button.attr("disabled")!='') || $button.hasClass("disabled"));
+			var elem = $(this.element);
 			
-			if (!$button.find('.leftSlice').hasClass('leftSlice')) {	
-				//prevent re-wrapping on multiple calls.
-				$button.empty();
-				var leftSlice = $("<span class=\"leftSlice\" />"),
-					centerSlice = $("<span class=\"centerSlice\" />"),
-					rightSlice = $("<span class=\"rightSlice\" />");
+			if (elem.is(":disabled") || elem.hasClass("disabled"))
+				elem.disable();
 				
-				if (o.width!=null) {
-					o.width=o.width.replace('px','');
-					o.width=parseInt(o.width)-14;
-					centerSlice.width(o.width+"px");	//7 pixel left and right slices
-				}
-				
-				centerSlice.html(buttonText);
-				if (o.text)
-					centerSlice.html(o.text);
-					
-				$button.append(leftSlice, centerSlice, rightSlice);
-
-				if (isDisabled) {
-					$button.disable();
-					if (o.width!=null)
-						$button.parent().find(".centerSlice").width(o.width+"px");	//7 pixel left and right slices
-				}
-				
-				//set the width...
-				if (this.options.autoWidth) {
-					setTimeout(function() {
-						$button.css("display","inline-block");
-						$button.width(16+$button.find(".centerSlice").width());
-						if (isDisabled) {
-							$button.parent().width(14+$button.find(".centerSlice").width());
-							$button.css("display","none");
-						}
-					},1);
-				}
-			}
-			
-		},
-		_setOption: function( key, value ) {
-			if (key=="width") {
-				this.refresh(value);
-			}
-			if (key=="text") {
-				if (this.element.hasClass("disabled"))
-					this.element.parent().find(".centerSlice").html(value);
-				else
-					this.element.find(".centerSlice").html(value);
-			}
-		}, 
-		refresh: function(value) {
-			if (this.options.width==null)
-				return;
-				
-			if (value==undefined)
-				value = this.element.parent().find(".centerSlice").text();
-			
-			if (this.element.hasClass("disabled")) {
-				this.element.parent().find(".centerSlice").width(value);
-				this.element.parent().width(16+this.element.find(".centerSlice").width());
-			} else {
-				this.element.find(".centerSlice").width(value);
-				this.element.width(16+this.element.find(".centerSlice").width());
-			}
+			if (this.options.width)
+				elem.css("width",this.options.width);
 		}
    });
 })(jQuery);
@@ -18076,8 +18007,6 @@ $.fn.autoGrow = function(o) {
 					})
 					.bind('click.selectBox', function(event) {
 						self._selectOption($(this).parent(), event);
-						if( !select.inforListBox('control').hasClass('selectBox-active') ) 
-							select.inforListBox('control').focus();
 					});
 				
 				this._disableSelection(options);
@@ -18298,7 +18227,7 @@ $.fn.autoGrow = function(o) {
 			
 			if (suppressRefresh)
 				return;
-			
+				
 			this.refresh();
 		}, 
 		rename : function(data) {
@@ -18494,7 +18423,7 @@ $.fn.autoGrow = function(o) {
 					}));
 				}
 			}
-				
+			
 			//use the auto complete for lookup functionality when typing...
 			$input.autocomplete({
 				source: self.options.source,
@@ -18571,6 +18500,7 @@ $.fn.autoGrow = function(o) {
 		},
 		getRowById: function(id) {	//return the dataset row for the given id..using idProperty
 			var dataset = this.options.gridOptions.dataset;
+			
 			//Execute Source..
 			if (this.options.source) {
 				var response = function(data) {
@@ -18578,7 +18508,7 @@ $.fn.autoGrow = function(o) {
 				}
 				this.options.source("",response);
 			}
-				
+			
 			for (var i = 0; i < dataset.length; i++) {
 				if (dataset[i][this.options.gridOptions.idProperty]==id)
 					return dataset[i];
@@ -18853,90 +18783,80 @@ $.fn.autoGrow = function(o) {
 } (jQuery));
 /*
  * Infor Menu Button
- *
- * Usage: 
- *      $("#inforMenuButtonId").inforMenuButton();
- *
- * Deps:
- *    jquery
- *    inforContextMenu.js
- * 
- * Date: 8/12/2011
  */
 (function($){
 	$.fn.inforMenuButton = function( options ) {
 		var settings = {
 			menuId : null,
-			callback: null
+			callback: null,
+			source: null	//allows you to do an ajax call.
 		};
 		
 		return this.each(function() {
 			var	o = $.extend({}, settings, options), 
-			$textButton = $(this);
-			
-			var buttonText = $textButton.html();
-			var isIconButton = false;
+				$textButton = $(this),
+				isIconButton = false,
+				menuPosition = {my: "left top",
+								at: "left bottom",
+								of: $textButton,
+								offset: "-2 3",
+								collision: "flip"}
+								
 			//handle icon buttons.
 			if ($textButton.hasClass("exportExcel") || $textButton.hasClass("new") || $textButton.hasClass("print")|| $textButton.hasClass("save") || $textButton.hasClass("settings"))
 				isIconButton=true;
 			
-			if (!$textButton.find('.leftSlice').hasClass('leftSlice'))	{ 
-			//prevent re-wrapping on multiple calls.	
-				$textButton.empty();
+			//wrap it
+			if (!$textButton.find('.inforMenuButtonArrow').length>0) { 
+				var html = $textButton.wrapInner("<span class='innerText'></span>");
 				
-				if (!isIconButton)
-				{
-					var leftSlice = $("<span class=\"leftSlice\" />");
-					var centerSlice = $("<span class=\"centerSlice\" />");
-					var rightSlice = $("<span class=\"rightSlice\" />");
-															
-					centerSlice.html(buttonText);
-					$textButton.append(leftSlice, centerSlice, rightSlice);
-				}
+				if (isIconButton)
+					$textButton.addClass("inforIconButton");
 				
-				if (o.menuId!=null ) {
+				var arrow = $("<div class=\"inforMenuButtonArrow\" />");
+				$textButton.append(arrow);
+				
+				if (o.source) {
+					$textButton.click(function(e){
+						//show loading indicator in the menu
+						var menu = $("#"+o.menuId).empty().append("<li style=\"margin-left:20px;\"><a>Loading...</a></li><div id=\"inforLoadingOverlay\" class=\"small\" style=\"position: absolute; top: 10px; left: 5px;\"></div>");
+						var cancelled = false;
+						//show the menu...in loading state
+						$textButton.inforContextMenu({menu: o.menuId, invokeMethod: 'immediate', position: menuPosition, onClose: function() {cancelled=true;}});
+						
+						//setup a response
+						var response = function(menu){
+							if (cancelled)
+								return;
+								
+							//show menu.
+							$textButton.inforContextMenu({ menu: o.menuId, invokeMethod: 'immediate', position: menuPosition});
+						};
+						//Wait for the callback...
+						o.source(response);
+					});
+				} else if (o.menuId!=null ) {
 					$textButton.inforContextMenu({
 						menu: o.menuId,
 						invokeMethod: 'toggle',
-						position: {
-							my: (Globalize.culture().isRTL ? "right top" : "left top"),
-							at: (Globalize.culture().isRTL ? "right bottom" : "left bottom"),
-							of: $textButton,
-							offset: (Globalize.culture().isRTL ? "3 -2" : "-3 -2"),
-							collision: "flip"
-						}
+						position: menuPosition
 					 }, (o.callback==undefined ? null : function(action, el, pos, item) {
-								if ($textButton.hasClass('disabled'))
-									return;
-									
-								o.callback(action, el, pos, item);
+							if ($textButton.hasClass('disabled'))
+								return;
+								
+							o.callback(action, el, pos, item);
 					}));
 				}
+				
 				//set the initial disabled state.
 				if ($textButton.hasClass('disabled'))
 					$textButton.disable();
 					
 				if ($textButton.prop("disabled"))
 					$textButton.disable();
-				
-				//style fix for right aligned toolbar
-				if (($.browser.msie && $.browser.version==8) && $textButton.parent().hasClass("alignRight"))
-					centerSlice.css("line-height","20px");
-					
-				//style fix for crome
-				$.browser.crome = ( $.browser.webkit && navigator.userAgent.toLowerCase().indexOf("chrome")!= -1) ? true: false;
-				if ($.browser.crome)
-					$textButton.css({"margin-top": "0px"});
-			
-				//style fix for safari
-				$.browser.safari = ( $.browser.webkit && navigator.userAgent.toLowerCase().indexOf("chrome")=== -1) ? true: false;
-				if ($.browser.safari)
-					$textButton.attr("style","margin-top: 0px !important");	
 			}
-			
 		});
 	};
-	
 }(jQuery));
 /*
 * Infor MessageDialog and Dialog is heavily based on jQuery UI Dialog 1.8.13
@@ -18986,17 +18906,16 @@ $.fn.autoGrow = function(o) {
             minHeight: 150,
             minWidth: 150,
             modal: false,
-			shortMessage: '',
+			icon: 'settings',
 			detailedMessage: '',
             position: {
                 my: 'center',
                 at: 'center',
                 collision: 'fit',
 			    using: function (pos) {
-				  	
-					$(this).css({
+				  	$(this).css({
 						position: 'absolute',
-						left: '50%',
+						left: '47%',
 						'margin-left': 0 - ($(this).width() / 2),
 						top: '40%',
 						'margin-top': (0 - ($(this).height() / 3))
@@ -19005,7 +18924,7 @@ $.fn.autoGrow = function(o) {
 					/*nned to call twice for some reason to center in the page...*/
 					$(this).css({
 						position: 'absolute',
-						left: '50%',
+						left: '47%',
 						'margin-left': 0 - ($(this).width() / 2),
 						top: '40%',
 						'margin-top': (0 - ($(this).height() / 3))
@@ -19025,7 +18944,7 @@ $.fn.autoGrow = function(o) {
            var self = this,
             options = self.options,
 			title = options.title || '&#160;',
-            uiDialog = (self.uiDialog = $('<div><table cellspacing="0" cellpadding="0" class="" style="width: inherit"><tbody><tr class="dialogTop"><td class="dialogTopLeft"></td><td class="dialogTopCenter"><div class="dialogTopCenterInner"></div></td></div><td class="dialogTopRight"><div class="dialogTopRightInner"><button type="button" tabindex="0" class="inforCloseButton"></button></div></td></tr><tr class="dialogMiddle"><td class="dialogMiddleLeft"></td><td class="dialogMiddleCenter"><div class="dialogMiddleCenterInner dialogContent"><div class="dialogOuterBackground"><div class="dialogInnerBackground"></div></div><table> <tr> <td><div class="severityImage"></div></td> <td><div class="dialogHeader">An Error Occured</div></td> </tr> <tr> <td></td> <td><div style="display: block;" class="contentText"> </div></td> </tr> </table> </div></div></td><td class="dialogMiddleRight"></td></tr><tr class="dialogBottom"><td class="dialogBottomLeft"></td><td class="dialogBottomCenter"><div class="dialogBottomCenterInner"><div class="dialogButtonBar"></div></div></td><td class="dialogBottomRight"></td></tr></tbody></table>'))
+            uiDialog = (self.uiDialog = $('<div><div class="inforDialogTitleBar"></div></div>'))
                 .appendTo(document.body)
                 .hide()
                 .addClass(uiDialogClasses)
@@ -19046,12 +18965,25 @@ $.fn.autoGrow = function(o) {
                     self.moveToTop(false, event);
                 });
 				
-                uiDialog.find(".dialogTopCenterInner").append('<div class="Caption">'+title+'</div>');
-                 
+                
+				if (options.icon || options.dialogType!="General") {
+					uiDialog.find(".inforDialogTitleBar").append("<div class='inforIcon "+options.icon+"'></div>");
+			    }
+			    uiDialog.find(".inforDialogTitleBar").append('<div class="caption">'+title+'</div></div>');
+                uiDialog.find(".inforDialogTitleBar").append('<button type="button" class="inforCloseButton"></button>');
+                
+				if (options.messageTitle)
+					uiDialog.append('<div class="shortMessage"></div>');
+                
+				uiDialog.append('<div class="detailedMessage"></div>');
+                
 				self.element.show()
                     .removeAttr('title')
-                    .appendTo(uiDialog.find('.dialogContent'));
+                    .appendTo(uiDialog);
 				
+				if (options.buttons)
+					uiDialog.append('<div class="dialogButtonBar"></div>');
+                
 				//Add remove events for the inforCloseButton  
 				uiDialogTitlebarClose = uiDialog.find(".inforCloseButton");
 				uiDialogTitlebarClose.attr("title",Globalize.localize(options.closeText));
@@ -19069,8 +19001,7 @@ $.fn.autoGrow = function(o) {
 
 				self._isOpen = false;
       },
-
-        _init: function () {
+	_init: function () {
             if (this.options.autoOpen) {
                 this.open();
             }
@@ -19146,7 +19077,7 @@ $.fn.autoGrow = function(o) {
 		
 		isOnTop: function () {
 			var isLast = $('.inforDialog:visible').last()[0]==this.uiDialog[0];
-			return isLast;
+			return false;
         },
 		
         isOpen: function () {
@@ -19194,9 +19125,9 @@ $.fn.autoGrow = function(o) {
 
 			//set messages
 			if (self.options.messageTitle!='')
-				uiDialog.find(".dialogHeader").html(self.options.messageTitle);
+				uiDialog.find(".shortMessage").html(self.options.messageTitle);
 			
-			uiDialog.find(".dialogTopCenterInner .Caption").html(self.options.title);
+			uiDialog.find(".caption").html(self.options.title).attr("title",self.options.title);
                   
             //for any of the message types - info/error/confirmation/warning show an icon
 			var imageClass = "";
@@ -19213,8 +19144,7 @@ $.fn.autoGrow = function(o) {
                 imageClass = "alert";
             
 			if (options.dialogType == "General") {
-                $(".inforMessageDialogContent").find(".detailText").remove();
-				imageClass = "";
+                imageClass = options.icon;
             }
 			
             self._createButtons(options.buttons);
@@ -19226,32 +19156,39 @@ $.fn.autoGrow = function(o) {
 				uiDialog.find(".inforCloseButton").show();
 			
 			//add/update remove the severity image.
-			var severityImage = uiDialog.find(".severityImage");
+			var severityImage = uiDialog.find(".inforIcon");
 			if (imageClass == "") {
 				severityImage.remove();
 			} else {
 				severityImage.removeClass();
-				severityImage.addClass("severityImage "+imageClass);
+				severityImage.addClass("inforIcon "+imageClass);
 			}
 				
 			//Add/update remove the Detail Message
-			//contentText
+			//detailedMessage
 			if (options.dialogType =="General")
-				uiDialog.find(".contentText").closest("table").remove();
+				uiDialog.find(".detailedMessage").closest("table").remove();
 			else
-				uiDialog.find(".contentText").html(self.options.detailedMessage);
+				uiDialog.find(".detailedMessage").html(self.options.detailedMessage);
 			
 			self.overlay = options.modal ? new $.ui.inforDialog.overlay(self) : null;
 			//set the title
-			$topDiv.find(".Caption").html(self.options.title);
+			$topDiv.find(".caption").html(self.options.title).attr("title",self.options.title);
             
 			self._size();
-            self._position(options.position);
-			self.moveToTop(true);
-			uiDialog.show(($.browser.msie && $.browser.version<=8 ? "" : "fade"));	
+			self._position(options.position);
 			
-			self.firstTabbable = $("<button id='tabFocusField' ></button>")
-				.css({"opacity":"0" , "position":"absolute" , "left":"-400px"})
+			self.moveToTop(true);
+			//options.show
+			uiDialog.show("fade",function(){
+				self._sizeToFit();
+				self.uiDialog.find('.autoLabelWidth').find('.inforLabel').autoWidth();
+				self._isOpen = true;
+				self._trigger('open');
+			});
+			
+			self.firstTabbable = $("<button type='button' id='tabFocusField' ></button>")
+				.css({"opacity":"0" ,"position":"absolute" ,"left":"-400px"})
 				.focus(function(e) {
 					self.uiDialog.find(':tabbable:first').focus();
 					return;
@@ -19259,7 +19196,7 @@ $.fn.autoGrow = function(o) {
 			
 			// prevent tabbing out of modal and non-modal dialogs
             $(document).bind('keydown.inforDialog'+self.uiDialog.css("z-index"), function (event) {
-                  
+                    
 					 if (event.keyCode==13 && !$(event.target).is(":button")) {
 						if (!self.isOnTop())
 							return;
@@ -19292,11 +19229,11 @@ $.fn.autoGrow = function(o) {
                         last.focus(1);
                         return false;
                     }
-                });
+             });
             
 			 // set focus to the first tabbable element in the content area or the first button
              // if there are no tabbable elements, set focus on the dialog itself
-             if (self.options.autoFocus) {
+            if (self.options.autoFocus) {
 				 setTimeout(function(){
 					var firstInput = self.uiDialog.find('input:first:visible:tabbable');
 					
@@ -19309,18 +19246,11 @@ $.fn.autoGrow = function(o) {
 					} else {
 						self.uiDialog.focus();
 					}
+					
 				 }, 400);
 			 }
-			 
-			 setTimeout(function(){
-				self.uiDialog.find('.autoLabelWidth').find('.inforLabel').autoWidth();
-			 }, 1);
-			 
-			self._isOpen = true;
-            self._trigger('open');
-			
+		
 			//refresh any grids.
-			
 			self.uiDialog.find(".inforDataGrid").each(function() {
 					var grid = $(this).data("gridInstance");
 					if (grid)
@@ -19329,7 +19259,21 @@ $.fn.autoGrow = function(o) {
 				
             return self;
         },
-
+		_sizeToFit: function() {	//size to fit the window.
+			var padding = 102,	//top header and bottom buttons.
+				elem = this.element,
+				topDiv = $(elem.parent()),
+				autoHeight = elem.height(),
+				topPos = topDiv.offset().top;
+		
+			if (topPos + autoHeight + padding > $(window).height() ) {
+				//shrink and add scrolling..
+				autoHeight = $(window).height() - padding - 38;
+				elem.height(autoHeight);
+				elem.css({"overflow-y" : "scroll", "padding-right" : "20px"});
+				topDiv.css({"top": "5px", "margin-top":"0"});
+			}
+		},
         _createButtons: function (buttons) {
            var self = this,
             hasButtons = false,
@@ -19356,6 +19300,10 @@ $.fn.autoGrow = function(o) {
                    $.each(props, function (key, value) {
                         if (key === "click") {
                             return;
+                        }
+						if (key === "text") {
+                           button.html(value);
+						   return
                         }
 						if (key === "isDefault" && value==true) {
                             button.addClass("default");
@@ -19388,9 +19336,11 @@ $.fn.autoGrow = function(o) {
                 };
             }
 			
+			self.uiDialog.find(".inforDialogTitleBar").wrap("<div class='dragHandle'></div>");
+			
             self.uiDialog.draggable({
                 cancel: '.inforMessageDialogContent, .inforMessageDialogTitlebarClose',
-                handle: '.dialogTop',
+                handle: '.dragHandle',
                 containment: 'document',
                 start: function (event, ui) {
                     heightBeforeDrag = options.height === "auto" ? "auto" : $(this).height();
@@ -19571,10 +19521,10 @@ $.fn.autoGrow = function(o) {
             * divs will both have width and height set, so we need to reset them
             */
             var options = this.options,
-            nonContentHeight,
-            minContentHeight,
-            isVisible = this.uiDialog.is(":visible");
-			var isFixedSize = (options.minWidth == options.width && options.minHeight == options.height);
+				nonContentHeight,
+				minContentHeight,
+				isVisible = this.uiDialog.is(":visible"),
+				isFixedSize = (options.minWidth == options.width && options.minHeight == options.height);
 			
             // reset content sizing
             this.element.show().css({
@@ -19602,24 +19552,17 @@ $.fn.autoGrow = function(o) {
                 width: options.width
             })
             .height();
-            minContentHeight = Math.max(0, options.minHeight - nonContentHeight);
+            minContentHeight = Math.max(0, (options.minHeight=="auto" ? 0 : options.minHeight) - nonContentHeight);
 
             if (options.height === "auto") {
-                // only needed for IE6 support
-                if ($.support.minHeight) {
-                    this.element.css({
-                        minHeight: minContentHeight,
-                        height: "auto"
-                    });
-                } else {
-                    this.uiDialog.show();
-                    var autoHeight = this.element.css("height", "auto").height();
-                    if (!isVisible) {
-                        this.uiDialog.hide();
-                    }
-                    this.element.height(Math.max(autoHeight, minContentHeight));
-                }
-            } else {
+               this.uiDialog.show();
+				var autoHeight = this.element.css("height", "auto").height();
+				
+				if (!isVisible) {
+					this.uiDialog.hide();
+				}
+				this.element.height(Math.max(autoHeight, minContentHeight));
+			 } else {
                 this.element.height(Math.max(options.height - nonContentHeight, 0));
             }
 			
@@ -19629,7 +19572,7 @@ $.fn.autoGrow = function(o) {
 			
 			if (isFixedSize) {
 				this.uiDialog.css({
-					height: options.height-5,	//-4 gets rid of the whitespace below the bottom images
+					height: options.height,	
 					width: options.minWidth
 				});
 			}
@@ -19703,53 +19646,11 @@ $.fn.autoGrow = function(o) {
         },
 
         height: function () {
-            var scrollHeight,
-            offsetHeight;
-            // handle IE 6
-            if ($.browser.msie && $.browser.version < 7) {
-                scrollHeight = Math.max(
-                document.documentElement.scrollHeight,
-                document.body.scrollHeight
-            );
-                offsetHeight = Math.max(
-                document.documentElement.offsetHeight,
-                document.body.offsetHeight
-            );
-
-                if (scrollHeight < offsetHeight) {
-                    return $(window).height() + 'px';
-                } else {
-                    return scrollHeight + 'px';
-                }
-                // handle "good" browsers
-            } else {
-                return $(document).height() + 'px';
-            }
+            return $(document).height() + 'px';
         },
 
         width: function () {
-            var scrollWidth,
-            offsetWidth;
-            // handle IE 6
-            if ($.browser.msie && $.browser.version < 7) {
-                scrollWidth = Math.max(
-                document.documentElement.scrollWidth,
-                document.body.scrollWidth
-            );
-                offsetWidth = Math.max(
-                document.documentElement.offsetWidth,
-                document.body.offsetWidth
-            );
-
-                if (scrollWidth < offsetWidth) {
-                    return $(window).width() + 'px';
-                } else {
-                    return scrollWidth + 'px';
-                }
-                // handle "good" browsers
-            } else {
-                return $(document).width() + 'px';
-            }
+            return $(document).width() + 'px';
         },
 
         resize: function () {
@@ -19823,8 +19724,8 @@ $.fn.autoGrow = function(o) {
 			showTitleClose: true, //allows you to hide the close button.
 			beforeClose: null, //allows you to fire events on close 
 			closeOnEscape: false, //allows the user to hit escape to cancel
-			position: null,	//set the position...
-			innerPadding: true	//add visual style guide inner padding.
+			position: null	//set the position...
+			//Not possible to change due to new styles innerPadding: true
 		};
 		
 		return this.each(function() {
@@ -19848,8 +19749,8 @@ $.fn.autoGrow = function(o) {
 			o.buttons=createMessageButtons(o.buttons,o.dialogType);
 			dialogArea.inforDialog({
 					autoOpen: true,                        // auto open the dialog, usually set to false otherwise the popup appears when the page is loaded
-					show: "scale",                         // animation to show and hide the popup
-					hide: ($.browser.msie && $.browser.version<=8 ? "" :"fade"),
+					show: ($.browser.msie && $.browser.version<=8 ? "" : {effect: 'fade',  duration: 250}),	//effect: 'drop', direction: "up" 
+					hide: ($.browser.msie && $.browser.version<=8 ? "" : {effect: 'fade', duration: 250}),
 					resizable: o.resizable,                        // can the popup be re-sized
 					title: o.title,                  // title for the popup
 					messageTitle: o.shortMessage,        // message for the error
@@ -19858,6 +19759,7 @@ $.fn.autoGrow = function(o) {
 					buttons: o.buttons,
 					draggable: true,                         // can the popup be moved around the screen
 					modal: o.modal,
+					icon: o.icon,
 					minWidth: (o.minWidth!=undefined ? o.minWidth : (o.width!=undefined ? o.width : 'auto')),
 					minHeight: (o.minHeight!=undefined ? o.minHeight : (o.height!=undefined ? o.height : 'auto')),
 					maxHeight: (o.maxHeight!=undefined ? o.maxHeight : ( o.dialogType=="General" ? undefined : 400)),
@@ -19873,11 +19775,6 @@ $.fn.autoGrow = function(o) {
 					autoFocus: o.autoFocus
 				});
 			
-			if (!o.innerPadding) {
-				dialogArea.closest(".inforDialog .dialogMiddleCenter").css("padding","0");
-				dialogArea.css({"margin-left":"-17px","margin-right":"-17px"});
-			}
-				
 			return ;
 		});
 		
@@ -19971,66 +19868,53 @@ $.fn.autoGrow = function(o) {
 			var isOpen = divTag.is(":visible");
 			
 			if (!isOpen)	
-				divTag = $('<div style="display:none" class="inforPageLevelMessage"><table cellspacing="0" cellpadding="0" style="width: 706px;"><tbody><tr class="popupTop"><td class="popupTopLeft"></td><td class="popupTopCenter"></td><td class="popupTopRight"></td></tr><tr class="popupMiddle"><td class="popupMiddleLeft"></td><td class="popupMiddleCenter" style="width: 652px;"><div class="popupMiddleCenterInner content"><div class="inforCloseButtonDark"></div></div></td><td class="popupMiddleRight"></td></tr><tr class="popupBottom"><td class="popupBottomLeft"></td><td class="popupBottomCenter"></td><td class="popupBottomRight"></td></tr></tbody></table></div>');
+				divTag = $('<div style="display:none" class="inforPageLevelMessage"><div class="popupMiddleCenter" style="width: 652px;"><div class="popupMiddleCenterInner content"><div class="inforCloseButton"></div></div></div>');
 			
 			//calculation to center in the screen...we want a ten pixel margin on each side..
-			var centerWidth=$(document).width()-40;			//706;
-			divTag.find('table').width(centerWidth);
-			divTag.find('.popupMiddleCenter').width(centerWidth-54);	//54 is the width of the images the compose the border.
+			var centerWidth=$(document).width()-70;			//706;
+			divTag.find('.popupMiddleCenter').width(centerWidth);
 			
 			var severityImage= null;
-			var isError = divTag.find(".popupMiddleLeft").hasClass("error");
+			var isError = divTag.hasClass("error");
 			
 			//adjust the images and background - there is a hierarchy - if there is an error the whole thing is red.
-			if (options.messageType=='Info' && !isError) {
-				divTag.find(".popupMiddleLeft").addClass("info");
-				divTag.find(".popupMiddleRight").addClass("info");
-				divTag.find(".popupBottomLeft").addClass("info");
-				divTag.find(".popupBottomCenter").addClass("info");
-				divTag.find(".popupBottomRight").addClass("info");
+			
+			if (options.messageType=='Info') {
+				severityImage = $("<div class='inforIcon'></div>").removeClass("alert").removeClass("error").addClass("info");
+				if (!isError)
+					divTag.removeClass("alert").removeClass("error").addClass("info");
 			}
-			
-			if (options.messageType=='Info')
-				severityImage = $("<div class='severityImage'></div>").removeClass("alert").removeClass("error").addClass("info");
-			
-			if (options.messageType=='Alert' && !isError) {
-				divTag.find(".popupMiddleLeft").addClass("alert");
-				divTag.find(".popupMiddleRight").addClass("alert");
-				divTag.find(".popupBottomLeft").addClass("alert");
-				divTag.find(".popupBottomCenter").addClass("alert");
-				divTag.find(".popupBottomRight").addClass("alert");
+		
+			if (options.messageType=='Alert') {
+				severityImage = $("<div class='inforIcon'></div>").removeClass("info").removeClass("error").addClass("alert");
+				if (!isError)
+					divTag.removeClass("info").removeClass("error").addClass("alert");
 			}
-			
-			if (options.messageType=='Alert')
-				severityImage = $("<div class='severityImage'></div>").removeClass("info").removeClass("error").addClass("alert");
 			
 			if (options.messageType=='Error') {
-				divTag.find(".popupMiddleLeft").removeClass("info").removeClass("alert").addClass("error");
-				divTag.find(".popupMiddleRight").removeClass("info").removeClass("alert").addClass("error");
-				divTag.find(".popupBottomLeft").removeClass("info").removeClass("alert").addClass("error");
-				divTag.find(".popupBottomCenter").removeClass("info").removeClass("alert").addClass("error");
-				divTag.find(".popupBottomRight").removeClass("info").removeClass("alert").addClass("error");
-				severityImage = $("<div class='severityImage'></div>").removeClass("info").removeClass("alert").addClass("error");
+				severityImage = $("<div class='inforIcon'></div>").removeClass("info").removeClass("alert").addClass("error");
+				divTag.removeClass("info").removeClass("alert").addClass("error");
 			}
+			
 			
 			//Create a message area object
 			var messageDiv = $('<div class="messageField"><div class="header">'+(options.messageTitle==null ?'':options.messageTitle)+'</div><div class="body message">'+(options.errorMessage==null ?'':options.errorMessage)+'</div></div>');
 			
 			divTag.find(".popupMiddleCenterInner").append(messageDiv);
-			var prevImage = $(".severityImage").last();
+			var prevImage = $(".inforIcon").last();
 			
 			if (isOpen) {
 				messageDiv.addClass("indent");
 			}
 			
-			var prevclass = (prevImage.length==0 ? "" : prevImage.attr("class").toLowerCase().replace("severityimage ","")),
+			var prevclass = (prevImage.length==0 ? "" : prevImage.attr("class").toLowerCase().replace("inforIcon ","")),
 				currMessage = options.messageType.toLowerCase();
 			
 			if (prevImage.length==0 || prevclass!=currMessage) {
 				if (prevImage.length==0)
 					messageDiv.before(severityImage).removeClass("indent");
 				else
-					messageDiv.before(severityImage.css("margin-top","10px")).removeClass("indent").css("margin-top","10px");
+					messageDiv.before(severityImage.css("margin-top","8px")).removeClass("indent").css("margin-top","10px");
 			}
 			
 			//setup the auto dismiss...
@@ -20045,7 +19929,7 @@ $.fn.autoGrow = function(o) {
 			}
 			
 			//setup the close button
-			var closeButton = divTag.find(".inforCloseButtonDark");
+			var closeButton = divTag.find(".inforCloseButton");
 			closeButton.attr("title",Globalize.localize("Close"));
 			
 			if (options.showClose){	
@@ -20109,15 +19993,20 @@ $.fn.autoGrow = function(o) {
 					var $this=$(this);
 					//uncheck everything else in that group
 					$('input[name="'+groupName+'"]').parent().removeClass("checked");	
-					$this.parent().addClass("checked");	
+					$this.parent().addClass("checked").removeClass("hover");	
 				});
 				
-				radio.focus(function () {
+				radio.focusin(function () {
 					var $this=$(this);
 					//unfocus everything else in that group
 					$('input[name="'+groupName+'"]').parent().removeClass("focus");	
 					$this.parent().addClass("focus");	
 				});
+				
+				radio.focusout(function () {
+					$(this).parent().removeClass("focus");	
+				});
+				
 				
 				//add hover states
 				radio.hover(function() {
@@ -20126,8 +20015,16 @@ $.fn.autoGrow = function(o) {
 					$(this).parent().removeClass("hover");	
 				});
 				
+				var label = $("<span class='labelText'>"+startLabel.html()+"</span>");
 				//update label
-				radio.after(startLabel.html());
+				radio.after(label);
+				
+				label.hover(function() {
+					$(this).parent().addClass("hover");	
+				}, function() {
+					$(this).parent().removeClass("hover");	
+				});
+				
 				startLabel.remove();
 				//correction for IE and Right to left padding.
 				var parent = radio.parent();
@@ -22595,8 +22492,6 @@ Globalize.addCultureInfo( "zh-TW", "default", {
  *
  */
 (function($) {
-
-	
 	var event = $.event,
 		resizeTimeout;
 		
@@ -22878,7 +22773,7 @@ Globalize.addCultureInfo( "zh-TW", "default", {
 			});
 			
 			function handleFrameResize($frame) {
-			    var next = $frame.next(),
+			    var next = $frame.next(":visible").not(".inforFormButton"),
 					maxHeight = $(window).height() - $frame.offset().top - next.height();	//the height of the nav
 				
 				$frame.css({ "border": "none" });
@@ -22999,6 +22894,9 @@ function handler(event) {
 */
 (function(f){f.fn.drag=function(b,a,d){var e=typeof b=="string"?b:"",k=f.isFunction(b)?b:f.isFunction(a)?a:null;if(e.indexOf("drag")!==0)e="drag"+e;d=(b==k?a:d)||{};return k?this.on(e,d,k):this.trigger(e)};var i=f.event,h=i.special,c=h.drag={defaults:{which:1,distance:0,not:":input",handle:null,relative:false,drop:true,click:false},datakey:"dragdata",livekey:"livedrag",add:function(b){var a=f.data(this,c.datakey),d=b.data||{};a.related+=1;if(!a.live&&b.selector){a.live=true;i.add(this,"draginit."+ c.livekey,c.delegate)}f.each(c.defaults,function(e){if(d[e]!==undefined)a[e]=d[e]})},remove:function(){f.data(this,c.datakey).related-=1},setup:function(){if(!f.data(this,c.datakey)){var b=f.extend({related:0},c.defaults);f.data(this,c.datakey,b);i.add(this,"mousedown",c.init,b);this.attachEvent&&this.attachEvent("ondragstart",c.dontstart)}},teardown:function(){if(!f.data(this,c.datakey).related){f.removeData(this,c.datakey);i.remove(this,"mousedown",c.init);i.remove(this,"draginit",c.delegate);c.textselect(true); this.detachEvent&&this.detachEvent("ondragstart",c.dontstart)}},init:function(b){var a=b.data,d;if(!(a.which>0&&b.which!=a.which))if(!f(b.target).is(a.not))if(!(a.handle&&!f(b.target).closest(a.handle,b.currentTarget).length)){a.propagates=1;a.interactions=[c.interaction(this,a)];a.target=b.target;a.pageX=b.pageX;a.pageY=b.pageY;a.dragging=null;d=c.hijack(b,"draginit",a);if(a.propagates){if((d=c.flatten(d))&&d.length){a.interactions=[];f.each(d,function(){a.interactions.push(c.interaction(this,a))})}a.propagates= a.interactions.length;a.drop!==false&&h.drop&&h.drop.handler(b,a);c.textselect(false);i.add(document,"mousemove mouseup",c.handler,a);return false}}},interaction:function(b,a){return{drag:b,callback:new c.callback,droppable:[],offset:f(b)[a.relative?"position":"offset"]()||{top:0,left:0}}},handler:function(b){var a=b.data;switch(b.type){case !a.dragging&&"mousemove":if(Math.pow(b.pageX-a.pageX,2)+Math.pow(b.pageY-a.pageY,2)<Math.pow(a.distance,2))break;b.target=a.target;c.hijack(b,"dragstart",a); if(a.propagates)a.dragging=true;case "mousemove":if(a.dragging){c.hijack(b,"drag",a);if(a.propagates){a.drop!==false&&h.drop&&h.drop.handler(b,a);break}b.type="mouseup"}case "mouseup":i.remove(document,"mousemove mouseup",c.handler);if(a.dragging){a.drop!==false&&h.drop&&h.drop.handler(b,a);c.hijack(b,"dragend",a)}c.textselect(true);if(a.click===false&&a.dragging){jQuery.event.triggered=true;setTimeout(function(){jQuery.event.triggered=false},20);a.dragging=false}break}},delegate:function(b){var a= [],d,e=f.data(this,"events")||{};f.each(e.live||[],function(k,j){if(j.preType.indexOf("drag")===0)if(d=f(b.target).closest(j.selector,b.currentTarget)[0]){i.add(d,j.origType+"."+c.livekey,j.origHandler,j.data);f.inArray(d,a)<0&&a.push(d)}});if(!a.length)return false;return f(a).on("dragend."+c.livekey,function(){i.remove(this,"."+c.livekey)})},hijack:function(b,a,d,e,k){if(d){var j={event:b.originalEvent,type:b.type},n=a.indexOf("drop")?"drag":"drop",l,o=e||0,g,m;e=!isNaN(e)?e:d.interactions.length; b.type=a;b.originalEvent=null;d.results=[];do if(g=d.interactions[o])if(!(a!=="dragend"&&g.cancelled)){m=c.properties(b,d,g);g.results=[];f(k||g[n]||d.droppable).each(function(q,p){l=(m.target=p)?i.handle.call(p,b,m):null;if(l===false){if(n=="drag"){g.cancelled=true;d.propagates-=1}if(a=="drop")g[n][q]=null}else if(a=="dropinit")g.droppable.push(c.element(l)||p);if(a=="dragstart")g.proxy=f(c.element(l)||g.drag)[0];g.results.push(l);delete b.result;if(a!=="dropinit")return l});d.results[o]=c.flatten(g.results); if(a=="dropinit")g.droppable=c.flatten(g.droppable);a=="dragstart"&&!g.cancelled&&m.update()}while(++o<e);b.type=j.type;b.originalEvent=j.event;return c.flatten(d.results)}},properties:function(b,a,d){var e=d.callback;e.drag=d.drag;e.proxy=d.proxy||d.drag;e.startX=a.pageX;e.startY=a.pageY;e.deltaX=b.pageX-a.pageX;e.deltaY=b.pageY-a.pageY;e.originalX=d.offset.left;e.originalY=d.offset.top;e.offsetX=b.pageX-(a.pageX-e.originalX);e.offsetY=b.pageY-(a.pageY-e.originalY);e.drop=c.flatten((d.drop||[]).slice()); e.available=c.flatten((d.droppable||[]).slice());return e},element:function(b){if(b&&(b.jquery||b.nodeType==1))return b},flatten:function(b){return f.map(b,function(a){return a&&a.jquery?f.makeArray(a):a&&a.length?c.flatten(a):a})},textselect:function(b){f(document)[b?"unbind":"bind"]("selectstart",c.dontstart).attr("unselectable",b?"off":"on").css("MozUserSelect",b?"":"none")},dontstart:function(){return false},callback:function(){}};c.callback.prototype={update:function(){h.drop&&this.available.length&& f.each(this.available,function(b){h.drop.locate(this,b)})}};h.draginit=h.dragstart=h.dragend=c})($);
 
+/*Add BoilerPlate like Syntax for identifying ie*/
+if ($.browser.msie)
+	$("html").addClass("ie"+$.browser.version.substr(0,1));
 
 /*
 * Infor Sign in Dialog.
@@ -23008,6 +22906,7 @@ function handler(event) {
         options: {
 			login: null, // callback that fires when a login occurs.
 			cancel: null, // callback that fires when a cancel
+			success: null, // callback that fires when a login success
 			title: null,
 			buttons: null
 		},
@@ -23032,19 +22931,16 @@ function handler(event) {
 				title: self.options.title,
 				dialogType: "General",
 				buttons: self.options.buttons,
-				minHeight: 353,
-				minWidth: 482,
-				maxHeight: 353,
-				maxWidth: 482,
-				height: 353,
-				width : 482,
+				height: 620,
+				width : 420,
 				modal: true,
 				draggable:false,
 				resizable: false,
 				position: {
 					my: 'center',
 					at: 'center',
-					collision: 'none'
+					of: 'body',
+					offset: '-100 100'
 				}
 			});
 			
@@ -23053,9 +22949,8 @@ function handler(event) {
 			
 			root.hide();
 			
-			root.find(".dialogTop").remove();
-			root.addClass("inforSignInDialog");
-			root.removeClass("inforDialog");
+			root.find(".inforDialogTitleBar").remove();
+			root.addClass("inforSignInDialog").removeClass("inforDialog");
 			root.find(".dialogButtonBar").removeClass("dialogButtonBar").addClass("inforSignInButtonSet");
 			
 			//adjust width
@@ -23063,6 +22958,16 @@ function handler(event) {
 			root.find(".inforCheckbox").inforCheckbox();
 			root.find(".inforFormButton:first").addClass("default");
 			root.find("table").css("height","inherit");
+			
+			//for backwards compat.
+			var logo = root.find(".inforLogo").removeClass("inforLogo").addClass("inforLogoTm");	
+			var appName = root.find("p").detach().remove();	
+			logo.after(appName);
+			
+			var $close = $("<button title='Cancel' type='button' class='inforModuleCloseButton'></button>").click(function(e){
+				$dialog.inforDialog("close");
+			});
+			logo.before($close );
 			$(".inforOverlay").remove();
 			
 			this._restoreSavedInfo();
@@ -23071,20 +22976,26 @@ function handler(event) {
 			$("[data-localizedText]").each(function() {
 				var $this = $(this);
 				var key = $this.attr("data-localizedText");
-				$this.html(Globalize.localize(key));
+				if ($this.is("label"))
+					$this.html(Globalize.localize(key));
+				else
+					$this.attr("placeholder",Globalize.localize(key));
 			});
 			
+			$("[placeholder]").placeholder();
+			
 			var controlArea = $(".inforSignInControls");
-			var maxWidth = controlArea.find(".inforLabel:first").width();
-			
-			if (maxWidth>50 && maxWidth<60)
-				controlArea.css((Globalize.culture().isRTL ? "margin-right" : "margin-left"),(Globalize.culture().isRTL ? "21%" : "23%"));
-			
-			if (maxWidth>60 && maxWidth<70)
-				controlArea.css((Globalize.culture().isRTL ? "margin-right" : "margin-left"),(Globalize.culture().isRTL ? "19%" : "21%"));
+		
 			
 			root.show();
+			var pos = root.position();
+			root.css({"left":($(window).width()/2)-310+"px", "margin-left":"0"});
+			
 			controlArea.find(".inforLabel").autoWidth();
+			//move the buttons to inline with the signin controls.
+			root.find(".inforSignInControls > br:last").before(root.find(".inforSignInButtonSet"));
+			root.find(".inforSignInButtonSet > .inforFormButton").append("<div class='arrow'></div>");
+			
 			//Set Focus to password field...
 			setTimeout(function(){
 				var userId =$.cookie("inforSignInDialog:userId");
@@ -23129,8 +23040,12 @@ function handler(event) {
 					//Save In a Cookie.
 					if (rememberPassword) 
 						this._saveInfo(userId,password);
-					else
-						this._clearInfo();
+					else {
+					    this._clearInfo();
+					}
+				    if (this.options.success != undefined) {
+                        this.options.success(userId);
+                    }
 				} else
 					setTimeout(function(){
 						var userId =$.cookie("inforSignInDialog:userId");
@@ -23147,9 +23062,11 @@ function handler(event) {
 				
 			$(".inforSignInDialog").hide();
 		},
-		showError: function (errorMessage) {
-			this.clearError();
-			$(".inforSignInControls").append("<br><div id='signInErrorText'><span class='severityImage error'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>"+errorMessage+"</div>");
+		showError: function (errorMessage, input) {
+			input.parent().find(".error").removeClass("error");
+			input.validationMessage("remove");
+			input.validationMessage("show", errorMessage, true);
+			input.parent().find(".inforErrorIcon").hide();
 		},
 		clearError: function () {
 		  //remove the br
@@ -23274,47 +23191,48 @@ function handler(event) {
 (function ($, undefined) {
     $.widget("ui.inforSplashScreen", {
         options: {
-			category: "Infor 10 ERP Enterprise (LN)",	//text for category
+			category: "Infor Ln",	//text for category
 			productName: "Installation Wizard",	//text for product name
 			version: "Version 10.0.0",	//text for version
-			copyRight: "Copyright @ 2012. Infor. All rights reserved. www.infor.com", //copyRight text
-			extraLine: null,	//fourth line
+			copyRightYear: null,
+			statusIndicator: false,	//show a status indicator.
+			copyRight: "Copyright @year. Infor. All rights reserved. www.infor.com", //copyright text
 			redirect: "", //Page to redirect to can be http or relative. 
 			delay: 3000	//Time to delay before redirecting...
 		},
 		_create: function () {
              var self = this;
-			 var o = self.options;
+			 var o = self.options,
+				$div = $('<div id="inforSplashScreen" style="display:none"></div>'),
+				$category = $('<span class="category">'+o.category+'</span><br>'),
+				$productName = $('<div class="productName">'+o.productName+'</div><br>'),
+				$version = $('<span class="version">'+o.version+'</span><br>'),
+				$logo = $('<div class="inforLogoTm"></div>');
 			 
-			 var $div = $('<div id="inforSplashScreen" style="display:none"></div>');
-			 var $category = $('<span class="category">'+o.category+'</span><br>');
-			 var $productName = $('<span class="productName">'+o.productName+'</span><br>');
-			 var $version = $('<span class="version">'+o.version+'</span><br>');
-			 var $logo = $('<div class="inforLogo"></div>');
+			 o.copyRight = o.copyRight.replace("@year",(o.copyRightYear ? o.copyRightYear : "2012"));
+			 
 			 var $copyRight = $('<span class="copyRight">'+o.copyRight+'</span><br>');
 			 
-			 if (o.extraLine!=undefined) {
-				 var $extraLine = $('<span class="extraLine">'+o.extraLine+'</span><br>');
-				 $div.append($category,$productName,$version,$logo,$copyRight,$extraLine);
-				 $version.css("font-size","18px");
-			 } else
-				$div.append($category,$productName,$version,$logo,$copyRight);	
-			
+			 if (o.category) {
+				$div.append($logo, $category,$productName,$version,$copyRight);	
+			 } else {
+			 	$div.append($logo,$productName,$version,$copyRight);	
+			 }
+			 
 			$('body').append($div);
 		
 			//Add signIn Dialog elements to the page
 			var $dialog = $div.inforDialog({
-				title: "Sign In",
+				title: "",
 				dialogType: "General",
 				minHeight: 420,
-				minWidth: 620,
+				minWidth: 710,
 				maxHeight: 420,
-				maxWidth: 620,
+				maxWidth: 710,
 				height: 420,
-				width : 620,
+				width : 710,
 				modal: true,
 				draggable:false,
-				//show: 'slideToggle',
 				resizable: false,
 				position: {
 					my: 'center',
@@ -23327,24 +23245,31 @@ function handler(event) {
 			var root = $dialog.closest(".inforDialog");
 			
 			//Remove un needed stuff.
-			root.find(".dialogTop").remove();
-			root.addClass("inforSplashScreen");
-			root.removeClass("inforDialog");
-			
-			//fix padding..
-			if (Globalize.culture().isRTL) 
-				root.find("#inforSplashScreen").css("padding-left","53px");
-			else
-				root.find("#inforSplashScreen").css("padding-right","53px");
-			
+			root.find(".inforDialogTitleBar").remove();
+			root.addClass("inforSplashScreen").removeClass("inforDialog");
 			$(".inforOverlay").remove();
 			
 			//adjust width
-			root.css({"width":"","height":""});
+			root.css({"left":($(window).width()/2)-310+"px", "margin-left":"0"});
 			
+			//check if product name is overflowing
+			if ($productName.height()>50) {
+				 $($productName[0]).css("font-size","3.4em");
+			}
+			
+			if ($productName.height()>70) {
+				$($productName[0]).css("font-size","3.2em");
+			}
+			
+			if ($productName.height()>100) {
+				$($productName[0]).css("font-size","2.4em");
+			}
+			
+			if (this.options.statusIndicator){
+				$($copyRight[0]).before('<div class="inforStatusIndicatorBar"><div class="inforStatusIndefiniteValue" style="width: 100%;"></div></div>');
+			}
 			//set the time out and redirect.
-			if (o.redirect!="")
-			{
+			if (o.redirect!="") {
 				timeout = setTimeout(function(){
 					root.fadeOut();
 					window.location=o.redirect;
@@ -23377,35 +23302,32 @@ function handler(event) {
 			var buttonText = $textButton.html();
 			var isIconButton = false;
 			
-			if (!$textButton.find('.leftSlice').hasClass('leftSlice'))	//prevent re-wrapping on multiple calls.
-			{	
-				$textButton.empty();
-				var $leftSlice = $("<span class=\"leftSlice\" />");
-				var $centerSlice = $("<span class=\"centerSlice\" />").html(buttonText);
-				var $rightButton = $("<button type='button' class=\"inforSplitButtonMenu\" />");
+			if (!$textButton.parent().is(".inforSplitButtonContainer"))  { 
 				
-				var isDisabled = $textButton.hasClass("disabled");
+				var isDisabled = $textButton.hasClass("disabled") || $textButton.is(":disabled");
 				var classes=$textButton.attr("class").replace("inforSplitButton","").replace("disabled","");
 				
 				if (classes=="" || classes==" ") { 	
-					$textButton.append($leftSlice, $centerSlice);
-					$textButton.removeAttr("class").addClass("inforSplitButtonText");
+					isIconButton = false;
 				}
 				else {
-					$textButton.removeAttr("class").addClass("inforIconSplitButton");
-					//read the icon class and move it
-					$textButton.addClass(classes);
+					$textButton.addClass("inforIconButton");
 					isIconButton = true;
 				}
 				
+				var $rightButton = $("<button type='button' class=\"inforSplitButtonArrow\" />");
+				
 				//wrap in a div and add the button on the right.
-				var container = $("<div class='inforSplitButton'></div>");
+				var container = $("<div class='inforSplitButtonContainer'></div>");
 				$textButton.wrap(container);
 				$textButton.parent().append($rightButton);
 				
 				//attach the events.
 				$textButton.click(function(e){
-					if (o.click!=undefined && !$textButton.parent().hasClass("disabled"))
+					if ($textButton.parent().hasClass("disabled") || $textButton.hasClass("disabled"))
+						return;
+						
+					if (o.click!=undefined)
 						o.click(e);
 				});
 				
@@ -23413,9 +23335,11 @@ function handler(event) {
 					$rightButton.inforContextMenu({
 						menu: o.menuId,
 						invokeMethod: 'toggle',
-						positionBelowElement: true,
-						offsetLeft: -3,
-						offsetTop: -2
+						position: { my: "left top",
+								at: "left bottom",
+								of: $textButton,
+								offset: "0 3",
+								collision: "flip"}
 					}, (o.callback==undefined ? null : function(action, el, pos, item) {
 							if ($textButton.hasClass('disabled'))
 								return;
@@ -23429,16 +23353,7 @@ function handler(event) {
 					$textButton.disable();
 				else
 					$textButton.enable();
-					
-				$.browser.safari = ( $.browser.webkit && navigator.userAgent.toLowerCase().indexOf("chrome")=== -1) ? true: false;
-				//style fix for WebKit
-				if ($.browser.safari && !isIconButton)
-				$textButton.css({"margin-top": "0", "padding": "0", "height": "21px" });
 			
-				if ($.browser.webkit && !isIconButton && !$.browser.safari && !Globalize.culture().isRTL) {	
-					$rightButton.css({"margin-top": "-1px"});
-					$textButton.parent().css({"padding-top": "1px"});
-				}
 			}
 		});
 	};
@@ -23453,32 +23368,34 @@ function handler(event) {
 *   http://www.opensource.org/licenses/mit-license.php 
 *   http://www.gnu.org/licenses/gpl.html 
 */
-(function($){
-	
-	$.fn.inforSplitter = function(options){
-		var settings = {
+
+(function ($) {
+    $.widget("ui.inforSplitter", {
+        options: {
 			splitHorizontal:false, //vertical or horizontal
 			splitVertical:true, //vertical or horizontal
 			savePosition: true, //Save the split value to a cookie?
 			initialSplitPerc: null	//initial split size.
-		};
-		
-		return this.each(function() {
-			var $this = $(this),
-				splitter = $this;
+		},
+		_splitBar: null,
+		_splitButton:null,
+		_sideA:null,
+		_sideB:null,
+		_windowHeight:null,
+		_windowWidth:null,
+		_perc: null,
+		_create: function () {
+			var $splitter = $(this.element),
+				self = this;
 			
-			splitterWindowHeight = $(window).height(), splitterWindowWidth = $(window).width();
-			splitterResizeTimer = null;
+			this._windowHeight = $(window).height();
+			this._windowWidth = $(window).width();
 			
-			var	o = $.extend({}, settings, options); //Extend the options if any provided
-			var elementId = $this.attr("id");
-			resizePerc = .20;
-			
-			unSavedPos=0;	 // Unsaved/Unclosed splitting position
-			var splitPos;	 // current splitting position
+			var	o = this.options;
+			this._perc  = .20;
 			
 			// Default opts
-			var direction = (o.splitHorizontal? 'h':'v');
+			o.direction = (o.splitHorizontal? 'h':'v');
 			var opts = $.extend({
 				minAsize:0, //minimum width/height in PX of the first (A) div.
 				maxAsize:0, //maximum width/height  in PX of the first (A) div.
@@ -23488,216 +23405,212 @@ function handler(event) {
 				animSpeed: 100 //animation speed in ms
 			},{
 			v:{ // Vertical
-				moving:"left",sizing: "width", eventPos: "pageX",splitbarClass:"inforSplitBarVertical",buttonClass: "inforSplitButtonVertical", cursor: "e-resize"
+				moving:"left",sizing: "width", eventPos: "pageX",splitbarClass:"inforSplitBarVertical",buttonClass: "inforSplitButtonVertical", cursor: "col-resize"
 			},
 			h: { // Horizontal 
-				moving:"top",sizing: "height", eventPos: "pageY",splitbarClass:"inforSplitBarHorizontal",buttonClass: "inforSplitButtonHorizontal",  cursor: "n-resize"
+				moving:"top",sizing: "height", eventPos: "pageY",splitbarClass:"inforSplitBarHorizontal",buttonClass: "inforSplitButtonHorizontal",  cursor: "row-resize"
 			}
-			}[direction], o);
+			}[o.direction], this.options);
 			
-			if (direction=='v') {
-				o.A = $('#leftPane');
-				o.B = $('#rightPane');
-				if (o.A.length==0 && o.B.length==0) {
-					o.A = $this.find('.leftPane:first');
-					o.B = $this.find('.rightPane:first');
+			this.options = opts;
+			
+			if (o.direction=='v') {
+				this._sideA = $('#leftPane');
+				this._sideB = $('#rightPane');
+				if (this._sideA.length==0 && this._sideB.length==0) {
+					this._sideA = $splitter.find('.leftPane:first');
+					o.B = $splitter.find('.rightPane:first');
 				}
 				if (o.initialSplitPerc) {
-					o.A.css("width",o.initialSplitPerc*100+"%");
-					o.B.css("width","75%");
+					this._sideA.css("width",o.initialSplitPerc*100+"%");
+					this._sideB.css("width","75%");
 				}
 			} else {
-				o.A =$('#topPane');
-				o.B =$('#bottomPane');
-				if (o.A.length==0 && o.B.length==0) {
-					o.A = $this.find('.topPane:first');
-					o.B = $this.find('.bottomPane:first');
+				this._sideA =$('#topPane');
+				this._sideB =$('#bottomPane');
+				if (this._sideA.length==0 && this._sideB.length==0) {
+					this._sideA = $splitter.find('.topPane:first');
+					this._sideB = $splitter.find('.bottomPane:first');
 				}
 				if (o.initialSplitPerc) {
-					o.A.css("height",o.initialSplitPerc*100+"%");
-					o.B.css("height","75%");
+					this._sideA.css("height",o.initialSplitPerc*100+"%");
+					this._sideB.css("height","75%");
 				}
 			}
 			
 			//setup elements
-			
-			var mychilds =splitter.children(); //$(">*", splitter[0]);
-			var A = o.A;	// left/top frame
-			var B = o.B;// right/bottom frame
-			var slave=o.slave;//optional, elemt forced to receive resize event
-			
+			var isDragging = false;
+				
 			//Create splitbar 
-			var C=$('<div><span></span></div>');
-			A.after(C);
-			C.attr({"class": opts.splitbarClass,unselectable:"on"}).css({"cursor":opts.cursor,"user-select": "none", "-webkit-user-select": "none","-khtml-user-select": "none", "-moz-user-select": "none"})
-			.draggable({ iframeFix: true, axis: (direction=='v' ? "x" : "y"), 
+			this._splitBar=$('<div></div>');
+			
+			this._sideA.after(this._splitBar);
+			this._splitBar.attr({"class": opts.splitbarClass,unselectable:"on"}).css({"cursor":opts.cursor,"user-select": "none", "-webkit-user-select": "none","-khtml-user-select": "none", "-moz-user-select": "none"})
+			.draggable({
+					iframeFix: true, 
+					axis: (o.direction=='v' ? "x" : "y"), 
 					stop: function(event, ui) {
-						endDrag(event, ui);
+						self._endDrag(event, ui);
+						self._splitBar.removeClass("dragging");
+						isDragging = false;
 					},
 					start: function(event, ui) {
-						C.css('z-index','250').css("-webkit-user-select", "none");
-						splitter._initPos=C.position();
-						splitter._initPos[opts.moving]-=C[opts.sizing]();
+						self._splitBar.css('z-index','250').css("-webkit-user-select", "none");
+						$splitter._initPos=self._splitBar.position();
+						$splitter._initPos[opts.moving]-= self._splitBar[opts.sizing]();
+						isDragging = true;
+						self._splitBar.addClass("dragging");
 					}});
-			
-			C.hover(function(){	
-							if (direction=='v')
-								$(this).css("cursor","e-resize");
-							else
-								$(this).css("cursor","n-resize");
-								},
-					function(){$(this).css("cursor","default")});
-			
+		
 			//set up the hover drag
-			var Bt=$('<div></div>').attr({"class": opts.buttonClass, unselectable: "on"});
-			C.append(Bt);
+			this._splitButton=$('<div></div>').attr({"class": opts.buttonClass, unselectable: "on"});
+			this._splitBar.append(this._splitButton);
 			
 			//reset size to default.			
-			setHeight();
-			var perc=(((C.position()[opts.moving]-splitter.offset()[opts.moving])/splitter[opts.sizing]())*100).toFixed(1);
-			unSavedPos = o.restoreSplitPerc*100;
+			this._setHeight(this._splitBar);
+			var perc=(((this._splitBar.position()[opts.moving]-$splitter.offset()[opts.moving])/$splitter[opts.sizing]())*100).toFixed(1);
 			
-			if ($this.parent().hasClass("ui-tabs-panel")) {
-				$this.parent().css({"overflow":"hidden" , "padding" :" 1px 0"});
+			if ($splitter.parent().hasClass("ui-tabs-panel")) {
+				$splitter.parent().css({"overflow":"hidden" , "padding" :" 1px 0"});
 			}
 			
 			//set size saved in the cookie
 			if (o.savePosition) {
-				var cookieId = window.location.pathname+'inforSplitter/#'+(elementId==undefined ? "inforSplitter"+direction :elementId),
+				var elementId = $splitter.attr("id"),
+					cookieId = window.location.pathname+'inforSplitter/#'+(elementId==undefined ? "inforSplitter"+o.direction :elementId),
 					cookieVal = $.cookie(cookieId);
+					
 				if (cookieVal != null)
-				{	
 					perc=cookieVal;
-				}	
 			}
 		
-			splitTo(perc);
+			this.splitTo(perc);
+			
+			var reinit = function () {
+				self.splitTo(self._perc); 
+			};
+			
+			var handleResize = function () {
+					if (self._resizeTimer) clearTimeout(self._resizeTimer);
+					
+					if (self._windowHeight != $(window).height() || self._windowWidth != $(window).width()) {
+						self._setWidth();
+						self._resizeTimer = setTimeout(reinit,1);
+						self._windowHeight = $(window).height();
+						self._windowWidth = $(window).width();
+					}
+				};
 			
 			if ($.browser.msie)
 				$(window).smartresize(handleResize);
 			else
 				$(window).resize(handleResize);
+		},
+		_setWidth : function () {
+			var w = $(window).width()-this._sideA.width()-this._splitBar.width()-12;
+			this._sideB.width(w+"px");	
+		},
+		_setHeight : function () {
+			var root = this._splitBar.closest('.inforSplitter')
+			if (this.options.direction=='h')
+				root = this._splitBar.closest('.inforHorizontalSplitter');
+					
+			root.height($(window).height()-root.position().top+"px");
+		},
+		_endDrag : function (event, ui){
+			var o = this.options,
+				$splitter = $(this.element);
 			
-			function handleResize() {
-				if (splitterResizeTimer) clearTimeout(splitterResizeTimer);
-				
-				if (splitterWindowHeight != $(window).height() || splitterWindowWidth != $(window).width()) {
-					setWidth();
-					splitterResizeTimer = setTimeout(reinit, 0);
-					splitterWindowHeight = $(window).height();
-					splitterWindowWidth = $(window).width();
-				}
-			}
+			if (this.options.direction=='v')
+				this._splitBar.css("left","");
+			
+			var p=ui.offset;
+			$splitter.children().css("-webkit-user-select", "text");// let Safari select text again
+			
+			var perc=(((p[o.moving]-$splitter.offset()[o.moving])/$splitter[o.sizing]())*100).toFixed(1);	
+			
+			this.splitTo(perc); 
+			$splitter._initPos=0;
+			$splitter.css("cursor","default")
+		},
+		//Peforms split to a percentage
+		getSplitPercentage: function(){
+			return (this._perc);
+		},
+		//Peforms split to a percentage
+		splitTo : function (perc) {
 		
-			function reinit(){
-				splitTo(resizePerc); 
+			var o = this.options,
+				$splitter = $(this.element)
+			
+			//prevents dragging off the right side
+			if (perc>=99)
+				perc = 99;
+			
+			if (perc<=1)
+				perc = 1.25;
+				
+			if (typeof Globalize !="undefined" && Globalize.culture().isRTL)
+				perc = 100-perc;
+				
+			this._perc = perc;
+			this._setHeight();
+			
+			//Adjust the invert class if we drag or not.
+			if (o.closeableto==perc)
+				this._splitButton.addClass(o.invertClass);
+			else
+				this._splitButton.removeClass(o.invertClass);
+			
+			if (o.savePosition) {
+				var elementId = $splitter.attr("id"),
+					cookieId = window.location.pathname+'inforSplitter/#'+(elementId==undefined ? "inforSplitter"+o.direction :elementId);
+				$.cookie(cookieId,perc, { expires: 3650 });
 			}
 			
-			function setWidth() {
-				var w = $(window).width()-A.width()-C.width()-2;
-				B.width(w+"px");	
+			var barsize=this._splitBar[o.sizing](),
+				splitsize=$splitter[o.sizing]();
+			
+			if (o.closeableto!=perc){
+				var percpx=Math.max(parseInt((splitsize/100)*perc),o.minAsize);
+				if (o.maxAsize)
+					percpx=Math.min(percpx,o.maxAsize);
+			}else{
+				var percpx=parseInt((splitsize/100)*perc,0);
 			}
 			
-			function setHeight(){
-				var root = C.closest('.inforSplitter')
-				if (direction=='h')
-					root = C.closest('.inforHorizontalSplitter');
-						
-				root.height($(window).height()-root.position().top+"px");
+			if ((o.maxBsize) && (splitsize-percpx>o.maxBsize)) {
+					percpx=splitsize-o.maxBsize;
+			}
+				
+			if ((o.minBsize) && (splitsize-percpx<o.minBsize)) {
+					percpx=splitsize-o.minBsize;
 			}
 			
-			function endDrag(event, ui){
-				if (direction=='v')
-					C.css("left","");
-				
-				var p=ui.offset;
-				mychilds.css("-webkit-user-select", "text");// let Safari select text again
-				
-				var perc=(((p[opts.moving]-splitter.offset()[opts.moving])/splitter[opts.sizing]())*100).toFixed(1);	
-				
-				splitTo(perc); 
-				splitter._initPos=0;
-				splitter.css("cursor","default")
-			}
-				
-			//Perform actual splitting and animate it;					
-			function splitTo(perc) {
-				//prevents dragging off the right side
-				if (perc>=100)
-					perc = 100;
-				
-				if (perc<=0)
-					perc = 0;
-					
-				if (typeof Globalize !="undefined" && Globalize.culture().isRTL) {
-					perc = 100-perc;
-				}
-				
-				if(splitPos&&splitPos>10&&splitPos<90)//do not save accidental events
-						_splitPos=splitPos;
-				
-				resizePerc = perc;
-				setHeight();
-				
-				//Adjust the invert class if we drag or not.
-				if (opts.closeableto==perc)
-					Bt.addClass(opts.invertClass);
-				else
-					Bt.removeClass(opts.invertClass);
-				
-				if (o.savePosition) {
-					var cookieId = window.location.pathname+'inforSplitter/#'+(elementId==undefined ? "inforSplitter"+direction :elementId);
-					$.cookie(cookieId,perc, { expires: 3650 });
-				}
-				
-				var barsize=C[opts.sizing]();
-				var splitsize=splitter[opts.sizing]();
-				
-				if (opts.closeableto!=perc){
-					var percpx=Math.max(parseInt((splitsize/100)*perc),opts.minAsize);
-					if (opts.maxAsize)
-						percpx=Math.min(percpx,opts.maxAsize);
-				}else{
-					var percpx=parseInt((splitsize/100)*perc,0);
-				}
-				
-				if ((opts.maxBsize) && (splitsize-percpx>opts.maxBsize)) {
-						percpx=splitsize-opts.maxBsize;
-				}
-					
-				if ((opts.minBsize) && (splitsize-percpx<opts.minBsize)) {
-						percpx=splitsize-opts.minBsize;
-				}
-				
-				var sizeA=Math.max(0,(percpx-barsize));
-				var sizeB=Math.max(0,(splitsize-(percpx==0 ? 10 : percpx)));
-				
-				if (direction=='v')
-					splitsize=(splitsize-barsize);
-				
-				if ($.browser.msie && direction=='v')
-					sizeB=sizeB-2;
-				
-				A.show().css(opts.sizing,sizeA+'px');
-				B.show().css(opts.sizing,sizeB-1+'px');
-				Bt.show();
-				
-				if (direction=='h')
-					C.css("top","5px");
-				
-				mychilds.trigger("resize");
-				mychilds.find(".inforDataGrid").each(function() {
-					var grid = $(this).data("gridInstance");
-					if (grid)
-						grid.resizeCanvas();
-				});
-				
-				if (slave)
-					slave.trigger("resize");
-				_ismovingNow=false;	
+			var sizeA=Math.max(0,(percpx-barsize));
+			var sizeB=Math.max(0,(splitsize-(percpx==0 ? 15 : percpx)));
+			
+			if (o.direction=='v')
+				splitsize=(splitsize-barsize);
+			
+			this._sideA.show().css(o.sizing,sizeA+10+'px');
+			this._sideB.show().css(o.sizing,sizeB-21+'px');
+			this._splitButton.show();
+			
+			if (o.direction=='h')
+				this._splitBar.css("top","5px");
+			else
+				this._splitBar.css("left",this._splitBar.css("left")+20);
+			
+			var children = $splitter.children();
+			children.trigger("resize");
+			children.find(".inforDataGrid").each(function() {
+				var grid = $(this).data("gridInstance");
+				if (grid)
+					grid.resizeCanvas();
+			});
 		}
-	});
-};
+   });
 })(jQuery);
 
 /*
@@ -23734,7 +23647,7 @@ $.widget( "ui.inforStatusIndicator", {
 			o.detailText=Globalize.localize("LoadingItem");
 		
 		 //add the progress bar.
-		 this.contentArea = $('<div></div>');
+		 this.contentArea = $('<div class="inforStatusIndicatorTextArea"></div>');
 		 $('<h4 class="inforStatusIndicatorStatusText">'+o.statusText+'</h4>').appendTo(this.contentArea);
 		 this.detailText = $('<h6 class="inforStatusIndicatorDetailText">'+o.detailText+'</h6>').appendTo(this.contentArea);
 		 this.valueDiv = $('<div class="'+(o.indefinite ? "inforStatusIndefiniteValue" : "inforStatusIndicatorValue") +'"></div>').appendTo(this.contentArea);
@@ -23749,7 +23662,7 @@ $.widget( "ui.inforStatusIndicator", {
 					title: o.title,
 					dialogType: "General",
 					width: 361,
-					height: 245,
+					height: 158,
 					showTitleClose: o.showTitleClose
 				});
 				
@@ -24140,7 +24053,7 @@ $.widget( "ui.tabs", {
 			}
 		}
 
-		// Show a tab...
+// Show a tab...
 		var showTab = showFx
 			? function( clicked, $show ) {
 				$( clicked ).closest( "li" ).addClass( "ui-tabs-selected ui-state-active" );
@@ -24553,14 +24466,15 @@ $.widget( "ui.tabs", {
 			closable: false,	//Will allow you to close headers
 			draggable: false,	//Will allow you to drag headers to sort
 			addButton: false,
-			chevron: true,
 			rename: null,
 			add: null,
 			close: null,
 			sort: null,
+			animate: true,	//add a cross fade animation.
 			fillToBottom: true, //if true the control will stretch to the bottom of the page in height automatically.
-			toolTips: {addButton: null, closeButton: null, chevronButton: null},
-			moduleTabs: false	//special styled tabs for application level
+			toolTips: {addButton: null, closeButton: null},
+			moduleTabs: false,	//special styled tabs for application level
+			verticalTabs : false // implements vertical tabs.
 		},
 		_init: function() {
 			var o = this.options, 
@@ -24573,9 +24487,6 @@ $.widget( "ui.tabs", {
 			
 			if (o.toolTips.closeButton==null)
 				o.toolTips.closeButton=Globalize.localize("CloseTab");
-				
-			if (o.toolTips.chevronButton==null)
-				o.toolTips.chevronButton=Globalize.localize("ListTabs");
 				
 			//Add close buttons if required
 			if (o.closable) 
@@ -24593,8 +24504,7 @@ $.widget( "ui.tabs", {
 				this.options.moduleTabs =true;
 			
 			this._addButtons($tabs, o);
-			this._addTabSlices($tabs, o);
-		
+			
 			//hide any visibile tooltips..
 			$tabs.bind('tabsselect', function(event, ui) {
 				$("#inforTooltip").hide();
@@ -24616,12 +24526,17 @@ $.widget( "ui.tabs", {
 			
 			//Make the Tabs Sortable
 			if (o.draggable) {
-				$tabs.find(".inforTabset").sortable({
+				$tabs.find(".inforTabset:first").sortable({
 					axis: "x",
+					forcePlaceholderSize: true,
+				    placeholder: "inforDragPlaceholder",
 					//We can ignore drag on some stuff with
 					//items: 'li[id!=dropdownli]',
+					start: function(event, ui) {
+						ui.item.addClass("ui-state-hover");
+				    },
 					stop: function (e, ui) {
-						ui.item.css({"position":"" , "left" : "", "top" : "" });
+						ui.item.css({"position":"" , "left" : "", "top" : "" }).removeClass("ui-state-hover");
 						//post action to save tab index
 						if (o.sort)
 							o.sort(this, ui, o);
@@ -24647,25 +24562,51 @@ $.widget( "ui.tabs", {
 			}
 			
 			//set autowidth
-			$tabs.tabs({show: function (e, ui, newTab) {
+			var tabObj = $tabs.tabs({show: function (e, ui, newTab) {
+				if (o.animate && !o.verticalTabs) {
+					//add cross fade animation
+					var lastOpenedPanel = $(this).data("lastOpenedPanel");
+
+					if (!$(this).data("topPositionTab")) {
+						$(this).data("topPositionTab", $(ui.panel).position().top)
+					}         
+
+					//Dont use the builtin fx effects. This will fade in/out both tabs, we dont want that
+					//Fadein the new tab yourself            
+					$(ui.panel).hide().fadeIn(500);
+
+					if (lastOpenedPanel) {
+						// 1. Show the previous opened tab by removing the jQuery UI class
+						// 2. Make the tab temporary position:absolute so the two tabs will overlap
+						// 3. Set topposition so they will overlap if you go from tab 1 to tab 0
+						// 4. Remove position:absolute after animation
+						lastOpenedPanel
+							.toggleClass("ui-tabs-hide")
+							.css("position", "absolute")
+							.css("top", $(this).data("topPositionTab") + "px")
+							.fadeOut(500, function() {
+								$(this)
+								.css("position", "");
+							});
+
+					}
+
+					//Saving the last tab has been opened
+					$(this).data("lastOpenedPanel", $(ui.panel));
+				}
+				
 				$('.autoLabelWidth').find('.inforLabel').autoWidth();
 				self._scrollTabIntoView($tabs, $tabs.find("ul.inforTabset:first"));
 			}});
 			
+			if (o.moduleTabs)
+				$tabs.children(".inforTabset").addClass("inforModuleTabs");
+			else
+				$tabs.children(".inforTabset").addClass("inforNormalTabs");
 			
-		},
-		_addTabSlices: function($tabs, o) {
-			if (this.options.moduleTabs) {
-				var list = $tabs.find('ol,ul').eq(0),
-					lis = $('li:has(a[href])', list);
-			
-				lis.each(function(){
-					var $thisLi = $(this);
-					if ($thisLi.find(".leftSlice").length==0) {
-						$thisLi.prepend("<span class='leftSlice'></span>");
-						$thisLi.append("<span class='rightSlice'></span>");
-					}
-				});
+			if (o.verticalTabs) {
+				tabObj.addClass("inforVerticalTabs");
+				self._sizeVerticalTabs($tabs);
 			}
 		},
 		_setOption: function( key, value ) {
@@ -24727,6 +24668,7 @@ $.widget( "ui.tabs", {
 							o.add(this, $input ,value, o);
 						
 						$input.remove()
+						isNew = false;
 					});
 				});
 			 });
@@ -24738,26 +24680,57 @@ $.widget( "ui.tabs", {
 			var list = $tabs.find('ol,ul').eq(0),
 				lis = $('li:has(a[href])', list);
 			
-			$("#inforTabChevronMenuOptionsContainer").remove();
+			$("#inforTabMenuContainer").remove();
 			
-			var html = "<ul id='inforTabChevronMenuOptions' class='inforContextMenu'>";
-				var i = 0;
+			var ul = $("<ul id='inforTabMenu' class='inforContextMenu'></ul>"),
+				i = 0;
+			
+			$tabs.after(ul);
 			
 			lis.each(function(){
-				var $thisA = $(this).find('a');
+				var $this = $(this),
+					$thisA = $(this).find('a');
+					
 				if (!$thisA.parent().hasClass("inforHiddenTab")) {
 					var text = $thisA.html();
 					if ($thisA.data("text"))
 						 text = $thisA.data("text");
 						 
-					var tabHtml  = "<li class='"+i+($thisA.parent().hasClass("ui-state-disabled") ? " disabled" : "")+"'><a href='#"+i+"'>"+text+"</a></li>";
+					var tabLi  = $("<li class='"+i+($thisA.parent().hasClass("ui-state-disabled") ? " disabled" : "")+"'><a href='#"+i+"'>"+text+"</a></li>");
+					tabLi.data("tabItem",$this);
 					//ui-state-disabled
-					html = html+tabHtml;
+					ul.append(tabLi);
 				}
 				i++;
 		    });
 			
-			$tabs.after(html+"</ul>");
+			var clone = ul.clone();
+			clone.appendTo("body").show();
+			
+			var originalIndex;
+			
+			//add sort behaviors
+			$(ul,list).addClass("connectedSortable").sortable(
+			{	   placeholder: 'inforDragPlaceholder',
+				   helper : 'clone',
+				   forcePlaceholderSize: true,
+				   revert: 100,
+				   connectWith: ".connectedSortable",
+				   start: function(event, ui) {
+						originalIndex = ui.item.index();
+				   },
+				   stop: function(event, ui) { 
+						var elem = ui.item.data("tabItem");
+								
+						if (originalIndex==ui.item.index())
+							return;
+							
+						if (ui.originalPosition.top>ui.position.top)
+							list.children().eq(ui.item.index()).before(elem);	//dragged up
+						else
+							list.children().eq(ui.item.index()).after(elem);	//dragged down
+							
+				   }});
 		},
 		closeTab: function(tabLi) {
 			var tabIndex = tabLi.children('a').attr('href');
@@ -24805,6 +24778,7 @@ $.widget( "ui.tabs", {
 							self.closeTab(el);
 							
 						if (action=="closeOthers") {
+							var lis =  $('li:has(a[href])', $tabs.find('ol,ul').eq(0)).not(".notClosable");
 							lis.not(el).each(function(e) {
 								self.closeTab($(this));
 							});
@@ -24852,8 +24826,6 @@ $.widget( "ui.tabs", {
 			if (o.closable)
 				this._addCloseButton($tabs, o);
 			
-			this._addTabSlices($tabs, o);
-			
 			if (enterEditMode && o.editable)	
 				this._addEditors($tabs, this, true, o);
 			
@@ -24863,128 +24835,54 @@ $.widget( "ui.tabs", {
 				callback(callbackEvent, callbackUi);
 		},
 		_addButtons: function ($tabs, o) {
-			var prevButton = $('<button type="button"></button>').addClass((Globalize.culture().isRTL ? "inforNextButton": "inforPrevButton" )),
-				nextButton = $('<button type="button"></button>').addClass((Globalize.culture().isRTL ? "inforPrevButton": "inforNextButton" )),
-				content = $tabs.find("ul.inforTabset:first"),
+			var content = $tabs.find("ul.inforTabset:first"),
 				self = this;
 			
-			if (!this.options.moduleTabs) {
-				content.after($('<div class="inforTabButton" style="'+(Globalize.culture().isRTL ? "float:right": "float:left" ) +'" ></div>').append(prevButton));
-				content.after($('<div class="inforTabButton" ></div>').append(nextButton));
-			} else {
-				content.after($('<div class="inforTabButton" ></div>'));
-			}
+			var chevron = $('<div class="inforTabButton"><button type="button" class="inforMoreButton">More...</button></div>');
+			content.after(chevron);
 			
-			if (o.chevron) {
-				var chevron = $('<button type="button" class="inforTabChevron" title="'+o.toolTips.chevronButton+'"></button>');
-				content.next(".inforTabButton").width(32).append(chevron);
-				
-				chevron.bind("click", function(e) {
-						
-						self._addMenuToPage($tabs,o);
-						var $button = $(this);
-						$button.inforContextMenu({
-							menu: 'inforTabChevronMenuOptions',
-							invokeMethod: 'immediate',
-							event: e,
-							srcElement: $button,
-							offsetLeft: (!Globalize.culture().isRTL ? -6: 2),
-							offsetTop: -1,
-							positionBelowElement: true
-						},
-						function(action, el, pos, obj) {
-							if (obj.hasClass("hiddenTab")) {
-								var tabId = obj.attr("id");
-								$tabs.inforTabset('add', tabId, obj.html(), false);
-							}
-							else {	//reopen the tab.
-								$tabs.tabs('select', parseInt(action));
-								$("#inforTabChevronMenuOptions").remove();
-								self._scrollTabIntoView($tabs, content);
-							}
-						});	
-				});
-			}
-			
-			//Add Paging Functionality
-			function stepPrev(animate) {
-				var pos = (Globalize.culture().isRTL ? parseInt(content.css("right")) : content.position().left) + 100;
-				if (pos >= 0) {
-					pos = 0;
-				}
-				content.animate((Globalize.culture().isRTL ? { right  : pos } : { left  : pos }), (animate ? 100 : 50), function() {
-					self._refreshEnabled($tabs, content, prevButton, nextButton);
-				});
-			}
-			
-			prevButton.click(function(){
-				if (!noClick)
-					stepPrev(true);
+			chevron.find('button').bind("click", function(e) {
+					self._addMenuToPage($tabs,o);
+					var $button = $(this);
+					$button.inforContextMenu({
+						menu: 'inforTabMenu',
+						invokeMethod: 'immediate',
+						event: e,
+						srcElement: $button,
+						offsetLeft: (!Globalize.culture().isRTL ? -6: 2),
+						offsetTop: -1,
+						positionBelowElement: true
+					},
+					function(action, el, pos, obj) {
+						if (obj.hasClass("hiddenTab")) {
+							var tabId = obj.attr("id");
+							$tabs.inforTabset('add', tabId, obj.html(), false);
+						}
+						else {	//reopen the tab.
+							$tabs.tabs('select', parseInt(action));
+							$("#inforTabMenu").remove();
+							self._scrollTabIntoView($tabs, content);
+						}
+					});	
 			});
 			
-			//long press
-			var prevInterval = null, 
-				nextInterval = null,
-				noClick = false;
-				
-			prevButton.on('mousedown',function() {
-				prevInterval = setInterval(function() { noClick=true; stepPrev(false); }, 300);
-			}).on('mouseup mouseup mouseout',function() {
-			   clearInterval(prevInterval);  
-			   noClick=false;
-			})
-			
-			function stepNext(animate) {
-				var width = content.width(),
-					pos = (Globalize.culture().isRTL ? parseInt(content.css("right")) : content.position().left) - 100;
-				
-				if (!(width + pos > $tabs.width()))
-					pos = $tabs.width()-width-22;
-					
-				content.animate((Globalize.culture().isRTL ? { right  : pos } : { left  : pos }), (animate ? 100 : 50), function() {
-					self._refreshEnabled($tabs, content, prevButton, nextButton);
-				});
-			}
-			
-			nextButton.click(function() {
-				if (!noClick)
-					stepNext(true);
-			});
-			
-			//long press
-			nextButton.on('mousedown',function() {
-				nextInterval = setInterval(function() { noClick=true; stepNext(false); }, 300);
-			}).on('mouseup mouseup mouseout',function() {
-			   clearInterval(nextInterval);  
-			   noClick=false;
-			});
-			
+			chevron.hide().addClass("inforHiddenTab");
+		
 			this._refreshScroll($tabs);
-			this._refreshEnabled($tabs, content, prevButton, nextButton);
 			$(window).unbind("smartresize.inforTabset");
 			$(window).bind("smartresize.inforTabset",function(){
 				self._refreshScroll($tabs);
+				self._sizeVerticalTabs($tabs);
 			});
 		},
-		_refreshEnabled: function($tabs, content, prevButton, nextButton) {
-			//set the visibility
-			var pos = parseInt((Globalize.culture().isRTL ? content.css("right") : content.css("left")));
-			
-			if (pos==0 || isNaN(pos)) {
-				prevButton.trigger("mouseup").attr("disabled","disabled");
-				if ($.browser.msie && $.browser.version==8)
-					prevButton.addClass("disabled");
-			} else {
-				prevButton.removeClass("disabled").removeAttr("disabled");
-			}
-			
-			var width = content.width();
-			if (pos === $tabs.width()-width-22) {
-				nextButton.trigger("mouseup").attr("disabled","disabled");
-				if ($.browser.msie && $.browser.version==8)
-					nextButton.addClass("disabled");
-			} else {
-				nextButton.removeClass("disabled").removeAttr("disabled");
+		_sizeVerticalTabs: function($tabs){
+			var self = this;
+			if (self.options.verticalTabs) {
+				//debugger;
+				var ul = $tabs.find("ul:first"),
+					width = $(window).width() - (ul.width()+ul.position().left+22+30);
+					
+				$tabs.find(".ui-tabs-panel").width(width);
 			}
 		},
 		_scrollTabIntoView: function($tabs,content) {
@@ -25008,8 +24906,7 @@ $.widget( "ui.tabs", {
 			var headerWidth = 32,
 				tabsWidth = $tabs.width(),
 				content = $tabs.find("ul.inforTabset:first"),
-				prevButton = $tabs.find("button.inforPrevButton"),
-				nextButton = $tabs.find("button.inforNextButton"),
+				overFlowButton = $tabs.find(".inforMoreButton"),
 				maxWidth = content.parent().css("max-width");
 			
 			//calculate tabs width
@@ -25018,12 +24915,8 @@ $.widget( "ui.tabs", {
 			});
 			
 			if (headerWidth<tabsWidth) {
-				prevButton.parent().hide();
-				nextButton.hide().parent().width("16px");
+				overFlowButton.parent().hide();
 				content.css({"width":"auto", "left":"0"});
-				if (!this.options.moduleTabs) {
-					content.find("li:first").removeClass("marginated");
-				} 
 				
 				if (this.options.moduleTabs) {
 					$tabs.find(".inforTabChevron").parent().hide();
@@ -25039,13 +24932,11 @@ $.widget( "ui.tabs", {
 				}
 			} else {
 				if (!this.options.moduleTabs) {
-					prevButton.parent().show();
-					nextButton.show().parent().width("32px");
-					content.width(headerWidth);
+					overFlowButton.parent().show().removeClass("inforHiddenTab");	//width("32px");
+					content.width(headerWidth+overFlowButton.parent().width()+20);
 					
-					if (maxWidth )
+					if (maxWidth)
 						content.css("max-width",maxWidth);
-					content.find("li:first").addClass("marginated");	//indent first li
 				}
 				
 				this._scrollTabIntoView($tabs,content);
@@ -25068,57 +24959,187 @@ $.widget( "ui.tabs", {
 /*
  * Infor Text Button - A text button For Lighter Modules (Non/WebParts)
  */
- (function ($) {
-    $.widget("ui.inforTextButton", {
-        options: {
-			autoWidth: false
-		},
-		_create: function () {
-			var $button = $(this.element),
-				buttonText = $button.html(),
-				isDisabled = (($button.attr("disabled")!=undefined && $button.attr("disabled")!='') || $button.hasClass("disabled"));
+(function($){
+	$.fn.inforTextButton = function( options ) {
+		var settings = {
+			styleTooltip : true
+		};
+		return this.each(function() {
+			var	o = $.extend({}, settings, options);
 			
-			if (!$button.find('.leftSlice').hasClass('leftSlice'))
-			{	//prevent re-wrapping on multiple calls.
-				$button.empty();
+			var $textButton = $(this),
+				isDisabled = $textButton.is(":disabled") || $textButton.hasClass("disabled");
+			
+			if (isDisabled)
+				$textButton.disable();
 				
-				var leftSlice = $("<span class=\"leftSlice\" />"),
-					centerSlice = $("<span class=\"centerSlice\" />"),
-				rightSlice = $("<span class=\"rightSlice\" />");
-														
-				centerSlice.html(buttonText);
-				$button.append(leftSlice, centerSlice, rightSlice);
+			if (o.styleTooltip)
+				$textButton.inforToolTip();
+		});
+	};
+}(jQuery));
+/*
+ * Infor Tile Panel - Dashboards.
+ */
+(function ($) {
+	$.widget("ui.inforTilePanel", {
+		options: {
+			sortable: true
+		},
+		_init: function() {
+			var self = this,
+				panel = this.element,
+				masonryOpts = {
+				itemSelector : '.inforPanelItem',
+				isAnimated: true,
+				columnWidth: function( containerWidth ) {
+					return containerWidth / 274;
+				},
+				isRTL: Globalize.culture().isRTL
+			 };
+			
+			//Setup Tile Panel using jQuery Masonry Plugin.
+			panel.masonry(masonryOpts);
+			
+			//Add Sortability.
+			if (this.options.sortable)
+				this._addSortable(panel);
+				
+		
+			panel.find(".inforCountDown").each(function() {
+				self._setupCountDowns($(this));
+			});
+			
+			self._setupSettings(panel);
+			self._setupExpand(panel);
+			panel.parent().css("overflow","auto");	//allow scrolling
+		},
+		_setupExpand: function(panel) {
+			var self = this;
+			panel.find(".inforPanelExpand").each(function() {
+				var expandBtn = $(this),
+					item = expandBtn.closest(".inforPanelItem");
+					
+				expandBtn.attr("title", Globalize.localize("ExpandCollapse")).on("click",function() {
+					self._toggleExpand($(this));
+				});
+				
+				if (expandBtn.hasClass("expanded"))
+					this_toggleExpand(expandBtn);
+				else
+					item.find(".slick-viewport").css("overflow","hidden");
+			});
+		},
+		_toggleExpand: function(button) {
+			var panel = this.element,
+				last = panel.find(".inforPanelItem:last"),
+				item = button.closest(".inforPanelItem"),
+				expanding = !item.hasClass("expanded")
+			
+			if (expanding) {
+				item.addClass("expanded").css("height",item.height()*2);
+				button.addClass("up");
+				item.find(".slick-viewport").css("overflow","auto");
+				item.find(".inforDataGrid").css("margin-top","-8px").find(".slick-row:first").css("border","");
+			} else {
+				item.removeClass("expanded").css("height","");
+				button.removeClass("up");
+				item.find(".slick-viewport").css("overflow","hidden");
+				item.find(".inforDataGrid").css("margin-top","");
+				item.find(".inforDataGrid").css("margin-top","-8px").find(".slick-row:first").css("border","none");
+			}
+			
+			panel.masonry('reload');
+			setTimeout(function() {
+				item.find(".inforDataGrid").each(function() {
+					var grid = $(this);
+					grid.height(item.find(".inforPanelBody").height()+(!expanding ? - 35 : - 25 ));
+					grid.data("gridInstance").resizeCanvas();
+					if (!expanding){
+						grid.find(".slick-viewport").css("overflow","hidden");
+						grid.find(".slick-row:first").css("border","none");
+					}
+				});
+			},1);
+		},
+		_addSortable: function(panel) {
+			panel.sortable({
+				distance: 20,
+				forcePlaceholderSize: true,
+				items: '.inforPanelItem',
+				placeholder: 'inforPanelPlaceholder inforPanelItem',
+				tolerance: 'pointer',
+				handle: '.inforPanelHeader',
+				cursor: 'move',
+				start:  function(event, ui) {            
+							var item = ui.item,
+									parent = ui.item.parent();
+							
+							ui.item.find(".inforPanelSettings").hide();
+							item.addClass('inforPanelItemDragging').removeClass('inforPanelItem');
+							parent.masonry( 'option', {isAnimated: false} ).masonry('reload').masonry( 'option', {isAnimated: true} );
+						},
+				change: function(event, ui) {
+						  var item = ui.item,
+							parent = ui.item.parent();
+							//.masonry( 'option', {isAnimated: false} ) ?? if we dont like the animaition.
+						  parent.masonry( 'option', {isAnimated: false} ).masonry('reload').masonry( 'option', {isAnimated: true} );
+						},
+				stop:   function(event, ui) {
+					var item = ui.item,
+						parent = ui.item.parent();
+							
+					item.removeClass('inforPanelItemDragging').addClass('inforPanelItem');
+					parent.masonry( 'option', {isAnimated: false} ).masonry('reload').masonry( 'option', {isAnimated: true} );
+				}
+			});
+		},
+		_setupCountDowns: function(panel){
+			var countTo = Date.parse(panel.text());
+			
+			var interval = setInterval(function() {
+				var now      = new Date(),
+					diff = countTo - now;
 
-				if (isDisabled)
-					$button.disable();
-			}
-			
-			//hack for non-detection of crome.
-			$.browser.safari = ( $.browser.webkit && navigator.userAgent.toLowerCase().indexOf("chrome")=== -1) ? true: false;
-			
-			//style fix for WebKit
-			if ($.browser.safari) {
-				if (isDisabled){
-					$button.parent().height("20px").css("margin-bottom","1px");
+				days  = Math.floor( diff / (1000*60*60*24) );
+				hours = Math.floor( diff / (1000*60*60) );
+				mins  = Math.floor( diff / (1000*60) );
+				secs  = Math.floor( diff / 1000 );
+
+				dd = days;
+				hh = hours - days  * 24;
+				mm = mins  - hours * 60;
+				ss = secs  - mins  * 60;
+
+				var html = '<table><tbody><tr><td>' + dd + '</td><td>&nbsp;</td><td class="hour">' + hh + '</td><td class="min">' + mm + '</td><td>' + ss + '</td></tr><tr><td>Days</td><td>&nbsp;</td><td>Hours</td> <td>Minutes</td> <td>Seconds</td> </tr> </tbody></table>';
+				panel.html(html).fadeIn();
+				
+				clearInterval(interval);
+			}, 1000 );
+		},
+		_setupSettings: function(panel) {
+			//setup the settings animations - will go in the control
+			panel.find(".inforPanelSettingsButton").click(function() {
+				var panel = $(this).closest(".inforPanelItem");
+				panel.find(".inforPanelHeader, .inforPanelBody, .inforPanelSettings").hide("");
+				
+				if (panel.hasClass("flipped")) {
+					panel.removeClass("flipped");
+					panel.find(".inforPanelHeader, .inforPanelBody").show("");
+					
+				} else {
+					
+					panel.addClass("flipped");
+					panel.find(".inforPanelSettings").show("");
 				}
-				else {
-					if ($(this).parent().hasClass("inforToolbar"))
-						$(this).addClass('safariAdjust');
-				}
-			}
+			});
+		},
+		setupDragDrop: function(sourceGrid, sourcePane) {
 			
-			//set the width...
-			if (this.options.autoWidth) {
-				$button.css("display","inline-block");
-				$button.width(17+$button.find(".centerSlice").width());
-				if (isDisabled) {
-					$button.parent().width(14+$button.find(".centerSlice").width());
-					$button.css("display","none");
-				}
-			}
 		}
-   });
-})(jQuery);
+	});
+} (jQuery));
+
 /*
  * Infor Toggle Button - A Button set for several related text button options
  */
@@ -25147,15 +25168,11 @@ $.widget( "ui.tabs", {
 			//remove the middles and add a seperator
 			
 			if (!Globalize.culture().isRTL)	{
-				self.find(".inforTextButton .leftSlice").not(":first").remove();
-				self.find(".inforTextButton .rightSlice").not(":last").removeClass("rightSlice").addClass("divider");
-				self.find(".inforTextButton .centerSlice").filter(":first").css("padding-left","0px");
-				self.find(".inforTextButton .centerSlice").filter(":last").css("padding-right","0px");
+				self.find(".inforTextButton").filter(":first").css({"border-radius":"3px 0 0 3px" , "border-left":"1px solid rgba(104, 107, 115, 0.2)"});
+			self.find(".inforTextButton ").filter(":last").css({"border-radius":"0 3px 3px 0", "border-right":"1px solid rgba(104, 107, 115, 0.2)"});
 			} else {
-				self.find(".inforTextButton .leftSlice").not(":last").remove();
-				self.find(".inforTextButton .rightSlice").not(":first").removeClass("rightSlice").addClass("divider");
-				self.find(".inforTextButton .centerSlice").filter(":last").css("padding-left","0px");
-				self.find(".inforTextButton .centerSlice").filter(":first").css("padding-right","0px");
+		self.find(".inforTextButton").filter(":first").css({"border-radius":"0 3px 3px 0", "border-right":"1px solid rgba(104, 107, 115, 0.2)"});
+	self.find(".inforTextButton").filter(":last").css({"border-radius":"3px 0 0 3px", "border-left":"1px solid rgba(104, 107, 115, 0.2)"});
 			}
 		}
 	});
@@ -25183,14 +25200,14 @@ $.widget("ui.inforToolTip", {
 			return $(this).attr("title");
 		},
 		position: {
-			my: "left top",
+			my: "top",
 			at: "bottom",
-			offset: "12 12",
+			offset: "2 12",
 			collision: "fit flip"
 		},
 		maxWidth: null,
 		isErrorTooltip: false
-	},
+		},
 	isRTL: false,
 	_init: function() {
 		var self = this;
@@ -25206,7 +25223,6 @@ $.widget("ui.inforToolTip", {
 		
 		if (!this.element.hasClass("inforErrorIcon")) {
 			this.element.attr("title",tooltipText);
-			return;	//use browser level tooltips and ignore this.
 		}
 		
 		//save the tooltip
@@ -25214,7 +25230,7 @@ $.widget("ui.inforToolTip", {
 		this.element.attr("title","");
 					
 		this.tooltip = $("#inforTooltip");
-		this.tooltipContent = this.tooltip.find("div");
+		this.tooltipContent = this.tooltip.find("div.content");
 		
 		if (this.tooltip.length==0)	{ //add it once to the dom.
 			this.tooltip = $("<div></div>")
@@ -25223,9 +25239,13 @@ $.widget("ui.inforToolTip", {
 				.attr("aria-hidden", "true")
 				.addClass(this.options.tooltipClass)
 				.appendTo(document.body)
+				.click(function(){
+					$(this).hide();
+				})
 				.hide();
 				
-			this.tooltipContent = $("<div></div>").appendTo(this.tooltip);
+			this.tooltipContent = $("<div class='content'></div>").appendTo(this.tooltip);
+			this.tooltipContent.before("<div class='arrow up'></div>");
 		}
 		
 		this.isRTL = this.tooltip.css("direction")=="rtl";
@@ -25236,12 +25256,12 @@ $.widget("ui.inforToolTip", {
 			this.options.position = {
 				my: ( this.isRTL ? "left top" : "right top") ,
 				at: "bottom",
-				offset: ( this.isRTL ? "4 2" : "-4 2" )
+				offset: ( this.isRTL ? "4 10" : "-4 10" )
 			};
 			this.options.isErrorTooltip = true;
 		}
 		
-		this.opacity = this.tooltip.css("opacity");
+		this.opacity = 1;
 		if (!this.options.isErrorTooltip || (this.options.isErrorTooltip &&  this.element.parent().hasClass("status-indicator"))) {
 			this.element
 				.hoverIntent(function (event) {
@@ -25312,7 +25332,7 @@ $.widget("ui.inforToolTip", {
 		}
 	},
 	_hideAll: function() {
-		$(".inforTooltip':visible").each(function() {
+		$("#inforTooltip:visible").each(function() {
 			var $this = $(this);
 			$this.stop().fadeTo("normal", 0, function() {
 				$(this).hide().css("opacity", "");
@@ -25327,10 +25347,9 @@ $.widget("ui.inforToolTip", {
 		
 		target.attr("title", "");
 		
-		//position relative to the mouse
 		if (this.options.disabled)
 			return;
-			
+		
 		this.tooltipContent.html(content);
 		
 		if (this.options.isErrorTooltip)
@@ -25348,8 +25367,13 @@ $.widget("ui.inforToolTip", {
 			top: 0,
 			left: 0
 		}).show().position($.extend(this.options.position, {
-			of: (this.options.isErrorTooltip ? target : event)	//event for mouse - target for button
+			of: target 	//(this.options.isErrorTooltip ? target : event)	//event for mouse - target for button
 		})).hide();
+		
+		var width = (this.tooltip.width())/2;
+		width = width - 6.5;	// Arrow is 13px wide
+		
+		this.tooltip.find("div.arrow").css({"left" : width  +"px" });
 		
 		this.tooltip.attr("aria-hidden", "false");
 		target.attr("aria-describedby", this.tooltip.attr("id"));
@@ -25407,38 +25431,6 @@ $.widget("ui.inforToolTip", {
  * jsTree core
  */
 (function ($) {
-	// Common functions not related to jsTree 
-	// decided to move them to a `vakata` "namespace"
-	$.vakata = {};
-	// CSS related functions
-	$.vakata.css = {
-		get_css : function(rule_name, delete_flag, sheet) {
-			rule_name = rule_name.toLowerCase();
-			var css_rules = sheet.cssRules || sheet.rules,
-				j = 0;
-			do {
-				if(css_rules.length && j > css_rules.length + 5) { return false; }
-				if(css_rules[j].selectorText && css_rules[j].selectorText.toLowerCase() == rule_name) {
-					if(delete_flag === true) {
-						if(sheet.removeRule) { sheet.removeRule(j); }
-						if(sheet.deleteRule) { sheet.deleteRule(j); }
-						return true;
-					}
-					else { return css_rules[j]; }
-					}
-				}
-			while (css_rules[++j]);
-			return false;
-		},
-		add_css : function(rule_name, sheet) {
-			if($.jstree.css.get_css(rule_name, false, sheet)) { return false; }
-			if(sheet.insertRule) { sheet.insertRule(rule_name + ' { }', 0); } else { sheet.addRule(rule_name, null, 0); }
-			return $.vakata.css.get_css(rule_name);
-		},
-		remove_css : function(rule_name, sheet) { 
-			return $.vakata.css.get_css(rule_name, true, sheet); 
-		}
-	};
 
 	// private variables 
 	var instances = [],			// instance array (used by $.jstree.reference/create/focused)
@@ -25446,6 +25438,8 @@ $.widget("ui.inforToolTip", {
 		plugins = {},			// list of included plugins
 		prepared_move = {};		// for the move_node function
 
+	$.inforTree = {};	//Special Namespace for some tree extensions.
+	
 	// jQuery plugin wrapper (thanks to jquery UI widget function)
 	$.fn.inforTree = function (settings) {
 		var isMethodCall = (typeof settings == 'string'), // is this a method call like $().jstree("open_node")
@@ -26704,10 +26698,6 @@ $.widget("ui.inforToolTip", {
 			set_theme : function (theme_name, theme_url) {
 				if(!theme_name) { return false; }
 				if(!theme_url) { theme_url = $.jstree._themes + theme_name + '/style.css'; }
-				/*if($.inArray(theme_url, themes_loaded) == -1) {
-					$.vakata.css.add_sheet({ "url" : theme_url });
-					themes_loaded.push(theme_url);
-				}*/
 				if(this.data.themes.theme != theme_name) {
 					this.get_container().removeClass('jstree-' + this.data.themes.theme);
 					this.data.themes.theme = theme_name;
@@ -27323,7 +27313,7 @@ $.widget("ui.inforToolTip", {
 		dir1 = false,
 		dir2 = false,
 		last_pos = false;
-	$.vakata.dnd = {
+	$.inforTree.dnd = {
 		is_down : false,
 		is_drag : false,
 		helper : false,
@@ -27336,8 +27326,8 @@ $.widget("ui.inforToolTip", {
 		user_data : {},
 
 		drag_start : function (e, data, html) { 
-			if($.vakata.dnd.is_drag) { 
-				//$.vakata.drag_stop({}); 
+			if($.inforTree.dnd.is_drag) { 
+				//$.inforTree.drag_stop({}); 
 				this.drag_stop({}); 
 			}
 			try {
@@ -27345,22 +27335,22 @@ $.widget("ui.inforToolTip", {
 				e.currentTarget.onselectstart = function() { return false; };
 				if(e.currentTarget.style) { e.currentTarget.style.MozUserSelect = "none"; }
 			} catch(err) { }
-			$.vakata.dnd.init_x = e.pageX;
-			$.vakata.dnd.init_y = e.pageY;
-			$.vakata.dnd.user_data = data;
-			$.vakata.dnd.is_down = true;
-			$.vakata.dnd.helper = $("<div id='vakata-dragged' />").html(html); //.fadeTo(10,0.25);
-			$(document).bind("mousemove", $.vakata.dnd.drag);
-			$(document).bind("mouseup", $.vakata.dnd.drag_stop);
+			$.inforTree.dnd.init_x = e.pageX;
+			$.inforTree.dnd.init_y = e.pageY;
+			$.inforTree.dnd.user_data = data;
+			$.inforTree.dnd.is_down = true;
+			$.inforTree.dnd.helper = $("<div id='vakata-dragged' />").html(html); //.fadeTo(10,0.25);
+			$(document).bind("mousemove", $.inforTree.dnd.drag);
+			$(document).bind("mouseup", $.inforTree.dnd.drag_stop);
 			return false;
 		},
 		drag : function (e) { 
-			if(!$.vakata.dnd.is_down) { return; }
-			if(!$.vakata.dnd.is_drag) {
-				if(Math.abs(e.pageX - $.vakata.dnd.init_x) > 5 || Math.abs(e.pageY - $.vakata.dnd.init_y) > 5) { 
-					$.vakata.dnd.helper.appendTo("body");
-					$.vakata.dnd.is_drag = true;
-					$(document).triggerHandler("drag_start.vakata", { "event" : e, "data" : $.vakata.dnd.user_data });
+			if(!$.inforTree.dnd.is_down) { return; }
+			if(!$.inforTree.dnd.is_drag) {
+				if(Math.abs(e.pageX - $.inforTree.dnd.init_x) > 5 || Math.abs(e.pageY - $.inforTree.dnd.init_y) > 5) { 
+					$.inforTree.dnd.helper.appendTo("body");
+					$.inforTree.dnd.is_drag = true;
+					$(document).triggerHandler("drag_start.inforTree", { "event" : e, "data" : $.inforTree.dnd.user_data });
 				}
 				else { return; }
 			}
@@ -27370,14 +27360,14 @@ $.widget("ui.inforToolTip", {
 				var d = $(document), t = d.scrollTop(), l = d.scrollLeft();
 				if(e.pageY - t < 20) { 
 					if(sti && dir1 === "down") { clearInterval(sti); sti = false; }
-					if(!sti) { dir1 = "up"; sti = setInterval(function () { $(document).scrollTop($(document).scrollTop() - $.vakata.dnd.scroll_spd); }, 150); }
+					if(!sti) { dir1 = "up"; sti = setInterval(function () { $(document).scrollTop($(document).scrollTop() - $.inforTree.dnd.scroll_spd); }, 150); }
 				}
 				else { 
 					if(sti && dir1 === "up") { clearInterval(sti); sti = false; }
 				}
 				if($(window).height() - (e.pageY - t) < 20) {
 					if(sti && dir1 === "up") { clearInterval(sti); sti = false; }
-					if(!sti) { dir1 = "down"; sti = setInterval(function () { $(document).scrollTop($(document).scrollTop() + $.vakata.dnd.scroll_spd); }, 150); }
+					if(!sti) { dir1 = "down"; sti = setInterval(function () { $(document).scrollTop($(document).scrollTop() + $.inforTree.dnd.scroll_spd); }, 150); }
 				}
 				else { 
 					if(sti && dir1 === "down") { clearInterval(sti); sti = false; }
@@ -27385,35 +27375,35 @@ $.widget("ui.inforToolTip", {
 
 				if(e.pageX - l < 20) {
 					if(sli && dir2 === "right") { clearInterval(sli); sli = false; }
-					if(!sli) { dir2 = "left"; sli = setInterval(function () { $(document).scrollLeft($(document).scrollLeft() - $.vakata.dnd.scroll_spd); }, 150); }
+					if(!sli) { dir2 = "left"; sli = setInterval(function () { $(document).scrollLeft($(document).scrollLeft() - $.inforTree.dnd.scroll_spd); }, 150); }
 				}
 				else { 
 					if(sli && dir2 === "left") { clearInterval(sli); sli = false; }
 				}
 				if($(window).width() - (e.pageX - l) < 20) {
 					if(sli && dir2 === "left") { clearInterval(sli); sli = false; }
-					if(!sli) { dir2 = "right"; sli = setInterval(function () { $(document).scrollLeft($(document).scrollLeft() + $.vakata.dnd.scroll_spd); }, 150); }
+					if(!sli) { dir2 = "right"; sli = setInterval(function () { $(document).scrollLeft($(document).scrollLeft() + $.inforTree.dnd.scroll_spd); }, 150); }
 				}
 				else { 
 					if(sli && dir2 === "right") { clearInterval(sli); sli = false; }
 				}
 			}
 
-			$.vakata.dnd.helper.css({ left : (e.pageX + $.vakata.dnd.helper_left) + "px", top : (e.pageY + $.vakata.dnd.helper_top) + "px" });
-			$(document).triggerHandler("drag.vakata", { "event" : e, "data" : $.vakata.dnd.user_data });
+			$.inforTree.dnd.helper.css({ left : (e.pageX + $.inforTree.dnd.helper_left) + "px", top : (e.pageY + $.inforTree.dnd.helper_top) + "px" });
+			$(document).triggerHandler("drag.inforTree", { "event" : e, "data" : $.inforTree.dnd.user_data });
 		},
 		drag_stop : function (e) {
 			if(sli) { clearInterval(sli); }
 			if(sti) { clearInterval(sti); }
-			$(document).unbind("mousemove", $.vakata.dnd.drag);
-			$(document).unbind("mouseup", $.vakata.dnd.drag_stop);
-			$(document).triggerHandler("drag_stop.vakata", { "event" : e, "data" : $.vakata.dnd.user_data });
-			$.vakata.dnd.helper.remove();
-			$.vakata.dnd.init_x = 0;
-			$.vakata.dnd.init_y = 0;
-			$.vakata.dnd.user_data = {};
-			$.vakata.dnd.is_down = false;
-			$.vakata.dnd.is_drag = false;
+			$(document).unbind("mousemove", $.inforTree.dnd.drag);
+			$(document).unbind("mouseup", $.inforTree.dnd.drag_stop);
+			$(document).triggerHandler("drag_stop.inforTree", { "event" : e, "data" : $.inforTree.dnd.user_data });
+			$.inforTree.dnd.helper.remove();
+			$.inforTree.dnd.init_x = 0;
+			$.inforTree.dnd.init_y = 0;
+			$.inforTree.dnd.user_data = {};
+			$.inforTree.dnd.is_down = false;
+			$.inforTree.dnd.is_drag = false;
 		}
 	};
 	$.jstree.plugin("dnd", {
@@ -27438,33 +27428,32 @@ $.widget("ui.inforToolTip", {
 			this.addDragElements();
 			this.get_container()
 				.bind("mouseenter.jstree", $.proxy(function (e) {
-						if($.vakata.dnd.is_drag && $.vakata.dnd.user_data.jstree) {
+						if($.inforTree.dnd.is_drag && $.inforTree.dnd.user_data.jstree) {
 							if(this.data.themes) {
 								m.attr("class", "jstree-" + this.data.themes.theme); 
 								if(ml) { ml.attr("class", "jstree-" + this.data.themes.theme); }
-								$.vakata.dnd.helper.attr("class", "jstree-dnd-helper jstree-" + this.data.themes.theme);
+								$.inforTree.dnd.helper.attr("class", "jstree-dnd-helper jstree-" + this.data.themes.theme);
 							}
-							//if($(e.currentTarget).find("> ul > li").length === 0) {
-							if(e.currentTarget === e.target && $.vakata.dnd.user_data.obj && $($.vakata.dnd.user_data.obj).length && $($.vakata.dnd.user_data.obj).parents(".jstree:eq(0)")[0] !== e.target) { // node should not be from the same tree
+							if(e.currentTarget === e.target && $.inforTree.dnd.user_data.obj && $($.inforTree.dnd.user_data.obj).length && $($.inforTree.dnd.user_data.obj).parents(".jstree:eq(0)")[0] !== e.target) { // node should not be from the same tree
 								var tr = $.jstree._reference(e.target), dc;
 								if(tr.data.dnd.foreign) {
 									dc = tr._get_settings().dnd.drag_check.call(this, { "o" : o, "r" : tr.get_container(), is_root : true });
 									if(dc === true || dc.inside === true || dc.before === true || dc.after === true) {
-										$.vakata.dnd.helper.children("ins").attr("class","jstree-ok");
+										$.inforTree.dnd.helper.children("ins").attr("class","jstree-ok");
 									}
 								}
 								else {
 									tr.prepare_move(o, tr.get_container(), "last");
 									if(tr.check_move()) {
-										$.vakata.dnd.helper.children("ins").attr("class","jstree-ok");
+										$.inforTree.dnd.helper.children("ins").attr("class","jstree-ok");
 									}
 								}
 							}
 						}
 					}, this))
 				.bind("mouseup.jstree", $.proxy(function (e) {
-						//if($.vakata.dnd.is_drag && $.vakata.dnd.user_data.jstree && $(e.currentTarget).find("> ul > li").length === 0) {
-						if($.vakata.dnd.is_drag && $.vakata.dnd.user_data.jstree && e.currentTarget === e.target && $.vakata.dnd.user_data.obj && $($.vakata.dnd.user_data.obj).length && $($.vakata.dnd.user_data.obj).parents(".jstree:eq(0)")[0] !== e.target) { // node should not be from the same tree
+						//if($.inforTree.dnd.is_drag && $.inforTree.dnd.user_data.jstree && $(e.currentTarget).find("> ul > li").length === 0) {
+						if($.inforTree.dnd.is_drag && $.inforTree.dnd.user_data.jstree && e.currentTarget === e.target && $.inforTree.dnd.user_data.obj && $($.inforTree.dnd.user_data.obj).length && $($.inforTree.dnd.user_data.obj).parents(".jstree:eq(0)")[0] !== e.target) { // node should not be from the same tree
 							var tr = $.jstree._reference(e.currentTarget), dc;
 							if(tr.data.dnd.foreign) {
 								dc = tr._get_settings().dnd.drag_check.call(this, { "o" : o, "r" : tr.get_container(), is_root : true });
@@ -27481,28 +27470,28 @@ $.widget("ui.inforToolTip", {
 						if(e.relatedTarget && e.relatedTarget.id && e.relatedTarget.id === "jstree-marker-line") {
 							return false; 
 						}
-						if($.vakata.dnd.is_drag && $.vakata.dnd.user_data.jstree) {
+						if($.inforTree.dnd.is_drag && $.inforTree.dnd.user_data.jstree) {
 							if(this.data.dnd.i1) { clearInterval(this.data.dnd.i1); }
 							if(this.data.dnd.i2) { clearInterval(this.data.dnd.i2); }
 							if(this.data.dnd.to1) { clearTimeout(this.data.dnd.to1); }
 							if(this.data.dnd.to2) { clearTimeout(this.data.dnd.to2); }
-							if($.vakata.dnd.helper.children("ins").hasClass("jstree-ok")) {
-								$.vakata.dnd.helper.children("ins").attr("class","jstree-invalid");
+							if($.inforTree.dnd.helper.children("ins").hasClass("jstree-ok")) {
+								$.inforTree.dnd.helper.children("ins").attr("class","jstree-invalid");
 							}
 						}
 					}, this))
 				.bind("mousemove.jstree", $.proxy(function (e) {
-						if($.vakata.dnd.is_drag && $.vakata.dnd.user_data.jstree) {
+						if($.inforTree.dnd.is_drag && $.inforTree.dnd.user_data.jstree) {
 							var cnt = this.get_container()[0];
 
 							// Horizontal scroll
 							if(e.pageX + 24 > this.data.dnd.cof.left + this.data.dnd.cw) {
 								if(this.data.dnd.i1) { clearInterval(this.data.dnd.i1); }
-								this.data.dnd.i1 = setInterval($.proxy(function () { this.scrollLeft += $.vakata.dnd.scroll_spd; }, cnt), 100);
+								this.data.dnd.i1 = setInterval($.proxy(function () { this.scrollLeft += $.inforTree.dnd.scroll_spd; }, cnt), 100);
 							}
 							else if(e.pageX - 24 < this.data.dnd.cof.left) {
 								if(this.data.dnd.i1) { clearInterval(this.data.dnd.i1); }
-								this.data.dnd.i1 = setInterval($.proxy(function () { this.scrollLeft -= $.vakata.dnd.scroll_spd; }, cnt), 100);
+								this.data.dnd.i1 = setInterval($.proxy(function () { this.scrollLeft -= $.inforTree.dnd.scroll_spd; }, cnt), 100);
 							}
 							else {
 								if(this.data.dnd.i1) { clearInterval(this.data.dnd.i1); }
@@ -27511,11 +27500,11 @@ $.widget("ui.inforToolTip", {
 							// Vertical scroll
 							if(e.pageY + 24 > this.data.dnd.cof.top + this.data.dnd.ch) {
 								if(this.data.dnd.i2) { clearInterval(this.data.dnd.i2); }
-								this.data.dnd.i2 = setInterval($.proxy(function () { this.scrollTop += $.vakata.dnd.scroll_spd; }, cnt), 100);
+								this.data.dnd.i2 = setInterval($.proxy(function () { this.scrollTop += $.inforTree.dnd.scroll_spd; }, cnt), 100);
 							}
 							else if(e.pageY - 24 < this.data.dnd.cof.top) {
 								if(this.data.dnd.i2) { clearInterval(this.data.dnd.i2); }
-								this.data.dnd.i2 = setInterval($.proxy(function () { this.scrollTop -= $.vakata.dnd.scroll_spd; }, cnt), 100);
+								this.data.dnd.i2 = setInterval($.proxy(function () { this.scrollTop -= $.inforTree.dnd.scroll_spd; }, cnt), 100);
 							}
 							else {
 								if(this.data.dnd.i2) { clearInterval(this.data.dnd.i2); }
@@ -27524,7 +27513,7 @@ $.widget("ui.inforToolTip", {
 						}
 					}, this))
 				.bind("scroll.jstree", $.proxy(function (e) { 
-						if($.vakata.dnd.is_drag && $.vakata.dnd.user_data.jstree && m && ml) {
+						if($.inforTree.dnd.is_drag && $.inforTree.dnd.user_data.jstree && m && ml) {
 							m.hide();
 							ml.hide();
 						}
@@ -27536,12 +27525,12 @@ $.widget("ui.inforToolTip", {
 						}
 					}, this))
 				.delegate("a", "mouseenter.jstree", $.proxy(function (e) { 
-						if($.vakata.dnd.is_drag && $.vakata.dnd.user_data.jstree) {
+						if($.inforTree.dnd.is_drag && $.inforTree.dnd.user_data.jstree) {
 							this.dnd_enter(e.currentTarget);
 						}
 					}, this))
 				.delegate("a", "mousemove.jstree", $.proxy(function (e) { 
-						if($.vakata.dnd.is_drag && $.vakata.dnd.user_data.jstree) {
+						if($.inforTree.dnd.is_drag && $.inforTree.dnd.user_data.jstree) {
 							if(!r || !r.length || r.children("a")[0] !== e.currentTarget) {
 								this.dnd_enter(e.currentTarget);
 							}
@@ -27552,33 +27541,26 @@ $.widget("ui.inforToolTip", {
 						}
 					}, this))
 				.delegate("a", "mouseleave.jstree", $.proxy(function (e) { 
-						if($.vakata.dnd.is_drag && $.vakata.dnd.user_data.jstree) {
+						if($.inforTree.dnd.is_drag && $.inforTree.dnd.user_data.jstree) {
 							if(e.relatedTarget && e.relatedTarget.id && e.relatedTarget.id === "jstree-marker-line") {
 								return false; 
 							}
 								if(m) { m.hide(); }
 								if(ml) { ml.hide(); }
-							/*
-							var ec = $(e.currentTarget).closest("li"), 
-								er = $(e.relatedTarget).closest("li");
-							if(er[0] !== ec.prev()[0] && er[0] !== ec.next()[0]) {
-								if(m) { m.hide(); }
-								if(ml) { ml.hide(); }
-							}
-							*/
+							
 							this.data.dnd.mto = setTimeout( 
 								(function (t) { return function () { t.dnd_leave(e); }; })(this),
 							0);
 						}
 					}, this))
 				.delegate("a", "mouseup.jstree", $.proxy(function (e) { 
-						if($.vakata.dnd.is_drag && $.vakata.dnd.user_data.jstree) {
+						if($.inforTree.dnd.is_drag && $.inforTree.dnd.user_data.jstree) {
 							this.dnd_finish(e);
 						}
 					}, this));
 
 			$(document)
-				.bind("drag_stop.vakata", $.proxy(function () {
+				.bind("drag_stop.inforTree", $.proxy(function () {
 						if(this.data.dnd.to1) { clearTimeout(this.data.dnd.to1); }
 						if(this.data.dnd.to2) { clearTimeout(this.data.dnd.to2); }
 						if(this.data.dnd.i1) { clearInterval(this.data.dnd.i1); }
@@ -27598,7 +27580,7 @@ $.widget("ui.inforToolTip", {
 						if(m) { m.css({ "top" : "-2000px" }); }
 						if(ml) { ml.css({ "top" : "-2000px" }); }
 					}, this))
-				.bind("drag_start.vakata", $.proxy(function (e, data) {
+				.bind("drag_start.inforTree", $.proxy(function (e, data) {
 						if(data.data.jstree) { 
 							var et = $(data.event.target);
 							if(et.closest(".jstree").hasClass("jstree-" + this.get_index())) {
@@ -27606,33 +27588,19 @@ $.widget("ui.inforToolTip", {
 							}
 						}
 					}, this));
-				/*
-				.bind("keydown.jstree-" + this.get_index() + " keyup.jstree-" + this.get_index(), $.proxy(function(e) {
-						if($.vakata.dnd.is_drag && $.vakata.dnd.user_data.jstree && !this.data.dnd.foreign) {
-							var h = $.vakata.dnd.helper.children("ins");
-							if(e[this._get_settings().dnd.copy_modifier + "Key"] && h.hasClass("jstree-ok")) {
-								h.parent().html(h.parent().html().replace(/ \(Copy\)$/, "") + " (Copy)");
-							} 
-							else {
-								h.parent().html(h.parent().html().replace(/ \(Copy\)$/, ""));
-							}
-						}
-					}, this)); */
-
-
-
+			
 			var s = this._get_settings().dnd;
 			if(s.drag_target) {
 				$(document)
 					.delegate(s.drag_target, "mousedown.jstree-" + this.get_index(), $.proxy(function (e) {
 						o = e.target;
-						$.vakata.dnd.drag_start(e, { jstree : true, obj : e.target }, "<ins class='jstree-icon'></ins>" + $(e.target).text() );
+						$.inforTree.dnd.drag_start(e, { jstree : true, obj : e.target }, "<ins class='jstree-icon'></ins>" + $(e.target).text() );
 						if(this.data.themes) { 
 							if(m) { m.attr("class", "jstree-" + this.data.themes.theme); }
 							if(ml) { ml.attr("class", "jstree-" + this.data.themes.theme); }
-							$.vakata.dnd.helper.attr("class", "jstree-dnd-helper jstree-" + this.data.themes.theme); 
+							$.inforTree.dnd.helper.attr("class", "jstree-dnd-helper jstree-" + this.data.themes.theme); 
 						}
-						$.vakata.dnd.helper.children("ins").attr("class","jstree-invalid");
+						$.inforTree.dnd.helper.children("ins").attr("class","jstree-invalid");
 						var cnt = this.get_container();
 						this.data.dnd.cof = cnt.offset();
 						this.data.dnd.cw = parseInt(cnt.width(),10);
@@ -27645,7 +27613,7 @@ $.widget("ui.inforToolTip", {
 				$(document)
 					.delegate(s.drop_target, "mouseenter.jstree-" + this.get_index(), $.proxy(function (e) {
 							if(this.data.dnd.active && this._get_settings().dnd.drop_check.call(this, { "o" : o, "r" : $(e.target), "e" : e })) {
-								$.vakata.dnd.helper.children("ins").attr("class","jstree-ok");
+								$.inforTree.dnd.helper.children("ins").attr("class","jstree-ok");
 							}
 						}, this))
 					.delegate(s.drop_target, "mousemove.jstree-" + this.get_index(), $.proxy(function (e) {
@@ -27657,11 +27625,11 @@ $.widget("ui.inforToolTip", {
                         }, this))
 					.delegate(s.drop_target, "mouseleave.jstree-" + this.get_index(), $.proxy(function (e) {
 							if(this.data.dnd.active) {
-								$.vakata.dnd.helper.children("ins").attr("class","jstree-invalid");
+								$.inforTree.dnd.helper.children("ins").attr("class","jstree-invalid");
 							}
 						}, this))
 					.delegate(s.drop_target, "mouseup.jstree-" + this.get_index(), $.proxy(function (e) {
-							if(this.data.dnd.active && $.vakata.dnd.helper.children("ins").hasClass("jstree-ok")) {
+							if(this.data.dnd.active && $.inforTree.dnd.helper.children("ins").hasClass("jstree-ok")) {
 								this._get_settings().dnd.drop_finish.call(this, { "o" : o, "r" : $(e.target), "e" : e });
 							}
 						}, this));
@@ -27720,12 +27688,12 @@ $.widget("ui.inforToolTip", {
 				else { o = ["after","inside","before"]; }
 				$.each(o, $.proxy(function (i, val) { 
 					if(this.data.dnd[val]) {
-						$.vakata.dnd.helper.children("ins").attr("class","jstree-ok");
+						$.inforTree.dnd.helper.children("ins").attr("class","jstree-ok");
 						r = val;
 						return false;
 					}
 				}, this));
-				if(r === false) { $.vakata.dnd.helper.children("ins").attr("class","jstree-invalid"); }
+				if(r === false) { $.inforTree.dnd.helper.children("ins").attr("class","jstree-invalid"); }
 				
 				pos = rtl ? (this.data.dnd.off.right - 18) : (this.data.dnd.off.left + 10);
 				switch(r) {
@@ -27801,7 +27769,11 @@ $.widget("ui.inforToolTip", {
 				this.data.dnd.after		= false;
 				this.data.dnd.before	= false;
 				this.data.dnd.inside	= false;
-				$.vakata.dnd.helper.children("ins").attr("class","jstree-invalid");
+				$.inforTree.dnd.helper.children("ins").attr("class","jstree-invalid");
+				$.inforTree.dnd.helper.attr("draggable","true");
+				$.inforTree.dnd.helper.css("draggable","true");
+				document.body.style.cursor = "no-drop";
+				
 				m.hide();
 				if(ml) { ml.hide(); }
 				if(r && r[0] === e.target.parentNode) {
@@ -27818,14 +27790,14 @@ $.widget("ui.inforToolTip", {
 			start_drag : function (obj, e) {
 				o = this._get_node(obj);
 				if(this.data.ui && this.is_selected(o)) { o = this._get_node(null, true); }
-				var dt = o.length > 1 ? this._get_string("multiple_selection") : this.get_text(o),
+				var dt = o.length > 1 ? this._get_string("multiple_selection") : o.html(),
 					cnt = this.get_container();
-				if(!this._get_settings().core.html_titles) { dt = dt.replace(/</ig,"&lt;").replace(/>/ig,"&gt;"); }
-				$.vakata.dnd.drag_start(e, { jstree : true, obj : o }, "<ins class='jstree-icon'></ins>" + dt );
+				
+				$.inforTree.dnd.drag_start(e, { jstree : true, obj : o }, "<ins class='jstree-icon'></ins>" + "<span class='jsTree'>" + dt +"</span>" );
 				if(this.data.themes) { 
 					if(m) { m.attr("class", "jstree-" + this.data.themes.theme); }
 					if(ml) { ml.attr("class", "jstree-" + this.data.themes.theme); }
-					$.vakata.dnd.helper.attr("class", "jstree-dnd-helper jstree-" + this.data.themes.theme); 
+					$.inforTree.dnd.helper.attr("class", "jstree-dnd-helper jstree-" + this.data.themes.theme); 
 				}
 				this.data.dnd.cof = cnt.offset();
 				this.data.dnd.cw = parseInt(cnt.width(),10);
@@ -27842,7 +27814,7 @@ $.widget("ui.inforToolTip", {
 						return false; 
 					})
 					.appendTo("body");
-					ml = $("<div />").attr({ id : "jstree-marker-line" }).hide()
+					 ml = $("<div />").attr({ id : "jstree-marker-line" }).hide()
 					.bind("mouseup", function (e) { 
 						if(r && r.length) { 
 							r.children("a").trigger(e); 
@@ -27866,11 +27838,20 @@ $.widget("ui.inforToolTip", {
 					})
 					.appendTo("body");
 					
-				$(document).bind("drag_start.vakata", function (e, data) {
-					if(data.data.jstree) { m.show(); if(ml) { ml.show(); } }
+				$(document).bind("drag_start.inforTree", function (e, data) {
+					if(data.data.jstree) { 
+						m.show(); 
+						if(ml)
+							ml.show();
+					}
 				});
-				$(document).bind("drag_stop.vakata", function (e, data) {
-					if(data.data.jstree) { m.hide(); if(ml) { ml.hide(); } }
+				$(document).bind("drag_stop.inforTree", function (e, data) {
+					document.body.style.cursor = "";
+					if(data.data.jstree) { 
+						m.hide(); 
+						if(ml)
+							ml.hide();
+					}
 				});
 			}
 		}
@@ -28112,10 +28093,6 @@ $.widget("ui.inforToolTip", {
 			}
 		}
 	});
-	/*$(function() {
-		var css_string = '.jstree .jstree-real-checkbox { display:none; } ';
-		$.vakata.css.add_sheet({ str : css_string, title : "jstree" });
-	});*/
 })(jQuery);
 
 /*
@@ -28195,7 +28172,7 @@ $.widget("ui.inforToolTip", {
 						if ($(this).val()=="") 
 							self._displayCancelButton($(this),"Search");
 					})
-					.closest(".inforTriggerField").css("margin","2px 0 2px 8px").find(".inforTriggerButton").click(function() {
+					.closest(".inforTriggerField").css("margin","10px").find(".inforTriggerButton").click(function() {
 						var field = $(this).closest(".inforTriggerField").find("input"),
 							term = field.val();
 							
@@ -28207,7 +28184,7 @@ $.widget("ui.inforToolTip", {
 					
 				setTimeout(function() {
 					self._handleSizeChange();
-				},1);
+				},100);
 				
 				searchField.closest(".inforTriggerField").find(".inforTriggerButton")
 					.attr("title",Globalize.localize("Search"));
@@ -28217,8 +28194,8 @@ $.widget("ui.inforToolTip", {
 				    triggerButton = field.closest(".inforTriggerField").find(".inforTriggerButton"),
 				    cancelButton = triggerButton.prev();
 						
-				if (!cancelButton.hasClass("inforCloseButtonDark")) {
-					cancelButton = $("<div class='inforCloseButtonDark inforTreeSearchCancel'></div>");
+				if (!cancelButton.hasClass("inforCancelButton")) {
+					cancelButton = $("<div class='inforCancelButton inforTreeSearchCancel'></div>");
 					triggerButton.before(cancelButton);
 					
 					cancelButton.attr("title",Globalize.localize("Cancel"));
@@ -28243,7 +28220,7 @@ $.widget("ui.inforToolTip", {
 				if (totalHeight>$(window).height())
 					extraForScroll=15;
 				
-				var width = $("#leftPane").width()-35-extraForScroll;
+				var width = $("#leftPane").width()-50-extraForScroll;
 				//see if there is a scrollbar
 				$(".inforSearchField").width(width);
 			},
@@ -28495,7 +28472,7 @@ $.widget("ui.inforToolTip", {
 								icons_css += '} ';
 							}
 						});
-						if(icons_css !== "") { $.vakata.css.add_sheet({ 'str' : icons_css, title : "jstree-types" }); }
+						
 					}, this))
 				.bind("before.jstree", $.proxy(function (e, data) { 
 						var s, t, 
@@ -28791,10 +28768,6 @@ $.widget("ui.inforToolTip", {
 
         return this.each(function () {
             var $input = $(this);
-            //var isIE8 = ($.browser.msie && $.browser.version == 8);
-            //TODO: Removed this temporarily - will circle back later - error styling is messed up
-            var isIE8 = false;
-			
             if ($input.data("initialized") != undefined)	//is wrapped
                 return;
 
@@ -28807,7 +28780,7 @@ $.widget("ui.inforToolTip", {
             if ($input.hasClass("inforDropDownList"))
                 lookupClass = "inforDropDownListButton";
             if ($input.hasClass("inforDateField"))
-                lookupClass = "inforDatePickerButton";
+			lookupClass = "inforDatePickerButton";
             if ($input.hasClass("inforUrlField"))
                 lookupClass = "inforUrlButton";
             if ($input.hasClass("inforEmailField"))
@@ -28841,9 +28814,9 @@ $.widget("ui.inforToolTip", {
 					});
 				}
                 $triggerButton.click(function (e) {
-					e.inputId = $input.attr("id");
+                    e.inputId = $input.attr("id");
 					e.input = $input;
-                    settings.click(e);
+					settings.click(e);
                 });
             }
 
@@ -28853,19 +28826,11 @@ $.widget("ui.inforToolTip", {
 				.focusin(function (e) {
 				    var $this = $(this);
 				    $this.closest("tbody").find(".inforTriggerButton").addClass("focus");
-
-				    if (isIE8) {
-				        $this.closest("tbody").find(".inforTextBoxLeftSlice").addClass("focus");
-				        $this.addClass("IE8Focus");
-				    }
+					$this.closest(".inforTriggerField").addClass("focus");
 				}).focusout(function (e) {
 				    var $this = $(this);
 				    $this.closest("tbody").find(".inforTriggerButton").removeClass("focus");
-
-				    if (isIE8) {
-				        $this.closest("tbody").find(".inforTextBoxLeftSlice").removeClass("focus");
-				        $this.removeClass("IE8Focus");
-				    }
+					$this.closest(".inforTriggerField").removeClass("focus");
 				});
 			
             var root = $input.closest(".inforTriggerField");
@@ -28888,14 +28853,6 @@ $.widget("ui.inforToolTip", {
 			if (tooltip!=undefined) {
 				$triggerButton.attr("title",tooltip);
 			}
-            //add rounded styling for ie8
-            if (isIE8 && isEnabled) {
-                //add rounded left slice.
-                var $leftSlice = $('<td><div class="inforTextBoxLeftSlice"/></td>');
-                $leftSlice.prependTo($input.closest("tr"));
-                $input.css("border-left", "none");
-                //TODO: add alternate disabled styling to get rid of embossed look.
-            }
 
             //handle absolute positioning.
             if ($input.css("position") == "absolute" && !Globalize.culture().isRTL) {
@@ -28966,14 +28923,23 @@ $.widget("ui.inforToolTip", {
 						if ($(this).val()=="") 
 							_displayCancelButton($(this),"Search");
 					});
+					
+			$input.closest("div").addClass("inforSearchFieldContainer");
+			
+			if ($input.attr("placeholder")==null)
+				$input.attr("placeholder", Globalize.localize("Search"));
+				
 		});
 		
 		function _displayCancelButton(field, icon){
+			if (field.attr("readonly"))
+				return;
+				
 			var triggerButton = field.closest(".inforTriggerField").find(".inforTriggerButton"),
 				cancelButton = triggerButton.prev();
 					
-			if (!cancelButton.hasClass("inforCloseButtonDark")) {
-				cancelButton = $("<div class='inforCloseButtonDark inforTreeSearchCancel'></div>");
+			if (!cancelButton.hasClass("inforCancelButton")) {
+				cancelButton = $("<div class='inforCancelButton inforTreeSearchCancel'></div>");
 				triggerButton.before(cancelButton);
 				
 				cancelButton.attr("title",Globalize.localize("Cancel"));
@@ -29104,7 +29070,7 @@ $.widget("ui.inforToolTip", {
                msg : Globalize.localize("UrlValidation")	
             },
             required : {
-              check: function(value) {
+				check: function(value) {
                    this.msg = Globalize.localize("Required");
 				   if (value)
                      return true;
@@ -29138,7 +29104,6 @@ $.widget("ui.inforToolTip", {
 					
 					if ($field.hasClass("inforDualListExchange")) {
 						var $selected = $field.find("#selected");
-						$selected.css("border","1px solid #999999");
 						$selected.closest("tr").find(".inforErrorIcon").parent().remove();
 					}
 					
@@ -29158,17 +29123,14 @@ $.widget("ui.inforToolTip", {
 					
 					if ($field.hasClass("inforDropDownList")) {
 						var $next = $field.siblings(".inforTriggerField");
-						$next.find('.inforTriggerButton').removeClass("error").next(".inforErrorIcon").remove();
+						$next.removeClass("error");
+						$next.next('.inforErrorIcon').remove();
 						$field = $next.find('input');
 						$field.removeClass("error");
 					}
 					
 					if ($field.hasClasses(['inforLookupField', 'inforDateField', 'inforUrlField', 'inforSpinner', 'inforSearchField', 'inforEmailField', 'inforCalculatorField'])){
-						$field.closest("tr").find('.inforTriggerButton').removeClass("error").next(".inforErrorIcon").remove();
-						
-						if ($field.hasClass("inforFileField"))
-							$field.next().removeClass("error");	
-							
+						$field.closest(".inforTriggerField").removeClass("error").next('.inforErrorIcon').remove();
 					}
 					
 					//textbox and textarea fall through
@@ -29234,20 +29196,20 @@ $.widget("ui.inforToolTip", {
 						fs.prepend(icon);
 						icon.css({"position":"relative","left":"-2px", "top":"-1px"});
 					} else if ($field.hasClass("inforDropDownList")) {
-						$field.next().find("input").addClass("error");
-						$field.next().find('.inforTriggerButton').addClass("error").after(icon);
+						icon.css("margin","3px 2px 5px");
+						$field.next().closest(".inforTriggerField").addClass("error").after(icon);
 					} else if ($field.hasClass("inforFileField")) {
+						icon.css("margin","3px 2px 5px");
 						$field.addClass("error");
-						$field.closest("tr").find('.inforTriggerButton').addClass("error").after(icon);
-						$field.next().addClass("error");
+						$field.closest(".inforTriggerField").addClass("error").after(icon);
 					}else if ($field.hasClass("inforSpinner")) {
 						$field.addClass("error");
 						$field.closest("tr").find('.inforTriggerButton').addClass("error");
 						$field.closest("tr").find('.inforTriggerButton:last').after(icon);
 						icon.css("margin-left","-10px");
 					} else if ($field.hasClasses(['inforLookupField', 'inforDateField', 'inforUrlField', 'inforSearchField', 'inforEmailField', 'inforFileField', 'inforCalculatorField'])) {
-						$field.addClass("error");
-						$field.closest("tr").find('.inforTriggerButton').addClass("error").after(icon);
+						icon.css("margin","3px 2px 5px");
+						$field.closest(".inforTriggerField").addClass("error").after(icon);
 					}
 					else {
 						$field.after(icon);
@@ -29273,7 +29235,6 @@ $.widget("ui.inforToolTip", {
 						function bindClick () {
 							$(document).unbind("click.tooltip");
 							$(document).bind("click.tooltip",function(event) {
-								icon.inforToolTip("close");
 								$("#inforToolTip").hide();
 								$(document).unbind("click.tooltip");
 							});

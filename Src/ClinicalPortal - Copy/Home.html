@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+/**************************************************************************************************************************************
+* LAWSON CONFIDENTIAL AND PROPRIETARY
+*  
+* THIS MATERIAL IS UNPUBLISHED, CONFIDENTIAL AND PROPRIETARY TO LAWSON SOFTWARE INC.  
+* IT IS NOT TO BE USED, REPRODUCED, OR DISCLOSED EXCEPT IN ACCORDANCE WITH SOFTWARE CONTRACT PROVISIONS OR UPON WRITTEN
+* AUTHORIZATION BY LAWSON 
+* 
+* COPYRIGHT (C) 1999-2010 LAWSON SOFTWARE, INC.
+* 
+* ALL RIGHTS RESERVED
+**************************************************************************************************************************************/
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
+    <title>Home Page</title>
+    <script type="text/javascript" src="Resources/clinicalPortalHome.js"></script>
+    <script type="text/javascript">
+        (function () {
+            cp.testJson = {
+                "changeMenu": function () {
+                    var menuData = cp.menu.getMenuData();
+                    var service1Obj = cp.getService("Service/Service1.asmx");
+                    var changedMenuData = cp.parseJSON(service1Obj.ChangeMenuCase(JSON.stringify(menuData)));
+                    cp.menu.buildMenuTree(changedMenuData);
+                }
+            };
+        } ());
+    </script>
+</head>
+<body>
+    <div id="testPostJson">
+        <input type="button" value="Click me to post json data, will change menu" onclick="cp.testJson.changeMenu();" />
+    </div>
+    <br />
+    <div id="homeMsgNumber">
+        <div style="margin-bottom: 10px;">
+            Secure Messages:</div>
+    </div>
+    <br />
+    <div id="homeCriticalMsg" style="margin-top: 35px; margin-right: 15px;">
+        <div style="margin-bottom: 10px;">
+            Critical Secure Messages:</div>
+        <div id="msgGrid">
+        </div>
+    </div>
+    <div class="infor2ColumnLayout">
+        <div id="homePatientSearch" class="column1">
+            a</div>
+        <div id="homeNews" class="column2">
+            b</div>
+    </div>
+    <script type="text/javascript">
+        setTimeout(function () {
+            cp.home.init("homeMsgNumber", "msgGrid");
+            cp.home.loadMessageCount();
+            cp.home.message.loadMessageList();
+        }, 300);
+    </script>
+</body>
+</html>

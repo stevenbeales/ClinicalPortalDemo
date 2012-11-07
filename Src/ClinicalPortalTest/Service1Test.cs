@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
+using ClinicalPortal.Service;
 
 namespace ClinicalPortalTest
 {
@@ -23,6 +24,13 @@ namespace ClinicalPortalTest
             string methodsJson = _service1.GetMethodList();
             StringAssert.StartsWith("[", methodsJson);
             StringAssert.EndsWith("]", methodsJson);
+        }
+
+        [Test]
+        public void TestGetUser()
+        {
+            UserInfo user = new UserInfo(){Name="user1", Password="111"};
+            string userJson = _service1.JsonUser(user);
         }
 
     }
