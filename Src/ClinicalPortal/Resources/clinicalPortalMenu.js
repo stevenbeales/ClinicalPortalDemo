@@ -7,7 +7,9 @@
         $("#" + menuCtrlId).unbind("click");
         $("#" + menuCtrlId).inforTree({ "json_data": menuData })
                     .bind("click", function (e, data) {
-                        cp.loadPageAsyn(e.target.href);
+                        if ($(e.target.parentElement).find("li.jstree-leaf").length === 0) {
+                            cp.loadPageAsyn(e.target.href);
+                        }
                     });
     };
 
@@ -16,7 +18,6 @@
             menuCtrlId = menuContainerId;
 
             $("#menuSplitter").inforSplitter();
-            //$(".inforSplitBarVertical").remove();
         },
         "load": function () {
             var service1Obj = cp.getService("Service/Service1.asmx");

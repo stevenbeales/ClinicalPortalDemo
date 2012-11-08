@@ -152,7 +152,6 @@
     <Content Include="Resources\inforControlsCombined.js" />
     <Content Include="Resources\inforHistory.js" />
     <Content Include="Resources\inforTabset.css" />
-    <Content Include="Resources\inforTree.js" />
     <Content Include="Resources\inforWebPartControlsCombined.css" />
     <Content Include="Resources\jquery-1.8.2.js" />
     <Content Include="Resources\jquery-ui-1.9.0.custom.min.js" />

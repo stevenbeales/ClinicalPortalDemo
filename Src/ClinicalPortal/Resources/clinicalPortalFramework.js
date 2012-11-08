@@ -159,8 +159,8 @@
             for (var i = 0; i < formData.length; i++) {
                 itemName = formData[i].name;
                 itemValue = formData[i].value;
-                if (itemName && itemValue) {
-                    formJson[formData[i].name] = formData[i].value;
+                if (itemName) {
+                    formJson[itemName] = itemValue || "";
                 }
             }
             return formJson;
