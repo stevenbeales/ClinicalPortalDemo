@@ -128,9 +128,6 @@
     var cp = {
         init: function (setting) {
             $.extend(cpSetting, setting);
-            //            if (cpSetting.enableHistory) {
-            //                setInterval(cp.historyMark.checkhash, 400);
-            //            }
         },
 
         checkUser: function () {
@@ -138,7 +135,6 @@
             if (userId == null) {
                 return false;
             }
-            //$(getControlId("userId")).html(userId);
             return true;
         },
 
@@ -210,9 +206,9 @@
             return $("<" + tagName + "/>");
         },
 
-        loadPageAsyn: function (url, controlId, storeInHistory, successFn) {
+        loadPageAsyn: function (url, contentHolderId, storeInHistory, successFn) {
             var thisObj = this;
-            controlId = getContentCtrlId(controlId);
+            contentHolderId = getContentCtrlId(contentHolderId);
             var resolvedUrl = resolveUrl(url);
             var settings;
             if (checkUrl(resolvedUrl)) {
@@ -223,12 +219,12 @@
                         thisObj.showIndicator();
                     },
                     "success": function (msg, textStatus, jqXHR) {
-                        setHistory(resolvedUrl, controlId, storeInHistory);
+                        setHistory(resolvedUrl, contentHolderId, storeInHistory);
                         msg = parseHtmlScript(msg);
                         if (successFn) {
                             successFn(msg);
                         }
-                        $("#" + controlId).html(msg);
+                        $("#" + contentHolderId).html(msg);
                     },
                     "complete": function () {
                         thisObj.hideIndicator();
@@ -253,6 +249,7 @@
         var iecount = 0;
         var ieVersion = 0;
         var historyMarked = [];
+        var hiddenFrame;
 
         var isValidHash = function (hash) {
             return typeof hash === "string";
@@ -268,7 +265,7 @@
                 if (document.all) {
                     if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)) { ieVersion = new Number(RegExp.$1); }
                     if (ieVersion >= 8 && quirks == 'BackCompat' || ieVersion < 8) {
-                        this.iframe();
+                        this.createIframe();
                         isie = true;
                     }
                 }
@@ -323,8 +320,8 @@
 
                 }
             },
-            iframe: function () {
-                var hiddenFrame = document.createElement("iframe");
+            createIframe: function () {
+                hiddenFrame = document.createElement("iframe");
                 hiddenFrame.id = 'hiddenFrame';
                 hiddenFrame.style.width = '100px';
                 hiddenFrame.style.height = '100px';
@@ -332,7 +329,7 @@
                 document.body.appendChild(hiddenFrame);
             },
             setiframe: function (hash, num) {
-                document.getElementById('hiddenFrame').src = 'default.html?' + num + hash;
+                hiddenFrame.src = 'Default.html?' + num + hash;
             },
             fixiframe: function (hash) {
                 var currentHash = window.location.hash;

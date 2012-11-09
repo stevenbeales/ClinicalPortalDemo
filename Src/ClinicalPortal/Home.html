@@ -17,19 +17,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta charset="utf-8" />
     <title>Home Page</title>
-    <script type="text/javascript" src="Resources/clinicalPortalHome.js"></script>
-    <script type="text/javascript">
-        (function () {
-            cp.testJson = {
-                "changeMenu": function () {
-                    var menuData = cp.menu.getMenuData();
-                    var service1Obj = cp.getService("Service/Service1.asmx");
-                    var changedMenuData = cp.parseJSON(service1Obj.ChangeMenuCase(JSON.stringify(menuData)));
-                    cp.menu.buildMenuTree(changedMenuData);
-                }
-            };
-        } ());
-    </script>
+    <script type="text/javascript" src="Resources/home.js"></script>
+    
 </head>
 <body>
     <div id="homeMsgNumber">

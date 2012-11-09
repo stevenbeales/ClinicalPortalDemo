@@ -52,7 +52,7 @@ namespace ClinicalPortal.Service
             {
                 if (_paras == null)
                 {
-                    List<WebMethodParameterInfo> paras = new List<WebMethodParameterInfo>();
+                    var paras = new List<WebMethodParameterInfo>();
                     foreach (ParameterInfo para in _methodInfo.GetParameters())
                     {
                         paras.Add(new WebMethodParameterInfo(para));

@@ -11,32 +11,28 @@
         <script type="text/javascript" src="Resources/jquery-ui-1.9.0.custom.min.js"></script>
         <script type="text/javascript" src="Resources/inforControlsCombined.js"></script>
         <script type="text/javascript" src="Resources/clinicalPortalFramework.js"></script>
-        
 		
     <script type="text/javascript">
 
         $(function () {
-            //Globalize.culture("ar-SA");
-            $('.inforDropDownList').inforDropDownList({ selectFirst: false, typeAheadSearch: false });
 
             $('#inforSignInDialog').inforSignInDialog(
 					{ login: function (userId, password, rememberPassword) {
 					    
 					    //Do something to login - just faking things here...
-					    var loginOk = false;
 					    var service1Obj = cp.getService("Service/Service1.asmx");
 					    var result = service1Obj.CheckUser(userId, password);
 
-					    loginOk = (result === "true");
+					    var loginOk = (result === "true");
 
 					    if (loginOk) {
 					        return true;
 					    }
 					    else {
 					        //Show an error in the status area.
-					        var userId = $("#userId");
-					        if (userId.val() == "")
-					            $('#inforSignInDialog').inforSignInDialog("showError", "The user id is not valid.", userId);
+					        var txtUserId = $("#userId");
+					        if (txtUserId.val() == "")
+					            $('#inforSignInDialog').inforSignInDialog("showError", "The user id is not valid.", txtUserId);
 					        else
 					            $('#inforSignInDialog').inforSignInDialog("showError", "The password is incorrect.", $("#password"));
 					        return false; //false does not hide the dialog

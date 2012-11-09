@@ -19,39 +19,5 @@ namespace ClinicalPortal.Service
             json.Append(":");
             QuotationString(json, value);
         }
-
-        public static void AppendBracket(StringBuilder json)
-        {
-            json.Insert(0, "{");
-            json.Append("}");
-        }
-
-        //public void ArrayLiteral(StringBuilder json,)
-
-        public static string ObjectLiteral(string objName, IDictionary<string, string> properties)
-        {
-            StringBuilder objJson = new StringBuilder();
-            if (!string.IsNullOrEmpty(objName))
-            {
-                QuotationString(objJson, objName);
-                objJson.Append(":");
-            }
-            objJson.Append("{");
-
-            int i = 0;
-            foreach (KeyValuePair<string, string> item in properties)
-            {
-                if (i >= 1)
-                {
-                    objJson.Append(",");
-                }
-                KeyValueToJson(objJson, item.Key, item.Value);
-                i++;
-            }
-
-            objJson.Append("}");
-            return objJson.ToString();
-        }
-
     }
 }

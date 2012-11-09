@@ -1,19 +1,4 @@
 ﻿$(function () {
-    //Globalize.culture("ar-SA");
-
-    //Setup form button styling for the sample buttons
-    //detect language from the url string - works in workspace..
-    var locale = infor.companyon.client.getValueQuerystring("inforCurrentLanguage");
-    if (locale != undefined)
-        Globalize.culture(locale);
-
-    //get rid of banner if not in workspace or could use any parameter we want here we send to shut if off...
-    var inWs = infor.companyon.client.getValueQuerystring("infor10WorkspaceShell");
-    if (inWs != undefined && inWs == 1) {
-        //we are in workspace
-        $(".inforTopBanner").remove();
-        $(".inforBottomFooter").remove();
-    }
 
     $('#inforTabContainer').inforTabset({
         draggable: false,
@@ -36,7 +21,7 @@
         hiddenTabs: {}
     });
 
-    var userName = cp.getUser();
+    var userName = cp.getUser() || "Anonymous";
     $("#userName").text(userName);
 
     $("#signOut").bind("click", cp.logOut);
