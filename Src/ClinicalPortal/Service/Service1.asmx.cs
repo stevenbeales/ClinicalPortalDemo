@@ -29,57 +29,7 @@ namespace ClinicalPortalService
             WebServiceInfo serviceInfo = new WebServiceInfo(this.GetType());
 
             return JsonConvert.SerializeObject(serviceInfo.WebMethods);
-            //StringBuilder methodsJson = new StringBuilder();
-            //methodsJson.Append("[");
-            //MethodInfo[] methods = this.GetType().GetMethods();
-            //int number = 0;
-            //foreach (MethodInfo method in methods)
-            //{
-            //    if (method.IsPublic && method.GetCustomAttributes(typeof(WebMethodAttribute), false).Length > 0)
-            //    {
-            //        if (number > 0)
-            //        {
-            //            methodsJson.Append(",");
-            //        }
-            //        methodsJson.Append(GetMethodJson(method));
-            //        number += 1;
-            //    }
-            //}
-            //methodsJson.Append("]");
-            //return methodsJson.ToString();
         }
-
-        //private string GetMethodJson(MethodInfo webMethod)
-        //{
-        //    if (webMethod != null)
-        //    {
-        //        StringBuilder sb = new StringBuilder();
-        //        sb.Append("{")
-        //          .Append("\"methodName\":").Append("\"" + webMethod.Name + "\"")
-        //          .Append(",").Append("\"returnType\":").Append("\"" + webMethod.ReturnType.Name + "\"");
-
-        //        // parameters
-        //        sb.Append(",").Append("\"parameters\":")
-        //          .Append("[");
-        //        ParameterInfo[] paras = webMethod.GetParameters();
-        //        for (int i = 0; i < paras.Length; i++)
-        //        {
-        //            if (i > 0)
-        //            {
-        //                sb.Append(",");
-        //            }
-        //            sb.Append("{").Append("\"paraName\":").Append("\"" + paras[i].Name + "\"")
-        //              .Append(",")
-        //              .Append("\"paraType\":").Append("\"" + paras[i].ParameterType.Name + "\"")
-        //              .Append("}");
-        //        }
-        //        sb.Append("]");
-        //        // end parameters
-        //        sb.Append("}");
-        //        return sb.ToString();
-        //    }
-        //    return null;
-        //}
 
         [WebMethod]
         public string GetMessageList()

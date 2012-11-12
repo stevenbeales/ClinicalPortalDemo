@@ -65,29 +65,6 @@
         return controlId || cpSetting.contentCtrlId;
     };
 
-    var xhr;
-
-    var createStandardXhr = function () {
-        try {
-            return new window.XMLHttpRequest();
-        }
-        catch (e) { }
-    };
-
-    var createActiveXhr = function () {
-        try {
-            return new window.ActiveXObject("Microsoft.XMLHTTP");
-        }
-        catch (e) { }
-    };
-
-    var getxhr = function () {
-        if (!xhr) {
-            xhr = createStandardXhr() || createActiveXhr();
-        }
-        return xhr;
-    };
-
     var loadXml = function (xmlData) {
         return $.parseXML(xmlData);
     };
@@ -103,7 +80,7 @@
                 scriptTag = scriptTags[i];
                 srcUrl = scriptTag.getAttribute("src");
                 if (srcUrl) {
-                    innerScript = "cp.jsCssLoader.loadJS(\"" + srcUrl + "\");";
+                    innerScript = "cp.loadJS(\"" + srcUrl + "\");";
                     scriptTag.removeAttribute("src");
                     scriptTag.appendChild(htmlDoc.createTextNode(innerScript));
                 }
@@ -487,16 +464,10 @@
                             }
                         });
                 }
-            },
-
-            loadCss: function (url, alwaysServer) {
-                if (alwaysServer || !isExist(url)) {
-                    $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', url));
-                }
             }
         };
 
-        cp.jsCssLoader = jsCssLoader;
+            cp.loadJS = jsCssLoader.loadJS;
 
     })(cp);
 

@@ -5,6 +5,7 @@ using System.Web;
 
 namespace ClinicalPortal
 {
+    // useless
     public class SetExpireModule : IHttpModule
     {
         public String ModuleName
