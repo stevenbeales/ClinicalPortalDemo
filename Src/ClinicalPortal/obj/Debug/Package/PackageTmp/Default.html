@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=IE8">
+        <meta charset="utf-8">
+	
+        <title>Infor/Lawson Application</title>
+        
+        <script type="text/html" id="menu_template">
+            <div class="inforCardstackCell">
+                <span class="inforCardstackHeading"><%=title%></span><br/>
+            </div>
+        </script>
+		
+        <link rel="stylesheet" href="Resources/inforControlsCombined.css" />
+        <script type="text/javascript" src="Resources/jquery-1.8.2.js"></script>
+        <script type="text/javascript" src="Resources/jquery-ui-1.9.0.custom.min.js"></script>
+        <script type="text/javascript" src="Resources/clinicalPortalFramework.js"></script>
+        <script type="text/javascript" src="Resources/json2.js"></script>
+        <script type="text/javascript" src="Resources/inforControlsCombined.js"></script>
+        <script type="text/javascript" src="Resources/default.js"></script>
+        
+    </head>
+    <body>
+        <header class="inforTopBanner">
+            <div class="inforTopBannerLeft inforLogo">
+                <span class="inforApplicationName">Welcome to CDAS</span>
+            </div>
+            <div class="inforTopBannerRight">
+                <span id="userName" class="inforBannerText"></span>
+                <button id="signOut" class="inforSignOutButton" title="Sign Out"></button>
+            </div>
+        </header>
+
+        <div id="inforTabContainer" class="inforModuleTabs">
+            <ul class="inforTabset ">
+                <li><a href="Portal.html">Reporting</a></li>
+                <li><a href="Config.html">Configuration</a></li>
+            </ul>
+        </div>
+        <footer class="inforBottomFooter">
+		    <span class="inforBannerText">Status</span>
+		    <span class="inforBannerText" style="float:right">10/17/2012</span>
+	    </footer>
+        <script type="text/javascript">
+            cp.init({ contentCtrlId: "content", enableHistory: true });
+        </script>
+    </body>
+</html> 

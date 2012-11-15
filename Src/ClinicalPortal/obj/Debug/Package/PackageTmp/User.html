@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>User Info</title>
+    <script type="text/javascript" src="Resources/user.js"></script>
+</head>
+<body>
+    <div id="userTabContainer" style="margin: 10px">
+        <ul class="inforTabset">
+            <li><a href="#tabSearchUser">User Search</a></li>
+            <li><a href="#tabAddUser">Add User</a></li>
+        </ul>
+        <div id="tabSearchUser">
+            <div style="margin-top: 10px;">
+                <span>User Name: </span>
+                <input type="text" id="userNameSearch" />
+                <input type="button" value="Search" onclick="cp.user.searchUser();" />
+                <br />
+                <label id="userInfoSearch"></label>
+            </div>
+        </div>
+        <div id="tabAddUser">
+            <div style="margin-top: 10px;">
+                <form id="newUserForm">
+                    <span>User Name: </span>
+                    <input type="text" name="name" id="userNameNew" />
+                    <span>Password: </span>
+                    <input type="text" name="password" id="passwordNew" />
+                    <input type="button" value="Register" onclick="cp.user.newUser();" />
+                </form>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $('#userTabContainer').inforTabset();
+    </script>
+</body>
+</html>
