@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script type="text/javascript" src="Resources/SampleData.js"></script>
+</head>
+<body>
+    <div class="inforSplitter">    
+		<div id="leftPane" style="width:50%">
+			<div id="sourcesInforTree" class="inforTree"></div>
+		</div>
+		<div id="rightPane" style="width:50%">
+            <div id="sourcesTabContainer" style="margin: 10px">
+                <ul class="inforTabset">
+                    <li><a href="#tabSourceDetail">Detail</a></li>
+                    <li><a href="#tabSourceConfig">Config</a></li>
+                </ul>
+                <div id="tabSourceDetail">
+                    <div style="margin-top: 10px;">
+                        <form id="Form1">
+                            <span>Name: </span>
+                            <input type="text" name="name" id="sourceName" />
+                            <span>Password: </span>
+                            <input type="text" name="OID" id="OID" />
+                            <input type="button" value="Save" onclick="#" />
+                        </form>
+                    </div>
+                </div>
+                <div id="tabSourceConfig">
+                    <div style="margin-top: 10px;">
+                        <form id="newUserForm">
+                            <span>User Name: </span>
+                            <input type="text" name="name" id="userNameNew" />
+                            <span>Password: </span>
+                            <input type="text" name="password" id="passwordNew" />
+                            <input type="button" value="Register" onclick="#" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+	</div>
+    <script type="text/javascript">
+        $(".inforSplitter").inforSplitter();
+
+        $("#sourcesInforTree").inforTree({ "json_data": getSampleJson() }); 
+    </script>
+    <script type="text/javascript">
+        $('#sourcesTabContainer').inforTabset();
+    </script>
+</body>
+</html>
